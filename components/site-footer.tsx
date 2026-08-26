@@ -1,11 +1,17 @@
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-10 text-sm text-muted-foreground sm:flex-row sm:justify-between">
-        <p>&copy; {new Date().getFullYear()} TariffCompass. All rights reserved.</p>
-        <div className="flex items-center gap-6">
-          <span className="transition-colors hover:text-foreground">Privacy</span>
-          <span className="transition-colors hover:text-foreground">Terms</span>
+    <footer className="border-t border-border/40">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 py-12 text-center text-xs text-muted-foreground/80 sm:flex-row sm:justify-between sm:px-8 sm:text-left">
+        <p className="tracking-wide">
+          &copy; {new Date().getFullYear()} TariffCompass. All rights reserved.
+        </p>
+        <div className="flex items-center gap-8">
+          <span className="cursor-default tracking-wide transition-colors duration-200 hover:text-foreground">
+            Privacy
+          </span>
+          <span className="cursor-default tracking-wide transition-colors duration-200 hover:text-foreground">
+            Terms
+          </span>
         </div>
       </div>
     </footer>
