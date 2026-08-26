@@ -907,6 +907,15 @@ export function getRiskStatus(row: MarketDataRow): RiskStatus {
   return "Stable";
 }
 
+export type DataStatus = "Current" | "Estimated" | "Review needed";
+
+/** Plain-language read of `tariffConfidence` for the Results screen's per-row status line. */
+export function getDataStatus(row: MarketDataRow): DataStatus {
+  if (row.tariffConfidence === "unknown") return "Review needed";
+  if (row.tariffConfidence === "official") return "Current";
+  return "Estimated";
+}
+
 export type UsTradeSummary = {
   attractiveness: Attractiveness;
   risk: RiskStatus;

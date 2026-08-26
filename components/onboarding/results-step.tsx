@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
 import {
+  getDataStatus,
   getMarketDataRows,
   getRiskStatus,
   resolveScenarioDirection,
@@ -163,6 +164,7 @@ export function ResultsStep({
                   <LockedValue locked={!isSubscribed}>
                     <TariffValue row={row} />
                   </LockedValue>
+                  <DataStatusLine row={row} />
                 </td>
                 <td className="px-7 py-6">
                   <span className="font-semibold text-foreground">
@@ -228,6 +230,7 @@ export function ResultsStep({
                 <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
               </dd>
             </dl>
+            <DataStatusLine row={row} className="mt-3" />
           </div>
         ))}
       </div>
@@ -371,6 +374,23 @@ function TariffValue({ row }: { row: MarketDataRow }) {
         <span className="ml-1 text-[11px] font-normal text-muted-foreground/60">est.</span>
       )}
     </span>
+  );
+}
+
+function DataStatusLine({ row, className }: { row: MarketDataRow; className?: string }) {
+  return (
+    <p className={cn("text-[11px] leading-snug text-muted-foreground/60", className)}>
+      {getDataStatus(row)} ·{" "}
+      <a
+        href={row.sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline-offset-2 hover:text-foreground hover:underline"
+      >
+        Source: {row.sourceName}
+      </a>{" "}
+      · Updated {formatDate(row.lastUpdated)}
+    </p>
   );
 }
 
