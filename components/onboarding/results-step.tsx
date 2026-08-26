@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
 import {
@@ -7,22 +8,8 @@ import {
   type CostFriction,
 } from "@/lib/market-data";
 import { SCENARIOS } from "@/lib/onboarding-data";
+import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
 import { cn } from "@/lib/utils";
-
-const SUPPORT_PROGRAMS = [
-  {
-    name: "Canadian Trade Commissioner Service",
-    description: "Free export advice and on-the-ground market intelligence in over 160 cities worldwide.",
-  },
-  {
-    name: "Export Development Canada (EDC)",
-    description: "Financing, insurance, and credit tools to help Canadian companies sell internationally.",
-  },
-  {
-    name: "CanExport SMEs",
-    description: "Cost-sharing funding to offset new export marketing and market-entry activities.",
-  },
-];
 
 export function ResultsStep({
   scenario,
@@ -161,24 +148,40 @@ export function ResultsStep({
           Government Support Options
         </h2>
         <p className="mt-3 text-lg text-muted-foreground">
-          Programs that may help offset the cost of entering a new market.
+          Real federal and Crown-corporation programs that may be relevant to your trade
+          situation.
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground/70">
+          This is general guidance, not eligibility confirmation, application support, or
+          financial advice. Program details and eligibility change — confirm everything on the
+          official page before acting.
         </p>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {SUPPORT_PROGRAMS.map((program) => (
             <div
               key={program.name}
-              className="flex h-full flex-col gap-2.5 rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
+              className="flex h-full flex-col gap-3 rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
             >
-              <span className="font-medium tracking-tight text-foreground">
-                {program.name}
-              </span>
+              <span className="font-medium tracking-tight text-foreground">{program.name}</span>
               <span className="text-sm text-muted-foreground">{program.description}</span>
+              <div className="text-sm">
+                <span className="font-medium text-foreground">Who it&apos;s for: </span>
+                <span className="text-muted-foreground">{program.whoItsFor}</span>
+              </div>
+              {direction === "import" && program.importCaveat && (
+                <div className="rounded-xl bg-foreground/[0.03] px-3.5 py-2.5 text-xs text-muted-foreground">
+                  {program.importCaveat}
+                </div>
+              )}
               <a
-                href="#"
-                className="mt-auto pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                href={program.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
               >
                 Learn more
+                <ArrowUpRight className="size-3.5" />
               </a>
             </div>
           ))}
