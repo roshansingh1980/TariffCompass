@@ -1,6 +1,5 @@
 "use server";
 
-import { randomUUID } from "crypto";
 import { cookies } from "next/headers";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -48,7 +47,7 @@ async function getOrCreateTempUserId(supabase: SupabaseClient): Promise<string> 
   const existing = cookieStore.get(TEMP_USER_COOKIE)?.value;
   if (existing) return existing;
 
-  const email = `guest-${randomUUID()}@temp.tariffcompass.invalid`;
+  const email = `guest-${crypto.randomUUID()}@temp.tariffcompass.invalid`;
   const { data, error } = await supabase.auth.admin.createUser({ email });
   if (error || !data.user) {
     throw error ?? new Error("Failed to create a temporary user reference");
