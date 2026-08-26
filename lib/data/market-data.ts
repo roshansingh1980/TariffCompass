@@ -906,3 +906,52 @@ export function getRiskStatus(row: MarketDataRow): RiskStatus {
   if (row.attractiveness === "Fair" || row.costFriction === "Medium") return "Watch";
   return "Stable";
 }
+
+export type UsTradeSummary = {
+  attractiveness: Attractiveness;
+  risk: RiskStatus;
+};
+
+export type UsHeatmapSummary = {
+  export: UsTradeSummary;
+  import: UsTradeSummary;
+};
+
+function mostCommon<T extends string>(values: T[]): T {
+  const counts = new Map<T, number>();
+  for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
+  let best = values[0];
+  let bestCount = 0;
+  for (const [value, count] of counts) {
+    if (count > bestCount) {
+      best = value;
+      bestCount = count;
+    }
+  }
+  return best;
+}
+
+/**
+ * Homepage-only aggregate: the most common Attractiveness/Risk reading for
+ * the U.S. market across every product category, one per trade direction.
+ * Not a new scoring model — a plain mode over the same per-category rows
+ * the Results screen already shows, so the homepage never has to invent a
+ * number or ask the visitor to pick a category first.
+ */
+export function getUsHeatmapSummary(): UsHeatmapSummary {
+  const categories = Object.keys(CATEGORY_DATA);
+  const summarize = (scenario: string): UsTradeSummary => {
+    const rows = categories
+      .map((category) => getMarketDataRows(category, scenario).find((row) => row.market.key === "us"))
+      .filter((row): row is MarketDataRow => Boolean(row));
+    return {
+      attractiveness: mostCommon(rows.map((row) => row.attractiveness)),
+      risk: mostCommon(rows.map(getRiskStatus)),
+    };
+  };
+
+  return {
+    export: summarize("export-us"),
+    import: summarize("import-us"),
+  };
+}
