@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
@@ -8,6 +9,7 @@ import {
   type CostFriction,
 } from "@/lib/market-data";
 import { SCENARIOS, type Country } from "@/lib/onboarding-data";
+import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +17,7 @@ export function ResultsStep({
   country,
   scenario,
   province,
+  usState,
   category,
   productName,
   onBack,
@@ -22,6 +25,7 @@ export function ResultsStep({
   country: Country;
   scenario: string | null;
   province: string | null;
+  usState: string | null;
   category: string | null;
   productName: string;
   onBack: () => void;
@@ -31,6 +35,15 @@ export function ResultsStep({
   const direction = resolveScenarioDirection(scenario);
   const comparisonRows = getMarketComparison(category, scenario);
   const tariffColumnLabel = direction === "export" ? "Export Tariff" : "Import Duty";
+
+  const hasSavedRef = useRef(false);
+  useEffect(() => {
+    if (hasSavedRef.current) return;
+    hasSavedRef.current = true;
+    saveOnboardingSelections({ scenario, country, province, usState, category, productName });
+    // Save once when the user lands on Results; not on every prop change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const summaryChips = [scenarioLabel, provinceLabel, category, productName || null].filter(
     (value): value is string => Boolean(value)

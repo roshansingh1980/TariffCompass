@@ -1,6 +1,7 @@
 /**
- * Hand-written types mirroring supabase/migrations/001_initial_schema.sql.
- * Keep these in sync with the migration if the schema changes.
+ * Hand-written types mirroring supabase/migrations/001_initial_schema.sql
+ * and 002_add_trade_profile_columns.sql. Keep these in sync with the
+ * migrations if the schema changes.
  */
 
 // ============================================================
@@ -34,6 +35,9 @@ export interface Company {
   user_id: string | null;
   name: string;
   province: string | null;
+  scenario: string | null;
+  country: string | null;
+  us_state: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -43,6 +47,9 @@ export type CompanyInsert = {
   user_id?: string | null;
   name: string;
   province?: string | null;
+  scenario?: string | null;
+  country?: string | null;
+  us_state?: string | null;
   created_at?: string;
   updated_at?: string;
 };

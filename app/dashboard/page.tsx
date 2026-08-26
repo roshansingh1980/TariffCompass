@@ -57,6 +57,7 @@ export default function DashboardPage() {
           country={country}
           scenario={scenario}
           province={province}
+          usState={usState}
           category={category}
           productName={productName}
           onBack={() => setStep("product")}

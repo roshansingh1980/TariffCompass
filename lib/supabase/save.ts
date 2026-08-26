@@ -1,0 +1,124 @@
+"use server";
+
+import { randomUUID } from "crypto";
+import { cookies } from "next/headers";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
+import type { CompanyInsert, ProductInsert } from "@/types/database";
+
+const TEMP_USER_COOKIE = "tc_uid";
+
+export type OnboardingSelections = {
+  scenario: string | null;
+  country: string;
+  province: string | null;
+  usState: string | null;
+  category: string | null;
+  productName: string;
+};
+
+/**
+ * We don't have authentication yet. Rather than persisting data under no
+ * user at all, we create a real (but synthetic/"ghost") row in auth.users
+ * via the Admin API and remember its id in an httpOnly cookie. This keeps
+ * every foreign key and RLS policy intact, and — because it's a genuine
+ * auth.users row — it can be upgraded to a real account later (e.g. via
+ * `admin.updateUserById` to attach a real email/password) without any data
+ * migration. The admin API requires an email or phone, so we use one on the
+ * reserved `.invalid` TLD (RFC 2606) — guaranteed to never resolve or
+ * receive mail.
+ */
+async function getOrCreateTempUserId(supabase: SupabaseClient): Promise<string> {
+  const cookieStore = await cookies();
+  const existing = cookieStore.get(TEMP_USER_COOKIE)?.value;
+  if (existing) return existing;
+
+  const email = `guest-${randomUUID()}@temp.tariffcompass.invalid`;
+  const { data, error } = await supabase.auth.admin.createUser({ email });
+  if (error || !data.user) {
+    throw error ?? new Error("Failed to create a temporary user reference");
+  }
+
+  cookieStore.set(TEMP_USER_COOKIE, data.user.id, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 365,
+    path: "/",
+  });
+
+  return data.user.id;
+}
+
+async function ensureProfile(supabase: SupabaseClient, userId: string): Promise<void> {
+  const { error } = await supabase.from("profiles").upsert({ id: userId }, { onConflict: "id" });
+  if (error) throw error;
+}
+
+/**
+ * One company per (temporary) user for now — repeat visits to the Results
+ * screen update the same row rather than piling up duplicates.
+ */
+async function upsertCompany(
+  supabase: SupabaseClient,
+  userId: string,
+  selections: OnboardingSelections
+): Promise<string> {
+  const { data: existing, error: fetchError } = await supabase
+    .from("companies")
+    .select("id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (fetchError) throw fetchError;
+
+  const payload: CompanyInsert = {
+    user_id: userId,
+    // Placeholder until a real company-setup step exists.
+    name: "My Business",
+    province: selections.province,
+    scenario: selections.scenario,
+    country: selections.country,
+    us_state: selections.usState,
+  };
+
+  if (existing) {
+    const { error } = await supabase.from("companies").update(payload).eq("id", existing.id);
+    if (error) throw error;
+    return existing.id as string;
+  }
+
+  const { data, error } = await supabase.from("companies").insert(payload).select("id").single();
+  if (error) throw error;
+  return data.id as string;
+}
+
+async function insertProduct(
+  supabase: SupabaseClient,
+  companyId: string,
+  selections: OnboardingSelections
+): Promise<void> {
+  const payload: ProductInsert = {
+    company_id: companyId,
+    name: selections.productName || "Unnamed product",
+    category: selections.category,
+  };
+
+  const { error } = await supabase.from("products").insert(payload);
+  if (error) throw error;
+}
+
+/**
+ * Saves the onboarding selections to Supabase. Intentionally never throws —
+ * the Results screen should never be blocked by a save failure.
+ */
+export async function saveOnboardingSelections(selections: OnboardingSelections): Promise<void> {
+  try {
+    const supabase = createAdminClient();
+    const userId = await getOrCreateTempUserId(supabase);
+    await ensureProfile(supabase, userId);
+    const companyId = await upsertCompany(supabase, userId, selections);
+    await insertProduct(supabase, companyId, selections);
+  } catch (error) {
+    console.error("Failed to save onboarding selections:", error);
+  }
+}
