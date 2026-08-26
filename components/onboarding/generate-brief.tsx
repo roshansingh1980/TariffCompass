@@ -78,6 +78,20 @@ export function GenerateBriefSection({
   );
 }
 
+function renderInline(line: string): ReactNode {
+  const parts = line.split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
+  if (parts.length === 1) return line;
+  return parts.map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={i} className="font-medium text-foreground">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+}
+
 function BriefContent({ text }: { text: string }) {
   const blocks: ReactNode[] = [];
   let listItems: string[] = [];
@@ -88,7 +102,7 @@ function BriefContent({ text }: { text: string }) {
     blocks.push(
       <ul key={`list-${key++}`} className="list-disc space-y-1.5 pl-5 text-foreground">
         {listItems.map((item, i) => (
-          <li key={i}>{item}</li>
+          <li key={i}>{renderInline(item)}</li>
         ))}
       </ul>
     );
@@ -100,7 +114,7 @@ function BriefContent({ text }: { text: string }) {
     if (!line) continue;
 
     const headingMatch = line.match(/^#{1,6}\s+(.*)/);
-    const bulletMatch = line.match(/^[-*]\s+(.*)/);
+    const bulletMatch = line.match(/^(?:[-*]|\d+\.)\s+(.*)/);
 
     if (headingMatch) {
       flushList();
@@ -109,7 +123,7 @@ function BriefContent({ text }: { text: string }) {
           key={`h-${key++}`}
           className="text-lg font-semibold tracking-tight text-foreground first:mt-0"
         >
-          {headingMatch[1]}
+          {renderInline(headingMatch[1])}
         </h3>
       );
     } else if (bulletMatch) {
@@ -118,7 +132,7 @@ function BriefContent({ text }: { text: string }) {
       flushList();
       blocks.push(
         <p key={`p-${key++}`} className="text-[15px] leading-relaxed text-muted-foreground">
-          {line}
+          {renderInline(line)}
         </p>
       );
     }
