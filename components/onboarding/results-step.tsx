@@ -7,17 +7,19 @@ import {
   type Attractiveness,
   type CostFriction,
 } from "@/lib/market-data";
-import { SCENARIOS } from "@/lib/onboarding-data";
+import { SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
 import { cn } from "@/lib/utils";
 
 export function ResultsStep({
+  country,
   scenario,
   province,
   category,
   productName,
   onBack,
 }: {
+  country: Country;
   scenario: string | null;
   province: string | null;
   category: string | null;
@@ -152,6 +154,8 @@ export function ResultsStep({
           situation.
         </p>
         <p className="mt-2 text-sm text-muted-foreground/70">
+          {country === "US" &&
+            "These are Government of Canada programs — since you've selected United States, most won't apply directly to a U.S.-based business. "}
           This is general guidance, not eligibility confirmation, application support, or
           financial advice. Program details and eligibility change — confirm everything on the
           official page before acting.

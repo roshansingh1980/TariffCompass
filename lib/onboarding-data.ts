@@ -1,3 +1,5 @@
+export type Country = "CA" | "US";
+
 export type Scenario = {
   id: string;
   title: string;
