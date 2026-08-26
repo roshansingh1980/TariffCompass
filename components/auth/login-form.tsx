@@ -48,7 +48,9 @@ export function LoginForm() {
             />
           </div>
 
-          {state?.error && <p className="mt-4 text-sm text-destructive">{state.error}</p>}
+          {typeof state?.error === "string" && state.error.length > 0 && (
+            <p className="mt-4 text-sm text-destructive">{state.error}</p>
+          )}
 
           <Button
             type="submit"
