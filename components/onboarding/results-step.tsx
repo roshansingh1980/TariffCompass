@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
 import { MarketRiskDialog, RiskBadge } from "@/components/onboarding/market-risk-dialog";
+import {
+  Tooltip,
+  TooltipPopup,
+  TooltipPortal,
+  TooltipPositioner,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
 import {
   getMarketDataRows,
@@ -79,6 +87,7 @@ export function ResultsStep({
   ].filter((chip): chip is SummaryChip => Boolean(chip));
 
   return (
+    <TooltipProvider delay={150}>
     <div className="w-full max-w-5xl">
       <div className="text-center">
         <h1 className="text-5xl font-semibold tracking-tight text-foreground sm:text-6xl">
@@ -156,7 +165,10 @@ export function ResultsStep({
                   </LockedValue>
                 </td>
                 <td className="px-7 py-6">
-                  <AttractivenessBadge level={row.attractiveness} />
+                  <AttractivenessBadge
+                    level={row.attractiveness}
+                    onClick={() => setDetailsRow(row)}
+                  />
                 </td>
                 <td className="px-7 py-6">
                   <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
@@ -178,7 +190,10 @@ export function ResultsStep({
               <span className="text-lg font-medium tracking-tight text-foreground">
                 {row.market.name}
               </span>
-              <AttractivenessBadge level={row.attractiveness} />
+              <AttractivenessBadge
+                level={row.attractiveness}
+                onClick={() => setDetailsRow(row)}
+              />
             </div>
             <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
               <dt className="text-muted-foreground">{tariffColumnLabel}</dt>
@@ -330,6 +345,7 @@ export function ResultsStep({
         onClose={() => setDetailsRow(null)}
       />
     </div>
+    </TooltipProvider>
   );
 }
 
@@ -389,18 +405,48 @@ function LockedValue({
   );
 }
 
-function AttractivenessBadge({ level }: { level: Attractiveness }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide",
-        level === "Excellent" && "border-transparent bg-foreground text-background",
-        level === "Good" && "border-foreground/30 text-foreground",
-        level === "Fair" && "border-border text-muted-foreground",
-        level === "Challenging" && "border-dashed border-border text-muted-foreground/70"
-      )}
+const ATTRACTIVENESS_HINTS: Record<Attractiveness, string> = {
+  Excellent: "This market looks highly attractive right now. Click for more details.",
+  Good: "This market looks comparatively attractive. Click for more details.",
+  Fair: "This market is workable, with some friction. Click for more details.",
+  Challenging: "This market currently carries higher friction. Click for more details.",
+};
+
+function AttractivenessBadge({
+  level,
+  onClick,
+}: {
+  level: Attractiveness;
+  onClick?: () => void;
+}) {
+  const className = cn(
+    "inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide",
+    level === "Excellent" && "border-transparent bg-foreground text-background",
+    level === "Good" && "border-foreground/30 text-foreground",
+    level === "Fair" && "border-border text-muted-foreground",
+    level === "Challenging" && "border-dashed border-border text-muted-foreground/70"
+  );
+
+  const badge = onClick ? (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(className, "transition-transform duration-150 hover:opacity-80 active:scale-95")}
     >
       {level}
-    </span>
+    </button>
+  ) : (
+    <span className={className}>{level}</span>
+  );
+
+  return (
+    <Tooltip>
+      <TooltipTrigger render={badge} />
+      <TooltipPortal>
+        <TooltipPositioner>
+          <TooltipPopup>{ATTRACTIVENESS_HINTS[level]}</TooltipPopup>
+        </TooltipPositioner>
+      </TooltipPortal>
+    </Tooltip>
   );
 }

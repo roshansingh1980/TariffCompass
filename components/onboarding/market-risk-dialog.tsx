@@ -7,9 +7,23 @@ import {
   DialogPortal,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipPopup,
+  TooltipPortal,
+  TooltipPositioner,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { getRiskStatus, type MarketDataRow, type RiskStatus } from "@/lib/data/market-data";
 import { cn } from "@/lib/utils";
+
+const RISK_HINTS: Record<RiskStatus, string> = {
+  Elevated: "Current risk is elevated. Click for more details.",
+  Watch: "This market should be monitored. Click for more details.",
+  Stable: "No major short-term disruption flagged. Click for more details.",
+  Uncertain: "Not enough confirmed data. Click for more details.",
+};
 
 const NEXT_STEP: Record<RiskStatus, string> = {
   Elevated:
@@ -70,9 +84,7 @@ export function RiskBadge({
     level === "Uncertain" && "border-dashed border-border text-muted-foreground/70"
   );
 
-  if (!onClick) return <span className={className}>{level}</span>;
-
-  return (
+  const badge = onClick ? (
     <button
       type="button"
       onClick={onClick}
@@ -80,6 +92,19 @@ export function RiskBadge({
     >
       {level}
     </button>
+  ) : (
+    <span className={className}>{level}</span>
+  );
+
+  return (
+    <Tooltip>
+      <TooltipTrigger render={badge} />
+      <TooltipPortal>
+        <TooltipPositioner>
+          <TooltipPopup>{RISK_HINTS[level]}</TooltipPopup>
+        </TooltipPositioner>
+      </TooltipPortal>
+    </Tooltip>
   );
 }
 
