@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { ArrowUpRight, Lock } from "lucide-react";
+import { ArrowUpRight, Lock, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
@@ -34,6 +34,7 @@ export function ResultsStep({
   productName,
   isSubscribed,
   onBack,
+  onEditStep,
 }: {
   country: Country;
   scenario: string | null;
@@ -43,6 +44,7 @@ export function ResultsStep({
   productName: string;
   isSubscribed: boolean;
   onBack: () => void;
+  onEditStep: (step: "scenario" | "location" | "product") => void;
 }) {
   const scenarioLabel = SCENARIOS.find((s) => s.id === scenario)?.title;
   const provinceLabel = CANADIAN_PROVINCES.find((p) => p.value === province)?.label;
@@ -64,9 +66,13 @@ export function ResultsStep({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const summaryChips = [scenarioLabel, provinceLabel, category, productName || null].filter(
-    (value): value is string => Boolean(value)
-  );
+  type SummaryChip = { label: string; step: "scenario" | "location" | "product" };
+  const summaryChips: SummaryChip[] = [
+    scenarioLabel && { label: scenarioLabel, step: "scenario" },
+    provinceLabel && { label: provinceLabel, step: "location" },
+    category && { label: category, step: "product" },
+    productName && { label: productName, step: "product" },
+  ].filter((chip): chip is SummaryChip => Boolean(chip));
 
   return (
     <div className="w-full max-w-5xl">
@@ -82,13 +88,16 @@ export function ResultsStep({
 
         {summaryChips.length > 0 && (
           <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
-            {summaryChips.map((chip) => (
-              <span
-                key={chip}
-                className="rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground"
+            {summaryChips.map((chip, i) => (
+              <button
+                key={`${chip.step}-${i}`}
+                type="button"
+                onClick={() => onEditStep(chip.step)}
+                className="group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground active:scale-[0.97]"
               >
-                {chip}
-              </span>
+                {chip.label}
+                <Pencil className="size-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground/60" />
+              </button>
             ))}
           </div>
         )}

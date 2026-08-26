@@ -18,10 +18,26 @@ export function DashboardWizard({ isSubscribed }: { isSubscribed: boolean }) {
   const [usState, setUsState] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [productName, setProductName] = useState("");
+  /** True while the user is editing a single answer from a Results summary chip. */
+  const [returnToResults, setReturnToResults] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [step]);
+
+  function goNext(next: Step) {
+    if (returnToResults) {
+      setReturnToResults(false);
+      setStep("results");
+    } else {
+      setStep(next);
+    }
+  }
+
+  function editStep(target: "scenario" | "location" | "product") {
+    setReturnToResults(true);
+    setStep(target);
+  }
 
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-28 sm:py-36">
@@ -33,7 +49,7 @@ export function DashboardWizard({ isSubscribed }: { isSubscribed: boolean }) {
         <ScenarioStep
           selected={scenario}
           onSelect={setScenario}
-          onContinue={() => setStep("location")}
+          onContinue={() => goNext("location")}
         />
       )}
       {step === "location" && (
@@ -43,7 +59,7 @@ export function DashboardWizard({ isSubscribed }: { isSubscribed: boolean }) {
           onProvinceChange={setProvince}
           onUsStateChange={setUsState}
           onBack={() => setStep("scenario")}
-          onContinue={() => setStep("product")}
+          onContinue={() => goNext("product")}
         />
       )}
       {step === "product" && (
@@ -53,7 +69,7 @@ export function DashboardWizard({ isSubscribed }: { isSubscribed: boolean }) {
           onCategoryChange={setCategory}
           onProductNameChange={setProductName}
           onBack={() => setStep("location")}
-          onContinue={() => setStep("results")}
+          onContinue={() => goNext("results")}
         />
       )}
       {step === "results" && (
@@ -66,6 +82,7 @@ export function DashboardWizard({ isSubscribed }: { isSubscribed: boolean }) {
           productName={productName}
           isSubscribed={isSubscribed}
           onBack={() => setStep("product")}
+          onEditStep={editStep}
         />
       )}
     </div>
