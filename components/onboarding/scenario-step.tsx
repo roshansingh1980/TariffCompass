@@ -33,10 +33,10 @@ export function ScenarioStep({
               onClick={() => onSelect(s.id)}
               aria-pressed={isSelected}
               className={cn(
-                "group relative flex flex-col items-start gap-2.5 rounded-3xl border px-8 py-10 text-left transition-all duration-200",
+                "group relative flex flex-col items-start gap-2.5 rounded-2xl border px-8 py-10 text-left transition-all duration-200 active:scale-[0.995]",
                 isSelected
                   ? "border-foreground/80 bg-foreground/[0.03] shadow-[0_4px_20px_-8px_rgba(0,0,0,0.12)]"
-                  : "border-border/60 hover:-translate-y-0.5 hover:border-foreground/30 hover:bg-foreground/[0.015] hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
+                  : "border-border/50 shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:-translate-y-0.5 hover:border-foreground/30 hover:bg-foreground/[0.015] hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
               )}
             >
               <span
@@ -62,7 +62,7 @@ export function ScenarioStep({
         size="lg"
         disabled={!selected}
         onClick={onContinue}
-        className="mt-20 h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
+        className="mt-20 h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)] active:scale-[0.98]"
       >
         Continue
       </Button>

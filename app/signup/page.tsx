@@ -9,15 +9,15 @@ export default function SignupPage() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-32 sm:py-40">
       <div className="w-full max-w-sm text-center">
-        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           Create your account
         </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+        <p className="mt-3 text-[15px] text-muted-foreground">
           Start navigating tariffs for your business.
         </p>
       </div>
 
-      <div className="mt-12 w-full max-w-sm">
+      <div className="mt-10 w-full max-w-sm">
         <SignupForm />
       </div>
     </div>
