@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
 import {
   getMarketComparison,
@@ -204,6 +205,25 @@ export function ResultsStep({
           ))}
         </div>
       </div>
+
+      <GenerateBriefSection
+        input={{
+          scenarioLabel: scenarioLabel ?? null,
+          country,
+          province: provinceLabel ?? province,
+          usState,
+          category,
+          productName,
+          tariffColumnLabel,
+          comparisonRows: comparisonRows.map(({ market, profile }) => ({
+            market: market.name,
+            tariffRate: profile.tariffRate,
+            easeOfBusiness: market.easeOfBusiness,
+            costFriction: profile.costFriction,
+            attractiveness: profile.attractiveness,
+          })),
+        }}
+      />
 
       <div className="mt-20 flex justify-center">
         <Button
