@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BackLink } from "@/components/back-link";
 
 export const metadata: Metadata = {
   title: "Support | TariffCompass",
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
 export default function SupportPage() {
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-20 sm:px-8 sm:py-28">
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+      <BackLink fallbackHref="/" />
+      <h1 className="mt-8 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
         Support
       </h1>
       <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">

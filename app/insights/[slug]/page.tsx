@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BackLink } from "@/components/back-link";
 import { INSIGHTS, getInsightBySlug } from "@/lib/insights-data";
 
 type Props = {
@@ -31,13 +32,7 @@ export default async function InsightArticlePage({ params }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-20 sm:px-8 sm:py-28">
-      <Link
-        href="/insights"
-        className="inline-flex items-center gap-1.5 text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
-      >
-        <ArrowLeft className="size-3.5" />
-        Insights
-      </Link>
+      <BackLink fallbackHref="/insights" label="Insights" />
 
       <h1 className="mt-8 text-3xl leading-tight font-semibold tracking-tight text-foreground sm:text-4xl">
         {article.title}
