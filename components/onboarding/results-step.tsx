@@ -1,11 +1,13 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowUpRight, Lock, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
+import { MarketRiskDialog, RiskBadge } from "@/components/onboarding/market-risk-dialog";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
 import {
   getMarketDataRows,
+  getRiskStatus,
   resolveScenarioDirection,
   type Attractiveness,
   type CostFriction,
@@ -56,6 +58,8 @@ export function ResultsStep({
     (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
     SUPPORT_PROGRAMS[0]?.lastChecked ?? ""
   );
+
+  const [detailsRow, setDetailsRow] = useState<MarketDataRow | null>(null);
 
   const hasSavedRef = useRef(false);
   useEffect(() => {
@@ -123,6 +127,9 @@ export function ResultsStep({
               <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Overall Attractiveness
               </th>
+              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                Current Risk
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -150,6 +157,9 @@ export function ResultsStep({
                 </td>
                 <td className="px-7 py-6">
                   <AttractivenessBadge level={row.attractiveness} />
+                </td>
+                <td className="px-7 py-6">
+                  <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
                 </td>
               </tr>
             ))}
@@ -186,6 +196,10 @@ export function ResultsStep({
                 <LockedValue locked={!isSubscribed}>
                   <FrictionMeter level={row.costFriction} />
                 </LockedValue>
+              </dd>
+              <dt className="flex items-center text-muted-foreground">Current Risk</dt>
+              <dd className="flex justify-end">
+                <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
               </dd>
             </dl>
           </div>
@@ -307,6 +321,14 @@ export function ResultsStep({
           Back
         </Button>
       </div>
+
+      <MarketRiskDialog
+        row={detailsRow}
+        isSubscribed={isSubscribed}
+        tariffColumnLabel={tariffColumnLabel}
+        category={category}
+        onClose={() => setDetailsRow(null)}
+      />
     </div>
   );
 }

@@ -888,3 +888,21 @@ export function getMarketComparison(
     },
   }));
 }
+
+export type RiskStatus = "Elevated" | "Watch" | "Stable" | "Uncertain";
+
+/**
+ * A simple, deterministic read of a market's current risk from data already
+ * on the row — no historical trend, no separate scoring model. "Uncertain"
+ * means the tariff figure itself is unresolved; otherwise the classification
+ * follows how costly/friction-heavy the market already looks (attractiveness
+ * and cost/friction are themselves derived from the tariff rate and category
+ * context when the row was authored — see the rationale for the specific
+ * reasoning behind any one figure).
+ */
+export function getRiskStatus(row: MarketDataRow): RiskStatus {
+  if (row.tariffConfidence === "unknown") return "Uncertain";
+  if (row.attractiveness === "Challenging" || row.costFriction === "High") return "Elevated";
+  if (row.attractiveness === "Fair" || row.costFriction === "Medium") return "Watch";
+  return "Stable";
+}
