@@ -2,18 +2,23 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { generateBrief, type BriefInput } from "@/lib/ai/generate-brief";
 
 export function GenerateBriefSection({ input }: { input: BriefInput }) {
   const [isPending, startTransition] = useTransition();
   const [brief, setBrief] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [requiresUpgrade, setRequiresUpgrade] = useState(false);
 
   const handleGenerate = () => {
     setError(null);
+    setRequiresUpgrade(false);
     startTransition(async () => {
       const result = await generateBrief(input);
-      if ("error" in result) {
+      if ("requiresUpgrade" in result) {
+        setRequiresUpgrade(true);
+      } else if ("error" in result) {
         setError(result.error);
       } else {
         setBrief(result.brief);
@@ -30,7 +35,7 @@ export function GenerateBriefSection({ input }: { input: BriefInput }) {
         A short, personalized brief generated from your results.
       </p>
 
-      {!brief && (
+      {!brief && !requiresUpgrade && (
         <Button
           type="button"
           onClick={handleGenerate}
@@ -40,6 +45,20 @@ export function GenerateBriefSection({ input }: { input: BriefInput }) {
         >
           {isPending ? "Generating…" : "Generate Brief"}
         </Button>
+      )}
+
+      {requiresUpgrade && (
+        <div className="mt-8 rounded-3xl border border-border/60 p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-10">
+          <p className="text-lg font-medium tracking-tight text-foreground">
+            Upgrade to generate your AI brief
+          </p>
+          <p className="mt-2 text-muted-foreground">
+            AI-generated diversification briefs are available on the C$99/month plan.
+          </p>
+          <div className="mt-6">
+            <SubscribeButton />
+          </div>
+        </div>
       )}
 
       {error && <p className="mt-4 text-sm text-destructive">{error}</p>}

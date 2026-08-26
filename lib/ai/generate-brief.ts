@@ -2,6 +2,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import type { Attractiveness, CostFriction } from "@/lib/market-data";
+import { createClient } from "@/lib/supabase/server";
 
 export type BriefComparisonRow = {
   market: string;
@@ -22,7 +23,7 @@ export type BriefInput = {
   comparisonRows: BriefComparisonRow[];
 };
 
-export type BriefResult = { brief: string } | { error: string };
+export type BriefResult = { brief: string } | { error: string } | { requiresUpgrade: true };
 
 const SYSTEM_PROMPT = `You are a trade advisor writing a concise, professional brief for a
 Canadian small or medium-sized business that is thinking about diversifying its export or
@@ -53,6 +54,24 @@ or italics. End with one short sentence noting this is general guidance, not fin
 legal advice. Keep the whole brief to roughly 300-450 words.`;
 
 export async function generateBrief(input: BriefInput): Promise<BriefResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "Please log in to generate a brief." };
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("subscription_status")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profile?.subscription_status !== "active") {
+    return { requiresUpgrade: true };
+  }
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return { error: "AI brief generation isn't configured yet." };

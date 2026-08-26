@@ -1,7 +1,7 @@
 /**
- * Hand-written types mirroring supabase/migrations/001_initial_schema.sql
- * and 002_add_trade_profile_columns.sql. Keep these in sync with the
- * migrations if the schema changes.
+ * Hand-written types mirroring supabase/migrations/001_initial_schema.sql,
+ * 002_add_trade_profile_columns.sql, and 003_add_subscription_fields.sql.
+ * Keep these in sync with the migrations if the schema changes.
  */
 
 // ============================================================
@@ -12,6 +12,9 @@ export interface Profile {
   id: string;
   full_name: string | null;
   company_name: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  subscription_status: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -20,6 +23,9 @@ export type ProfileInsert = {
   id: string;
   full_name?: string | null;
   company_name?: string | null;
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
+  subscription_status?: string | null;
   created_at?: string;
   updated_at?: string;
 };
