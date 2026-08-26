@@ -83,6 +83,9 @@ export function DashboardWizard({ isSubscribed }: { isSubscribed: boolean }) {
           isSubscribed={isSubscribed}
           onBack={() => setStep("product")}
           onEditStep={editStep}
+          onScenarioChange={setScenario}
+          onProvinceChange={setProvince}
+          onCategoryChange={setCategory}
         />
       )}
     </div>

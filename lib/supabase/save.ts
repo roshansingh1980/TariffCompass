@@ -107,16 +107,34 @@ async function upsertCompany(
   return data.id as string;
 }
 
-async function insertProduct(
+/**
+ * One product per company for now, mirroring upsertCompany — repeat saves
+ * (e.g. editing a Results filter inline) update the same row instead of
+ * accumulating duplicates.
+ */
+async function upsertProduct(
   supabase: SupabaseClient,
   companyId: string,
   selections: OnboardingSelections
 ): Promise<void> {
+  const { data: existing, error: fetchError } = await supabase
+    .from("products")
+    .select("id")
+    .eq("company_id", companyId)
+    .maybeSingle();
+  if (fetchError) throw fetchError;
+
   const payload: ProductInsert = {
     company_id: companyId,
     name: selections.productName || "Unnamed product",
     category: selections.category,
   };
+
+  if (existing) {
+    const { error } = await supabase.from("products").update(payload).eq("id", existing.id);
+    if (error) throw error;
+    return;
+  }
 
   const { error } = await supabase.from("products").insert(payload);
   if (error) throw error;
@@ -132,7 +150,7 @@ export async function saveOnboardingSelections(selections: OnboardingSelections)
     const userId = await resolveUserId(supabase);
     await ensureProfile(supabase, userId);
     const companyId = await upsertCompany(supabase, userId, selections);
-    await insertProduct(supabase, companyId, selections);
+    await upsertProduct(supabase, companyId, selections);
   } catch (error) {
     console.error("Failed to save onboarding selections:", error);
   }

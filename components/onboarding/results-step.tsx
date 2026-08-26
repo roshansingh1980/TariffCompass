@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRight, Lock, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
 import { MarketRiskDialog, RiskBadge } from "@/components/onboarding/market-risk-dialog";
+import { ChipSelect } from "@/components/onboarding/chip-select";
 import {
   Tooltip,
   TooltipPopup,
@@ -21,7 +22,7 @@ import {
   type CostFriction,
   type MarketDataRow,
 } from "@/lib/data/market-data";
-import { SCENARIOS, type Country } from "@/lib/onboarding-data";
+import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,9 @@ export function ResultsStep({
   isSubscribed,
   onBack,
   onEditStep,
+  onScenarioChange,
+  onProvinceChange,
+  onCategoryChange,
 }: {
   country: Country;
   scenario: string | null;
@@ -55,6 +59,9 @@ export function ResultsStep({
   isSubscribed: boolean;
   onBack: () => void;
   onEditStep: (step: "scenario" | "location" | "product") => void;
+  onScenarioChange: (value: string) => void;
+  onProvinceChange: (value: string) => void;
+  onCategoryChange: (value: string) => void;
 }) {
   const scenarioLabel = SCENARIOS.find((s) => s.id === scenario)?.title;
   const provinceLabel = CANADIAN_PROVINCES.find((p) => p.value === province)?.label;
@@ -69,22 +76,11 @@ export function ResultsStep({
 
   const [detailsRow, setDetailsRow] = useState<MarketDataRow | null>(null);
 
-  const hasSavedRef = useRef(false);
   useEffect(() => {
-    if (hasSavedRef.current) return;
-    hasSavedRef.current = true;
     saveOnboardingSelections({ scenario, country, province, usState, category, productName });
-    // Save once when the user lands on Results; not on every prop change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  type SummaryChip = { label: string; step: "scenario" | "location" | "product" };
-  const summaryChips: SummaryChip[] = [
-    scenarioLabel && { label: scenarioLabel, step: "scenario" },
-    provinceLabel && { label: provinceLabel, step: "location" },
-    category && { label: category, step: "product" },
-    productName && { label: productName, step: "product" },
-  ].filter((chip): chip is SummaryChip => Boolean(chip));
+    // Re-save whenever a filter changes inline — ResultsStep now stays
+    // mounted across edits instead of remounting on step navigation.
+  }, [scenario, country, province, usState, category, productName]);
 
   return (
     <TooltipProvider delay={150}>
@@ -99,21 +95,36 @@ export function ResultsStep({
             : "Comparing where you could source from, based on your selections below."}
         </p>
 
-        {summaryChips.length > 0 && (
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
-            {summaryChips.map((chip, i) => (
-              <button
-                key={`${chip.step}-${i}`}
-                type="button"
-                onClick={() => onEditStep(chip.step)}
-                className="group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground active:scale-[0.97]"
-              >
-                {chip.label}
-                <Pencil className="size-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground/60" />
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+          <ChipSelect
+            value={scenario}
+            options={SCENARIOS.map((s) => ({ value: s.id, label: s.title }))}
+            placeholder="Choose a scenario"
+            onChange={onScenarioChange}
+          />
+          <ChipSelect
+            value={province}
+            options={CANADIAN_PROVINCES.map((p) => ({ value: p.value, label: p.label }))}
+            placeholder="Choose a province"
+            onChange={onProvinceChange}
+          />
+          <ChipSelect
+            value={category}
+            options={CATEGORIES.map((c) => ({ value: c, label: c }))}
+            placeholder="Choose a category"
+            onChange={onCategoryChange}
+          />
+          {productName && (
+            <button
+              type="button"
+              onClick={() => onEditStep("product")}
+              className="group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground active:scale-[0.97]"
+            >
+              {productName}
+              <Pencil className="size-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground/60" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Desktop table */}
