@@ -40,6 +40,14 @@ type MarketProfile = {
   attractiveness: Attractiveness;
   /** Short, specific reason for this figure — shown in the UI as a rationale tooltip/line. */
   rationale: string;
+  /**
+   * Per-cell overrides — used when a specific, dated event (a tariff action,
+   * not the general FTA/MFN baseline) drives this figure, so the citation
+   * and date need to point at that event rather than the category default.
+   */
+  sourceName?: string;
+  sourceUrl?: string;
+  lastUpdated?: string;
 };
 
 export type MarketDataRow = {
@@ -150,11 +158,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     lastUpdated: "2026-08-26",
     export: {
       us: {
-        tariffRate: "2.5%",
+        tariffRate: "50%",
         tariffConfidence: "estimated",
-        costFriction: "Low",
-        attractiveness: "Excellent",
-        rationale: "General MFN rate range for auto parts outside CUSMA-qualifying content.",
+        costFriction: "High",
+        attractiveness: "Challenging",
+        rationale: "A Section 338 proclamation added a 50% duty on covered Canadian motor-vehicle-sector goods effective August 2026, explicitly without a CUSMA exemption. Coverage is inferred from the proclamation's own \"motor vehicles\" category name plus prior reporting — confirm which specific parts fall inside it versus the older, lower Section 232 auto-parts treatment.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "4.0%",
@@ -229,11 +240,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     lastUpdated: "2026-08-26",
     export: {
       us: {
-        tariffRate: "0–2.6%",
+        tariffRate: "50%",
         tariffConfidence: "estimated",
-        costFriction: "Low",
-        attractiveness: "Excellent",
-        rationale: "Most electronics enter duty-free or near-zero under MFN/ITA-style treatment; range reflects HS code.",
+        costFriction: "High",
+        attractiveness: "Challenging",
+        rationale: "A Section 338 proclamation effective August 2026 covers a broad \"motor vehicles / other goods\" annex that includes electronics and telecom equipment at a flat 50% duty, on top of the prior near-zero MFN/ITA-style rate — confirm your specific HS line against the published annex.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "3.7%",
@@ -266,11 +280,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     },
     import: {
       us: {
-        tariffRate: "0%",
-        tariffConfidence: "estimated",
-        costFriction: "Low",
-        attractiveness: "Excellent",
-        rationale: "Most electronics import duty-free into Canada regardless of CUSMA given broad MFN zero-rating.",
+        tariffRate: "Unknown",
+        tariffConfidence: "unknown",
+        costFriction: "Medium",
+        attractiveness: "Fair",
+        rationale: "Unconfirmed reporting suggests electronics may be among the sectors covered by Canada's September 8, 2026 counter-tariffs, but no clean category-level rate could be independently confirmed this review — do not assume the prior 0% still holds.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "0%",
@@ -308,11 +325,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     lastUpdated: "2026-08-26",
     export: {
       us: {
-        tariffRate: "0–3%",
+        tariffRate: "50%",
         tariffConfidence: "estimated",
-        costFriction: "Low",
-        attractiveness: "Excellent",
-        rationale: "Most furniture enters duty-free or near-zero; range reflects material/HS code.",
+        costFriction: "High",
+        attractiveness: "Challenging",
+        rationale: "Furniture and home goods are named in the Section 338 annex covering Canadian goods at a flat 50% duty, effective August 2026, with no CUSMA exemption — a sharp jump from the prior near-zero MFN treatment.",
+        sourceName: "Thomson Reuters Tax & Accounting — Section 338 tariffs on Canada",
+        sourceUrl: "https://tax.thomsonreuters.com/blog/section-338-tariffs-on-canada-what-businesses-may-be-missing-beyond-the-headline-categories/",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "2.7%",
@@ -387,11 +407,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     lastUpdated: "2026-08-26",
     export: {
       us: {
-        tariffRate: "8–16%",
+        tariffRate: "50%",
         tariffConfidence: "estimated",
-        costFriction: "Medium",
-        attractiveness: "Good",
-        rationale: "Apparel duty depends heavily on fiber content and whether CUSMA yarn-forward rules are met.",
+        costFriction: "High",
+        attractiveness: "Challenging",
+        rationale: "Clothing, footwear, and luggage are named in the Section 338 annex covering Canadian goods at a flat 50% duty, effective August 2026, with no CUSMA exemption — this supersedes the prior fiber-content-dependent MFN/CUSMA range for covered lines.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "8–12%",
@@ -466,11 +489,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     lastUpdated: "2026-08-26",
     export: {
       us: {
-        tariffRate: "25%",
+        tariffRate: "15–50%",
         tariffConfidence: "estimated",
         costFriction: "High",
         attractiveness: "Challenging",
-        rationale: "Reflects Section 232-style steel/aluminum measures; product-specific and subject to change.",
+        rationale: "Section 232 derivative steel/aluminum products dropped from 25% to 15% effective June 8, 2026 (10% if ≥85% U.S.-sourced by weight); the base rate on primary/non-derivative steel is not clearly restated in current tracking and should be confirmed per HS code — treat the top of this range as a caution, not a confirmed figure.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "0–15%",
@@ -503,11 +529,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     },
     import: {
       us: {
-        tariffRate: "0% (CUSMA)",
+        tariffRate: "25%",
         tariffConfidence: "estimated",
-        costFriction: "Low",
-        attractiveness: "Good",
-        rationale: "Duty-free for CUSMA-originating steel meeting melt-and-pour requirements.",
+        costFriction: "High",
+        attractiveness: "Challenging",
+        rationale: "Canada's counter-tariffs effective September 8, 2026 keep a 25% surtax on selected U.S. steel and aluminum products, layered on top of the regular Customs Tariff rate — this supersedes the prior CUSMA duty-free treatment for covered lines; confirm against the official tariff-item list for your specific product.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "0% (CETA)",
@@ -545,11 +574,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     lastUpdated: "2026-08-26",
     export: {
       us: {
-        tariffRate: "0–15%",
+        tariffRate: "0–15% (dairy 50%)",
         tariffConfidence: "estimated",
-        costFriction: "Medium",
-        attractiveness: "Good",
-        rationale: "Most agri-food exports are duty-free or low-tariff under CUSMA; range reflects product-specific quotas.",
+        costFriction: "High",
+        attractiveness: "Challenging",
+        rationale: "A Section 338 proclamation puts dairy (milk, cream, whey) at a flat 50% duty effective August 2026, and seeds are separately named in the wider annex. Most other agri-food lines still fall under the prior CUSMA/MFN range shown, but that range should not be assumed for dairy or seed exports specifically.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "10–20%",
@@ -624,11 +656,14 @@ const CATEGORY_DATA: Record<string, CategoryData> = {
     lastUpdated: "2026-08-26",
     export: {
       us: {
-        tariffRate: "0–2%",
+        tariffRate: "15–50%",
         tariffConfidence: "estimated",
-        costFriction: "Low",
-        attractiveness: "Excellent",
-        rationale: "Most machinery enters duty-free or near-zero; range reflects HS classification.",
+        costFriction: "High",
+        attractiveness: "Challenging",
+        rationale: "Two overlapping U.S. actions now apply: Section 232 derivative machinery (agricultural equipment, HVAC, industrial equipment like bulldozers/forklifts) sits at 15% (10% if ≥85% U.S.-sourced), while a separate Section 338 annex applies 50% to \"machinery and manufacturing inputs\" more broadly. Which regime covers a given product is HS-code specific — do not treat either single figure as universal.",
+        sourceName: "CFIB — Canada-U.S. Tariffs Tracker",
+        sourceUrl: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+        lastUpdated: "2026-08-26",
       },
       eu: {
         tariffRate: "1.7%",
@@ -789,10 +824,10 @@ function toRow(
   direction: TradeDirection,
   targetMarket: Market,
   profile: MarketProfile,
-  lastUpdated: string
+  categoryLastUpdated: string
 ): MarketDataRow {
   const sourceKey = sourceFor(targetMarket.key, direction);
-  const source = SOURCES[sourceKey];
+  const defaultSource = SOURCES[sourceKey];
   return {
     market: targetMarket,
     direction,
@@ -802,9 +837,9 @@ function toRow(
     costFriction: profile.costFriction,
     attractiveness: profile.attractiveness,
     rationale: profile.rationale,
-    sourceName: source.name,
-    sourceUrl: source.url,
-    lastUpdated,
+    sourceName: profile.sourceName ?? defaultSource.name,
+    sourceUrl: profile.sourceUrl ?? defaultSource.url,
+    lastUpdated: profile.lastUpdated ?? categoryLastUpdated,
   };
 }
 

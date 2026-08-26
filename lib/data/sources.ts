@@ -79,6 +79,20 @@ export const SOURCES = {
     usedFor: "Federal funding for tariff-impacted businesses, delivered through regional development agencies.",
     lastChecked: "2026-08-26",
   },
+  cfibTariffTracker: {
+    key: "cfibTariffTracker",
+    name: "CFIB — Canada-U.S. Tariffs Tracker",
+    url: "https://www.cfib-fcei.ca/en/site/us-tariffs",
+    usedFor: "Plain-language tracker of current U.S. Section 232/338 tariffs and Canada's counter-tariffs, organized by category and rate.",
+    lastChecked: "2026-08-26",
+  },
+  section338ThomsonReuters: {
+    key: "section338ThomsonReuters",
+    name: "Thomson Reuters Tax & Accounting — Section 338 tariffs on Canada",
+    url: "https://tax.thomsonreuters.com/blog/section-338-tariffs-on-canada-what-businesses-may-be-missing-beyond-the-headline-categories/",
+    usedFor: "Detail on Section 338 Annex II product coverage beyond the headline dairy/alcohol/motor-vehicle categories.",
+    lastChecked: "2026-08-26",
+  },
   edc: {
     key: "edc",
     name: "EDC Trade Impact Program",
@@ -104,6 +118,18 @@ export type SourceKey = keyof typeof SOURCES;
  * - www.tariff-tarif.gc.ca (does not resolve — DNS failure)
  * - www.tradecommissioner.gc.ca/en/trade-agreements.html (403 on fetch;
  *   may still be a real page, just not fetchable by this tool)
+ * - canada.ca/en/department-finance/news/2026/08/list-of-products-from-
+ *   the-united-states-subject-to-counter-tariffs-effective-september-8-2026
+ *   (Department of Finance's own counter-tariff list — 403 on fetch both
+ *   attempts; likely bot-blocked, not necessarily wrong. This is the
+ *   primary source for the Sept 8, 2026 counter-tariffs and should be the
+ *   first thing re-checked by a human, or a future refresh with different
+ *   fetch access.)
+ * - tradecommissioner.gc.ca's US-tariffs FAQ page (403 on fetch) and
+ *   ghy.com's Section 338 explainer (404 — URL likely stale) — both cited
+ *   by the 2026-08-26 AI refresh run but not independently re-confirmed
+ *   here; the CFIB tracker and Thomson Reuters post above were used
+ *   instead since they were actually fetchable.
  * Both international.gc.ca and its replacement, international.canada.ca,
  * currently resolve — the former appears to still serve the trade-agreement
  * subpages directly rather than redirecting, so URLs above use it, but a
