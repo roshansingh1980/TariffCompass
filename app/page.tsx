@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "TariffCompass | Canadian Export Tariff & Market Diversification Tool",
+  description:
+    "See your U.S. tariff exposure, compare alternative markets, and generate a funding-ready diversification brief. Built for Canadian exporters and their advisors.",
+};
 
 export default function Home() {
   return (
