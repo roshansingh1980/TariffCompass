@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 import { cookies } from "next/headers";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import type { CompanyInsert, ProductInsert } from "@/types/database";
 
 const TEMP_USER_COOKIE = "tc_uid";
@@ -18,15 +19,29 @@ export type OnboardingSelections = {
 };
 
 /**
- * We don't have authentication yet. Rather than persisting data under no
- * user at all, we create a real (but synthetic/"ghost") row in auth.users
- * via the Admin API and remember its id in an httpOnly cookie. This keeps
- * every foreign key and RLS policy intact, and — because it's a genuine
- * auth.users row — it can be upgraded to a real account later (e.g. via
- * `admin.updateUserById` to attach a real email/password) without any data
- * migration. The admin API requires an email or phone, so we use one on the
- * reserved `.invalid` TLD (RFC 2606) — guaranteed to never resolve or
- * receive mail.
+ * Prefer a real, logged-in user if one exists. Otherwise fall back to the
+ * ghost/temporary user mechanism below. This means the moment someone logs
+ * in, every future save uses their real auth.uid() — no ghost involved.
+ */
+async function resolveUserId(supabase: SupabaseClient): Promise<string> {
+  const sessionClient = await createClient();
+  const {
+    data: { user },
+  } = await sessionClient.auth.getUser();
+  if (user) return user.id;
+
+  return getOrCreateTempUserId(supabase);
+}
+
+/**
+ * We don't have authentication for every visitor yet. Rather than persisting
+ * data under no user at all, we create a real (but synthetic/"ghost") row in
+ * auth.users via the Admin API and remember its id in an httpOnly cookie.
+ * This keeps every foreign key and RLS policy intact, and — because it's a
+ * genuine auth.users row — it can be linked to a real account later (see
+ * lib/supabase/link-ghost-user.ts) without any data loss. The admin API
+ * requires an email or phone, so we use one on the reserved `.invalid` TLD
+ * (RFC 2606) — guaranteed to never resolve or receive mail.
  */
 async function getOrCreateTempUserId(supabase: SupabaseClient): Promise<string> {
   const cookieStore = await cookies();
@@ -114,7 +129,7 @@ async function insertProduct(
 export async function saveOnboardingSelections(selections: OnboardingSelections): Promise<void> {
   try {
     const supabase = createAdminClient();
-    const userId = await getOrCreateTempUserId(supabase);
+    const userId = await resolveUserId(supabase);
     await ensureProfile(supabase, userId);
     const companyId = await upsertCompany(supabase, userId, selections);
     await insertProduct(supabase, companyId, selections);
