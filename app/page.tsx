@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { TcLockup } from "@/components/brand/tc-lockup";
 
 export const metadata: Metadata = {
   title: "TariffCompass | Canadian Export Tariff & Market Diversification Tool",
@@ -11,10 +12,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-36 text-center sm:py-48">
-      <h1 className="text-4xl leading-[1.05] font-semibold tracking-tight text-foreground sm:text-6xl sm:leading-[1.03] md:text-7xl">
-        TariffCompass
-      </h1>
-      <p className="mt-7 max-w-md text-xl font-normal text-muted-foreground sm:text-2xl">
+      <TcLockup size="hero" orientation="horizontal" showDescriptor />
+      <p className="mt-10 max-w-md text-xl font-normal text-muted-foreground sm:text-2xl">
         Navigate tariffs. Find your path.
       </p>
       <Button

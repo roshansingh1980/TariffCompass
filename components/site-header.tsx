@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/supabase/actions";
 import { createBillingPortalSession } from "@/lib/stripe/actions";
+import { TcMark } from "@/components/brand/tc-mark";
 
 export async function SiteHeader() {
   const supabase = await createClient();
@@ -22,8 +23,15 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/30 bg-background/75 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-20 sm:px-8">
-        <Link href="/" className="text-base font-semibold tracking-tight text-foreground">
-          TariffCompass
+        <Link
+          href="/"
+          aria-label="TariffCompass home"
+          className="flex items-center gap-2 transition-opacity duration-200 hover:opacity-80 sm:gap-2.5"
+        >
+          <TcMark className="h-[22px] w-[22px] sm:h-[26px] sm:w-[26px]" />
+          <span className="font-serif text-lg leading-none font-medium text-foreground sm:text-[21px]">
+            TariffCompass
+          </span>
         </Link>
 
         <nav className="flex items-center gap-3 sm:gap-6">
