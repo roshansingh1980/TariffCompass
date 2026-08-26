@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "TariffCompass | Canadian Export Tariff & Market Diversification Tool",
   description:
     "See your U.S. tariff exposure, compare alternative markets, and generate a funding-ready diversification brief. Built for Canadian exporters and their advisors.",
+  alternates: { canonical: "/" },
 };
 
 export default function Home() {

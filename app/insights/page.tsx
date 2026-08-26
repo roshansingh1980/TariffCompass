@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Insights | TariffCompass",
   description:
     "Practical guides on U.S. tariffs, export market diversification, and Canadian government support programs for small and medium-sized businesses.",
+  alternates: { canonical: "/insights" },
 };
 
 export default function InsightsPage() {

@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${article.title} | TariffCompass`,
     description: article.metaDescription,
+    alternates: { canonical: `/insights/${article.slug}` },
   };
 }
 
