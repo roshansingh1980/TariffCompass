@@ -1,68 +1,21 @@
-"use client";
+import { redirect } from "next/navigation";
+import { DashboardWizard } from "@/components/onboarding/dashboard-wizard";
+import { createClient } from "@/lib/supabase/server";
 
-import { useState } from "react";
-import { CountryToggle } from "@/components/onboarding/country-toggle";
-import { ScenarioStep } from "@/components/onboarding/scenario-step";
-import { LocationStep } from "@/components/onboarding/location-step";
-import { ProductStep } from "@/components/onboarding/product-step";
-import { ResultsStep } from "@/components/onboarding/results-step";
-import type { Country } from "@/lib/onboarding-data";
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
 
-type Step = "scenario" | "location" | "product" | "results";
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("subscription_status")
+    .eq("id", user.id)
+    .maybeSingle();
 
-export default function DashboardPage() {
-  const [step, setStep] = useState<Step>("scenario");
-  const [country, setCountry] = useState<Country>("CA");
-  const [scenario, setScenario] = useState<string | null>(null);
-  const [province, setProvince] = useState<string | null>(null);
-  const [usState, setUsState] = useState<string | null>(null);
-  const [category, setCategory] = useState<string | null>(null);
-  const [productName, setProductName] = useState("");
+  const isSubscribed = profile?.subscription_status === "active";
 
-  return (
-    <div className="flex flex-1 flex-col items-center px-6 py-28 sm:py-36">
-      <div className="mb-12 flex w-full max-w-5xl justify-end">
-        <CountryToggle value={country} onChange={setCountry} />
-      </div>
-
-      {step === "scenario" && (
-        <ScenarioStep
-          selected={scenario}
-          onSelect={setScenario}
-          onContinue={() => setStep("location")}
-        />
-      )}
-      {step === "location" && (
-        <LocationStep
-          province={province}
-          usState={usState}
-          onProvinceChange={setProvince}
-          onUsStateChange={setUsState}
-          onBack={() => setStep("scenario")}
-          onContinue={() => setStep("product")}
-        />
-      )}
-      {step === "product" && (
-        <ProductStep
-          category={category}
-          productName={productName}
-          onCategoryChange={setCategory}
-          onProductNameChange={setProductName}
-          onBack={() => setStep("location")}
-          onContinue={() => setStep("results")}
-        />
-      )}
-      {step === "results" && (
-        <ResultsStep
-          country={country}
-          scenario={scenario}
-          province={province}
-          usState={usState}
-          category={category}
-          productName={productName}
-          onBack={() => setStep("product")}
-        />
-      )}
-    </div>
-  );
+  return <DashboardWizard isSubscribed={isSubscribed} />;
 }

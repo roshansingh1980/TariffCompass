@@ -5,11 +5,17 @@ import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { generateBrief, type BriefInput } from "@/lib/ai/generate-brief";
 
-export function GenerateBriefSection({ input }: { input: BriefInput }) {
+export function GenerateBriefSection({
+  input,
+  isSubscribed,
+}: {
+  input: BriefInput;
+  isSubscribed: boolean;
+}) {
   const [isPending, startTransition] = useTransition();
   const [brief, setBrief] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [requiresUpgrade, setRequiresUpgrade] = useState(false);
+  const [requiresUpgrade, setRequiresUpgrade] = useState(!isSubscribed);
 
   const handleGenerate = () => {
     setError(null);

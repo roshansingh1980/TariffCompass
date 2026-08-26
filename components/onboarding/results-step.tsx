@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { ArrowUpRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
 import {
@@ -21,6 +22,7 @@ export function ResultsStep({
   usState,
   category,
   productName,
+  isSubscribed,
   onBack,
 }: {
   country: Country;
@@ -29,6 +31,7 @@ export function ResultsStep({
   usState: string | null;
   category: string | null;
   productName: string;
+  isSubscribed: boolean;
   onBack: () => void;
 }) {
   const scenarioLabel = SCENARIOS.find((s) => s.id === scenario)?.title;
@@ -105,7 +108,9 @@ export function ResultsStep({
                 className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
               >
                 <td className="px-7 py-6 font-medium text-foreground">{market.name}</td>
-                <td className="px-7 py-6 text-foreground">{profile.tariffRate}</td>
+                <td className="px-7 py-6 text-foreground">
+                  <LockedValue locked={!isSubscribed}>{profile.tariffRate}</LockedValue>
+                </td>
                 <td className="px-7 py-6">
                   <span className="font-semibold text-foreground">
                     {market.easeOfBusiness.toFixed(1)}
@@ -113,7 +118,9 @@ export function ResultsStep({
                   <span className="text-muted-foreground"> / 10</span>
                 </td>
                 <td className="px-7 py-6">
-                  <FrictionMeter level={profile.costFriction} />
+                  <LockedValue locked={!isSubscribed}>
+                    <FrictionMeter level={profile.costFriction} />
+                  </LockedValue>
                 </td>
                 <td className="px-7 py-6">
                   <AttractivenessBadge level={profile.attractiveness} />
@@ -139,14 +146,18 @@ export function ResultsStep({
             </div>
             <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
               <dt className="text-muted-foreground">{tariffColumnLabel}</dt>
-              <dd className="text-right font-medium text-foreground">{profile.tariffRate}</dd>
+              <dd className="text-right font-medium text-foreground">
+                <LockedValue locked={!isSubscribed}>{profile.tariffRate}</LockedValue>
+              </dd>
               <dt className="text-muted-foreground">Ease of Business</dt>
               <dd className="text-right font-medium text-foreground">
                 {market.easeOfBusiness.toFixed(1)} / 10
               </dd>
               <dt className="flex items-center text-muted-foreground">Cost / Friction</dt>
               <dd className="flex justify-end">
-                <FrictionMeter level={profile.costFriction} />
+                <LockedValue locked={!isSubscribed}>
+                  <FrictionMeter level={profile.costFriction} />
+                </LockedValue>
               </dd>
             </dl>
           </div>
@@ -157,6 +168,15 @@ export function ResultsStep({
         Figures shown are illustrative estimates for demonstration purposes only and do not
         constitute tariff, legal, or financial advice.
       </p>
+
+      {!isSubscribed && (
+        <div className="mt-8 flex flex-col items-center gap-4 rounded-3xl border border-border/60 bg-foreground/[0.02] p-7 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:flex-row sm:justify-between sm:text-left">
+          <p className="text-[15px] font-medium tracking-tight text-foreground">
+            Unlock full tariff details and generate your brief — C$99/month
+          </p>
+          <SubscribeButton label="Upgrade" className="h-11 shrink-0 px-7" />
+        </div>
+      )}
 
       {/* Government Support Options */}
       <div className="mt-28">
@@ -182,31 +202,38 @@ export function ResultsStep({
               className="flex h-full flex-col gap-3 rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
             >
               <span className="font-medium tracking-tight text-foreground">{program.name}</span>
-              <span className="text-sm text-muted-foreground">{program.description}</span>
-              <div className="text-sm">
-                <span className="font-medium text-foreground">Who it&apos;s for: </span>
-                <span className="text-muted-foreground">{program.whoItsFor}</span>
-              </div>
-              {direction === "import" && program.importCaveat && (
-                <div className="rounded-xl bg-foreground/[0.03] px-3.5 py-2.5 text-xs text-muted-foreground">
-                  {program.importCaveat}
-                </div>
-              )}
-              <a
-                href={program.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+              <LockedValue
+                locked={!isSubscribed}
+                showIcon={false}
+                className="flex flex-1 flex-col items-start gap-3"
               >
-                Learn more
-                <ArrowUpRight className="size-3.5" />
-              </a>
+                <span className="text-sm text-muted-foreground">{program.description}</span>
+                <div className="text-sm">
+                  <span className="font-medium text-foreground">Who it&apos;s for: </span>
+                  <span className="text-muted-foreground">{program.whoItsFor}</span>
+                </div>
+                {direction === "import" && program.importCaveat && (
+                  <div className="rounded-xl bg-foreground/[0.03] px-3.5 py-2.5 text-xs text-muted-foreground">
+                    {program.importCaveat}
+                  </div>
+                )}
+                <a
+                  href={program.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                >
+                  Learn more
+                  <ArrowUpRight className="size-3.5" />
+                </a>
+              </LockedValue>
             </div>
           ))}
         </div>
       </div>
 
       <GenerateBriefSection
+        isSubscribed={isSubscribed}
         input={{
           scenarioLabel: scenarioLabel ?? null,
           country,
@@ -257,6 +284,28 @@ function FrictionMeter({ level }: { level: CostFriction }) {
       </div>
       <span className="text-sm text-muted-foreground">{level}</span>
     </div>
+  );
+}
+
+function LockedValue({
+  locked,
+  children,
+  className,
+  showIcon = true,
+}: {
+  locked: boolean;
+  children: ReactNode;
+  className?: string;
+  showIcon?: boolean;
+}) {
+  if (!locked) return <>{children}</>;
+  return (
+    <span className={cn("inline-flex items-center gap-1.5", className)}>
+      <span className="select-none blur-[4px]" aria-hidden="true">
+        {children}
+      </span>
+      {showIcon && <Lock className="size-3 shrink-0 text-muted-foreground/40" />}
+    </span>
   );
 }
 
