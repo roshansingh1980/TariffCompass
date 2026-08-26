@@ -3,7 +3,17 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CANADIAN_PROVINCES, US_STATES } from "@/lib/locations";
 import { cn } from "@/lib/utils";
+
+type Step = "scenario" | "location";
 
 type Scenario = {
   id: string;
@@ -35,10 +45,46 @@ const SCENARIOS: Scenario[] = [
 ];
 
 export default function DashboardPage() {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [step, setStep] = useState<Step>("scenario");
+  const [scenario, setScenario] = useState<string | null>(null);
+  const [province, setProvince] = useState<string | null>(null);
+  const [usState, setUsState] = useState<string | null>(null);
 
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-28 sm:py-32">
+      {step === "scenario" ? (
+        <ScenarioStep
+          selected={scenario}
+          onSelect={setScenario}
+          onContinue={() => setStep("location")}
+        />
+      ) : (
+        <LocationStep
+          province={province}
+          usState={usState}
+          onProvinceChange={setProvince}
+          onUsStateChange={setUsState}
+          onBack={() => setStep("scenario")}
+          onContinue={() =>
+            console.log("Onboarding selections:", { scenario, province, usState })
+          }
+        />
+      )}
+    </div>
+  );
+}
+
+function ScenarioStep({
+  selected,
+  onSelect,
+  onContinue,
+}: {
+  selected: string | null;
+  onSelect: (id: string) => void;
+  onContinue: () => void;
+}) {
+  return (
+    <>
       <div className="w-full max-w-3xl text-center">
         <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
           What is your situation?
@@ -49,13 +95,13 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-16 grid w-full max-w-3xl grid-cols-1 gap-5 sm:grid-cols-2">
-        {SCENARIOS.map((scenario) => {
-          const isSelected = selected === scenario.id;
+        {SCENARIOS.map((s) => {
+          const isSelected = selected === s.id;
           return (
             <button
-              key={scenario.id}
+              key={s.id}
               type="button"
-              onClick={() => setSelected(scenario.id)}
+              onClick={() => onSelect(s.id)}
               aria-pressed={isSelected}
               className={cn(
                 "group relative flex flex-col items-start gap-2 rounded-2xl border px-7 py-8 text-left transition-all duration-200",
@@ -75,11 +121,9 @@ export default function DashboardPage() {
                 <Check className="size-3" strokeWidth={3} />
               </span>
               <span className="pr-8 text-lg font-medium tracking-tight text-foreground">
-                {scenario.title}
+                {s.title}
               </span>
-              <span className="text-sm text-muted-foreground">
-                {scenario.description}
-              </span>
+              <span className="text-sm text-muted-foreground">{s.description}</span>
             </button>
           );
         })}
@@ -88,11 +132,122 @@ export default function DashboardPage() {
       <Button
         size="lg"
         disabled={!selected}
-        onClick={() => console.log("Selected scenario:", selected)}
+        onClick={onContinue}
         className="mt-16 h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
       >
         Continue
       </Button>
-    </div>
+    </>
+  );
+}
+
+function LocationStep({
+  province,
+  usState,
+  onProvinceChange,
+  onUsStateChange,
+  onBack,
+  onContinue,
+}: {
+  province: string | null;
+  usState: string | null;
+  onProvinceChange: (value: string) => void;
+  onUsStateChange: (value: string) => void;
+  onBack: () => void;
+  onContinue: () => void;
+}) {
+  return (
+    <>
+      <div className="w-full max-w-3xl text-center">
+        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+          Where are you based?
+        </h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          This helps us tailor tariff guidance to your business.
+        </p>
+      </div>
+
+      <div className="mt-16 grid w-full max-w-3xl grid-cols-1 gap-8 sm:grid-cols-2">
+        <div className="flex flex-col gap-2.5 text-left">
+          <label
+            htmlFor="province"
+            className="text-sm font-medium text-foreground"
+          >
+            Canadian Province
+          </label>
+          <Select
+            value={province}
+            onValueChange={(value) => onProvinceChange(value as string)}
+          >
+            <SelectTrigger
+              id="province"
+              className="h-12 w-full rounded-xl border-border/70 px-4 text-base"
+            >
+              <SelectValue placeholder="Select a province">
+                {(value: string | null) =>
+                  CANADIAN_PROVINCES.find((p) => p.value === value)?.label ??
+                  "Select a province"
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {CANADIAN_PROVINCES.map((p) => (
+                <SelectItem key={p.value} value={p.value}>
+                  {p.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex flex-col gap-2.5 text-left">
+          <label htmlFor="us-state" className="text-sm font-medium text-foreground">
+            Primary U.S. market (optional)
+          </label>
+          <Select
+            value={usState}
+            onValueChange={(value) => onUsStateChange(value as string)}
+          >
+            <SelectTrigger
+              id="us-state"
+              className="h-12 w-full rounded-xl border-border/70 px-4 text-base"
+            >
+              <SelectValue placeholder="Select a state">
+                {(value: string | null) =>
+                  US_STATES.find((s) => s.value === value)?.label ?? "Select a state"
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {US_STATES.map((s) => (
+                <SelectItem key={s.value} value={s.value}>
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="mt-16 flex items-center gap-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          onClick={onBack}
+          className="h-12 rounded-full px-8 text-[15px] font-medium tracking-tight text-muted-foreground hover:text-foreground"
+        >
+          Back
+        </Button>
+        <Button
+          size="lg"
+          disabled={!province}
+          onClick={onContinue}
+          className="h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+        >
+          Continue
+        </Button>
+      </div>
+    </>
   );
 }
