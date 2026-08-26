@@ -18,6 +18,11 @@ export function SiteFooter() {
             </span>
           </div>
         </div>
+        <p className="max-w-2xl text-center text-[11px] leading-relaxed text-muted-foreground/60">
+          TariffCompass is an independent software tool. It is not affiliated with the Government
+          of Canada, CBSA, EDC, BDC, or any U.S. government agency. Information is provided for
+          general guidance only.
+        </p>
       </div>
     </footer>
   );

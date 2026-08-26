@@ -165,8 +165,10 @@ export function ResultsStep({
       </div>
 
       <p className="mt-8 text-center text-xs text-muted-foreground/70">
-        Figures shown are illustrative estimates for demonstration purposes only and do not
-        constitute tariff, legal, or financial advice.
+        Disclaimer: TariffCompass provides general information and estimates only. It is not
+        legal, tax, customs, or financial advice. Tariff rates, trade rules, logistics costs, and
+        government programs can change. Always verify details with official sources or a
+        qualified professional before making business decisions.
       </p>
 
       {!isSubscribed && (
