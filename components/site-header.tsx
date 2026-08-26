@@ -5,19 +5,27 @@ import { createBillingPortalSession } from "@/lib/stripe/actions";
 import { TcMark } from "@/components/brand/tc-mark";
 
 export async function SiteHeader() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  // Renders on every page via the root layout — a Supabase hiccup here must
+  // degrade to the logged-out header, never take the whole site down.
+  let user: { id: string; email?: string } | null = null;
   let isSubscribed = false;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("subscription_status")
-      .eq("id", user.id)
-      .maybeSingle();
-    isSubscribed = profile?.subscription_status === "active";
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    user = authUser;
+
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_status")
+        .eq("id", user.id)
+        .maybeSingle();
+      isSubscribed = profile?.subscription_status === "active";
+    }
+  } catch (error) {
+    console.error("SiteHeader failed to load auth state:", error);
   }
 
   return (

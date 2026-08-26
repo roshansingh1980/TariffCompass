@@ -22,8 +22,23 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600"],
 });
 
+function resolveSiteUrl(): URL {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) {
+    try {
+      return new URL(configured);
+    } catch {
+      // Falls through to the default below — an invalid/blank value here
+      // (e.g. a build variable set but left empty) must never crash every
+      // page on the site just to get metadataBase right.
+      console.error(`NEXT_PUBLIC_SITE_URL is not a valid URL: "${configured}"`);
+    }
+  }
+  return new URL("http://localhost:3000");
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: resolveSiteUrl(),
   title: "TariffCompass — Trade intelligence",
   description: "Navigate tariffs. Find your path.",
   openGraph: {
