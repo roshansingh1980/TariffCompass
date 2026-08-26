@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CountryToggle } from "@/components/onboarding/country-toggle";
 import { ScenarioStep } from "@/components/onboarding/scenario-step";
 import { LocationStep } from "@/components/onboarding/location-step";
@@ -18,6 +18,10 @@ export function DashboardWizard({ isSubscribed }: { isSubscribed: boolean }) {
   const [usState, setUsState] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [productName, setProductName] = useState("");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
 
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-28 sm:py-36">

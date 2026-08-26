@@ -21,12 +21,12 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/30 bg-background/75 backdrop-blur-md">
-      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 sm:px-8">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-20 sm:px-8">
         <Link href="/" className="text-base font-semibold tracking-tight text-foreground">
           TariffCompass
         </Link>
 
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-3 sm:gap-6">
           <Link
             href="/insights"
             className="text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
@@ -61,13 +61,13 @@ export async function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
+                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground sm:inline"
               >
                 Log in
               </Link>
               <Link
                 href="/signup"
-                className="rounded-full bg-foreground px-4 py-2 text-[13px] font-medium tracking-wide text-background transition-colors duration-200 hover:bg-foreground/90"
+                className="rounded-full bg-foreground px-3.5 py-2 text-[13px] font-medium tracking-wide text-background transition-colors duration-200 hover:bg-foreground/90 sm:px-4"
               >
                 Sign up
               </Link>
