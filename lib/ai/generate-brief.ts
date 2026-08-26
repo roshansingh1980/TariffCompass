@@ -1,12 +1,13 @@
 "use server";
 
 import Anthropic from "@anthropic-ai/sdk";
-import type { Attractiveness, CostFriction } from "@/lib/market-data";
+import type { Attractiveness, CostFriction, TariffConfidence } from "@/lib/data/market-data";
 import { createClient } from "@/lib/supabase/server";
 
 export type BriefComparisonRow = {
   market: string;
   tariffRate: string;
+  tariffConfidence: TariffConfidence;
   easeOfBusiness: number;
   costFriction: CostFriction;
   attractiveness: Attractiveness;
@@ -76,7 +77,15 @@ Use ## headings
 Use short paragraphs and bullet points
 Keep it to one page
 Sound like a trusted advisor, not a marketing page
-Do not mention that you are an AI`;
+Do not mention that you are an AI
+
+Data fidelity
+
+Use only the provided rates and confidence values — never substitute your own knowledge of tariff rates.
+Every tariff figure in the comparison table carries a confidence label: official, estimated, or unknown.
+If a rate is estimated, say so plainly when you cite it (for example, "an estimated 25%").
+If a rate is unknown or unavailable, say so plainly and do not guess a number.
+Do not present an estimated or unknown figure as an official determination.`;
 
 export async function generateBrief(input: BriefInput): Promise<BriefResult> {
   const supabase = await createClient();
@@ -108,7 +117,7 @@ export async function generateBrief(input: BriefInput): Promise<BriefResult> {
     const rowsText = input.comparisonRows
       .map(
         (r) =>
-          `- ${r.market}: ${input.tariffColumnLabel} ${r.tariffRate}, ease of business ${r.easeOfBusiness.toFixed(1)}/10, cost/friction ${r.costFriction}, overall attractiveness ${r.attractiveness}`
+          `- ${r.market}: ${input.tariffColumnLabel} ${r.tariffRate} (confidence: ${r.tariffConfidence}), ease of business ${r.easeOfBusiness.toFixed(1)}/10, cost/friction ${r.costFriction}, overall attractiveness ${r.attractiveness}`
       )
       .join("\n");
 

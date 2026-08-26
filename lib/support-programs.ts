@@ -9,6 +9,8 @@
  * own research.
  */
 
+import { SOURCES } from "@/lib/data/sources";
+
 export type SupportProgram = {
   name: string;
   description: string;
@@ -16,6 +18,8 @@ export type SupportProgram = {
   href: string;
   /** Shown only when the user's scenario is an import scenario. */
   importCaveat?: string;
+  /** When this program's details/URL were last confirmed against the official page. */
+  lastChecked: string;
 };
 
 export const SUPPORT_PROGRAMS: SupportProgram[] = [
@@ -26,6 +30,7 @@ export const SUPPORT_PROGRAMS: SupportProgram[] = [
     whoItsFor:
       "Small and medium-sized businesses affected by tariffs or trade disruption, including in the steel and manufacturing sectors.",
     href: "https://ised-isde.canada.ca/site/ised/en/regional-tariff-response-initiative",
+    lastChecked: SOURCES.rtri.lastChecked,
   },
   {
     name: "CanExport SMEs",
@@ -34,6 +39,7 @@ export const SUPPORT_PROGRAMS: SupportProgram[] = [
     whoItsFor: "Canadian SMEs with a clear plan to export goods or services to a new international market.",
     href: "https://www.tradecommissioner.gc.ca/en/our-solutions/funding-financing-international-business/canexport-smes.html",
     importCaveat: "Funds outbound export activity only — it doesn't apply if you're solely importing.",
+    lastChecked: SOURCES.canexport.lastChecked,
   },
   {
     name: "BDC Pivot to Grow Loan",
@@ -43,6 +49,7 @@ export const SUPPORT_PROGRAMS: SupportProgram[] = [
       "Companies with at least 3 years of operating history and at least 15% of sales from U.S. exports.",
     href: "https://www.bdc.ca/en/financing/pivot-grow-loan",
     importCaveat: "Aimed at businesses exporting to the U.S. — not designed for import-only operations.",
+    lastChecked: SOURCES.bdc.lastChecked,
   },
   {
     name: "EDC Trade Impact Program",
@@ -52,5 +59,6 @@ export const SUPPORT_PROGRAMS: SupportProgram[] = [
       "Canadian exporters and companies that supply exporters, particularly in sectors like steel, aluminum, and agri-food.",
     href: "https://www.edc.ca/en/campaign/trade-support-canadian-companies.html",
     importCaveat: "Focused on exporters and their suppliers — generally not applicable if you're only importing.",
+    lastChecked: SOURCES.edc.lastChecked,
   },
 ];

@@ -5,15 +5,25 @@ import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
 import {
-  getMarketComparison,
+  getMarketDataRows,
   resolveScenarioDirection,
   type Attractiveness,
   type CostFriction,
-} from "@/lib/market-data";
+  type MarketDataRow,
+} from "@/lib/data/market-data";
 import { SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
 import { cn } from "@/lib/utils";
+
+function formatDate(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-CA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export function ResultsStep({
   country,
@@ -37,8 +47,13 @@ export function ResultsStep({
   const scenarioLabel = SCENARIOS.find((s) => s.id === scenario)?.title;
   const provinceLabel = CANADIAN_PROVINCES.find((p) => p.value === province)?.label;
   const direction = resolveScenarioDirection(scenario);
-  const comparisonRows = getMarketComparison(category, scenario);
+  const comparisonRows = getMarketDataRows(category, scenario);
   const tariffColumnLabel = direction === "export" ? "Export Tariff" : "Import Duty";
+  const dataLastUpdated = comparisonRows[0]?.lastUpdated;
+  const supportLastChecked = SUPPORT_PROGRAMS.reduce(
+    (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
+    SUPPORT_PROGRAMS[0]?.lastChecked ?? ""
+  );
 
   const hasSavedRef = useRef(false);
   useEffect(() => {
@@ -102,28 +117,30 @@ export function ResultsStep({
             </tr>
           </thead>
           <tbody>
-            {comparisonRows.map(({ market, profile }) => (
+            {comparisonRows.map((row) => (
               <tr
-                key={market.key}
+                key={row.market.key}
                 className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
               >
-                <td className="px-7 py-6 font-medium text-foreground">{market.name}</td>
+                <td className="px-7 py-6 font-medium text-foreground">{row.market.name}</td>
                 <td className="px-7 py-6 text-foreground">
-                  <LockedValue locked={!isSubscribed}>{profile.tariffRate}</LockedValue>
+                  <LockedValue locked={!isSubscribed}>
+                    <TariffValue row={row} />
+                  </LockedValue>
                 </td>
                 <td className="px-7 py-6">
                   <span className="font-semibold text-foreground">
-                    {market.easeOfBusiness.toFixed(1)}
+                    {row.market.easeOfBusiness.toFixed(1)}
                   </span>
                   <span className="text-muted-foreground"> / 10</span>
                 </td>
                 <td className="px-7 py-6">
                   <LockedValue locked={!isSubscribed}>
-                    <FrictionMeter level={profile.costFriction} />
+                    <FrictionMeter level={row.costFriction} />
                   </LockedValue>
                 </td>
                 <td className="px-7 py-6">
-                  <AttractivenessBadge level={profile.attractiveness} />
+                  <AttractivenessBadge level={row.attractiveness} />
                 </td>
               </tr>
             ))}
@@ -133,30 +150,32 @@ export function ResultsStep({
 
       {/* Mobile cards */}
       <div className="mt-20 flex flex-col gap-4 sm:hidden">
-        {comparisonRows.map(({ market, profile }) => (
+        {comparisonRows.map((row) => (
           <div
-            key={market.key}
+            key={row.market.key}
             className="rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
           >
             <div className="flex items-center justify-between gap-3">
               <span className="text-lg font-medium tracking-tight text-foreground">
-                {market.name}
+                {row.market.name}
               </span>
-              <AttractivenessBadge level={profile.attractiveness} />
+              <AttractivenessBadge level={row.attractiveness} />
             </div>
             <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
               <dt className="text-muted-foreground">{tariffColumnLabel}</dt>
               <dd className="text-right font-medium text-foreground">
-                <LockedValue locked={!isSubscribed}>{profile.tariffRate}</LockedValue>
+                <LockedValue locked={!isSubscribed}>
+                  <TariffValue row={row} />
+                </LockedValue>
               </dd>
               <dt className="text-muted-foreground">Ease of Business</dt>
               <dd className="text-right font-medium text-foreground">
-                {market.easeOfBusiness.toFixed(1)} / 10
+                {row.market.easeOfBusiness.toFixed(1)} / 10
               </dd>
               <dt className="flex items-center text-muted-foreground">Cost / Friction</dt>
               <dd className="flex justify-end">
                 <LockedValue locked={!isSubscribed}>
-                  <FrictionMeter level={profile.costFriction} />
+                  <FrictionMeter level={row.costFriction} />
                 </LockedValue>
               </dd>
             </dl>
@@ -164,7 +183,15 @@ export function ResultsStep({
         ))}
       </div>
 
-      <p className="mt-8 text-center text-xs text-muted-foreground/70">
+      {dataLastUpdated && (
+        <p className="mt-8 text-center text-xs text-muted-foreground/60">
+          Rates and scores are based on the latest available data. Last updated{" "}
+          {formatDate(dataLastUpdated)}. Sources: official trade publications and current program
+          pages.
+        </p>
+      )}
+
+      <p className="mt-3 text-center text-xs text-muted-foreground/70">
         Disclaimer: TariffCompass provides general information and estimates only. It is not
         legal, tax, customs, or financial advice. Tariff rates, trade rules, logistics costs, and
         government programs can change. Always verify details with official sources or a
@@ -196,6 +223,11 @@ export function ResultsStep({
           financial advice. Program details and eligibility change — confirm everything on the
           official page before acting.
         </p>
+        {supportLastChecked && (
+          <p className="mt-1 text-xs text-muted-foreground/60">
+            Program details last checked {formatDate(supportLastChecked)}.
+          </p>
+        )}
 
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {SUPPORT_PROGRAMS.map((program) => (
@@ -244,12 +276,13 @@ export function ResultsStep({
           category,
           productName,
           tariffColumnLabel,
-          comparisonRows: comparisonRows.map(({ market, profile }) => ({
-            market: market.name,
-            tariffRate: profile.tariffRate,
-            easeOfBusiness: market.easeOfBusiness,
-            costFriction: profile.costFriction,
-            attractiveness: profile.attractiveness,
+          comparisonRows: comparisonRows.map((row) => ({
+            market: row.market.name,
+            tariffRate: row.tariffRate,
+            tariffConfidence: row.tariffConfidence,
+            easeOfBusiness: row.market.easeOfBusiness,
+            costFriction: row.costFriction,
+            attractiveness: row.attractiveness,
           })),
         }}
       />
@@ -266,6 +299,20 @@ export function ResultsStep({
         </Button>
       </div>
     </div>
+  );
+}
+
+function TariffValue({ row }: { row: MarketDataRow }) {
+  if (row.tariffConfidence === "unknown") {
+    return <span className="text-muted-foreground">Unavailable</span>;
+  }
+  return (
+    <span>
+      {row.tariffRate}
+      {row.tariffConfidence === "estimated" && (
+        <span className="ml-1 text-[11px] font-normal text-muted-foreground/60">est.</span>
+      )}
+    </span>
   );
 }
 
