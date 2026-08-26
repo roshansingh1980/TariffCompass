@@ -43,6 +43,12 @@ export async function SiteHeader() {
           </Link>
           {user ? (
             <>
+              <Link
+                href="/support"
+                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground sm:inline"
+              >
+                Support
+              </Link>
               <span className="hidden text-[13px] text-muted-foreground/80 sm:inline">
                 {user.email}
               </span>
@@ -52,7 +58,8 @@ export async function SiteHeader() {
                     type="submit"
                     className="text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
                   >
-                    Manage billing
+                    <span className="sm:hidden">Billing</span>
+                    <span className="hidden sm:inline">Manage billing</span>
                   </button>
                 </form>
               )}

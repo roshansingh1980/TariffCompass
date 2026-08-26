@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { TcLockup } from "@/components/brand/tc-lockup";
 
 export function SiteFooter() {
@@ -9,13 +10,37 @@ export function SiteFooter() {
           <p className="tracking-wide">
             &copy; {new Date().getFullYear()} TariffCompass. All rights reserved.
           </p>
-          <div className="flex items-center gap-8">
-            <span className="cursor-default tracking-wide transition-colors duration-200 hover:text-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            <Link
+              href="/about"
+              className="tracking-wide transition-colors duration-200 hover:text-foreground"
+            >
+              About
+            </Link>
+            <Link
+              href="/support"
+              className="tracking-wide transition-colors duration-200 hover:text-foreground"
+            >
+              Support
+            </Link>
+            <Link
+              href="/privacy"
+              className="tracking-wide transition-colors duration-200 hover:text-foreground"
+            >
               Privacy
-            </span>
-            <span className="cursor-default tracking-wide transition-colors duration-200 hover:text-foreground">
+            </Link>
+            <Link
+              href="/terms"
+              className="tracking-wide transition-colors duration-200 hover:text-foreground"
+            >
               Terms
-            </span>
+            </Link>
+            <Link
+              href="/notices"
+              className="tracking-wide transition-colors duration-200 hover:text-foreground"
+            >
+              Notices
+            </Link>
           </div>
         </div>
         <p className="max-w-2xl text-center text-[11px] leading-relaxed text-muted-foreground/60">

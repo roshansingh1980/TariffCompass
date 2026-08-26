@@ -4,7 +4,16 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/insights", "/insights/"],
+      allow: [
+        "/",
+        "/insights",
+        "/insights/",
+        "/about",
+        "/support",
+        "/privacy",
+        "/terms",
+        "/notices",
+      ],
       disallow: ["/dashboard", "/login", "/signup", "/subscribe", "/api/"],
     },
     sitemap: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/sitemap.xml`,
