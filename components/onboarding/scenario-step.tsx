@@ -15,15 +15,15 @@ export function ScenarioStep({
   return (
     <>
       <div className="w-full max-w-3xl text-center">
-        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+        <h1 className="text-5xl font-semibold tracking-tight text-foreground sm:text-6xl">
           What is your situation?
         </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+        <p className="mt-5 text-lg text-muted-foreground sm:text-xl">
           Choose the scenario that best describes your business.
         </p>
       </div>
 
-      <div className="mt-16 grid w-full max-w-3xl grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className="mt-20 grid w-full max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
         {SCENARIOS.map((s) => {
           const isSelected = selected === s.id;
           return (
@@ -33,15 +33,15 @@ export function ScenarioStep({
               onClick={() => onSelect(s.id)}
               aria-pressed={isSelected}
               className={cn(
-                "group relative flex flex-col items-start gap-2 rounded-2xl border px-7 py-8 text-left transition-all duration-200",
+                "group relative flex flex-col items-start gap-2.5 rounded-3xl border px-8 py-10 text-left transition-all duration-200",
                 isSelected
-                  ? "border-foreground/80 bg-foreground/[0.03] shadow-sm"
-                  : "border-border/70 hover:border-foreground/30 hover:bg-foreground/[0.015]"
+                  ? "border-foreground/80 bg-foreground/[0.03] shadow-[0_4px_20px_-8px_rgba(0,0,0,0.12)]"
+                  : "border-border/60 hover:-translate-y-0.5 hover:border-foreground/30 hover:bg-foreground/[0.015] hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
               )}
             >
               <span
                 className={cn(
-                  "absolute top-6 right-6 flex size-5 items-center justify-center rounded-full border transition-colors duration-200",
+                  "absolute top-7 right-7 flex size-5 items-center justify-center rounded-full border transition-colors duration-200",
                   isSelected
                     ? "border-foreground bg-foreground text-background"
                     : "border-border text-transparent"
@@ -49,7 +49,7 @@ export function ScenarioStep({
               >
                 <Check className="size-3" strokeWidth={3} />
               </span>
-              <span className="pr-8 text-lg font-medium tracking-tight text-foreground">
+              <span className="pr-8 text-xl font-medium tracking-tight text-foreground">
                 {s.title}
               </span>
               <span className="text-sm text-muted-foreground">{s.description}</span>
@@ -62,7 +62,7 @@ export function ScenarioStep({
         size="lg"
         disabled={!selected}
         onClick={onContinue}
-        className="mt-16 h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+        className="mt-20 h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
       >
         Continue
       </Button>

@@ -17,7 +17,7 @@ export default function DashboardPage() {
   const [productName, setProductName] = useState("");
 
   return (
-    <div className="flex flex-1 flex-col items-center px-6 py-28 sm:py-32">
+    <div className="flex flex-1 flex-col items-center px-6 py-28 sm:py-36">
       {step === "scenario" && (
         <ScenarioStep
           selected={scenario}

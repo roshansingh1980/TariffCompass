@@ -43,19 +43,19 @@ export function ResultsStep({
   return (
     <div className="w-full max-w-5xl">
       <div className="text-center">
-        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+        <h1 className="text-5xl font-semibold tracking-tight text-foreground sm:text-6xl">
           Your market comparison
         </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
+        <p className="mt-5 text-lg text-muted-foreground sm:text-xl">
           Based on your selections below.
         </p>
 
         {summaryChips.length > 0 && (
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
             {summaryChips.map((chip) => (
               <span
                 key={chip}
-                className="rounded-full border border-border/70 bg-foreground/[0.02] px-3.5 py-1.5 text-sm text-muted-foreground"
+                className="rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground"
               >
                 {chip}
               </span>
@@ -65,23 +65,23 @@ export function ResultsStep({
       </div>
 
       {/* Desktop table */}
-      <div className="mt-16 hidden overflow-hidden rounded-2xl border border-border/70 sm:block">
+      <div className="mt-20 hidden overflow-hidden rounded-3xl border border-border/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:block">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="border-b border-border/70 bg-foreground/[0.015]">
-              <th className="px-6 py-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            <tr className="border-b border-border/60 bg-foreground/[0.015]">
+              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Market
               </th>
-              <th className="px-6 py-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Tariff Rate
               </th>
-              <th className="px-6 py-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Ease of Business
               </th>
-              <th className="px-6 py-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Cost / Friction
               </th>
-              <th className="px-6 py-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Overall Attractiveness
               </th>
             </tr>
@@ -92,20 +92,20 @@ export function ResultsStep({
               return (
                 <tr
                   key={market.key}
-                  className="border-b border-border/50 transition-colors last:border-0 hover:bg-foreground/[0.015]"
+                  className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
                 >
-                  <td className="px-6 py-5 font-medium text-foreground">{market.name}</td>
-                  <td className="px-6 py-5 text-foreground">{profile.tariffRate}</td>
-                  <td className="px-6 py-5">
+                  <td className="px-7 py-6 font-medium text-foreground">{market.name}</td>
+                  <td className="px-7 py-6 text-foreground">{profile.tariffRate}</td>
+                  <td className="px-7 py-6">
                     <span className="font-semibold text-foreground">
                       {market.easeOfBusiness.toFixed(1)}
                     </span>
                     <span className="text-muted-foreground"> / 10</span>
                   </td>
-                  <td className="px-6 py-5">
+                  <td className="px-7 py-6">
                     <FrictionMeter level={profile.costFriction} />
                   </td>
-                  <td className="px-6 py-5">
+                  <td className="px-7 py-6">
                     <AttractivenessBadge level={profile.attractiveness} />
                   </td>
                 </tr>
@@ -116,18 +116,21 @@ export function ResultsStep({
       </div>
 
       {/* Mobile cards */}
-      <div className="mt-16 flex flex-col gap-4 sm:hidden">
+      <div className="mt-20 flex flex-col gap-4 sm:hidden">
         {MARKETS.map((market) => {
           const profile = categoryData[market.key];
           return (
-            <div key={market.key} className="rounded-2xl border border-border/70 p-6">
+            <div
+              key={market.key}
+              className="rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+            >
               <div className="flex items-center justify-between gap-3">
                 <span className="text-lg font-medium tracking-tight text-foreground">
                   {market.name}
                 </span>
                 <AttractivenessBadge level={profile.attractiveness} />
               </div>
-              <dl className="mt-4 grid grid-cols-2 gap-y-3 text-sm">
+              <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
                 <dt className="text-muted-foreground">Tariff Rate</dt>
                 <dd className="text-right font-medium text-foreground">{profile.tariffRate}</dd>
                 <dt className="text-muted-foreground">Ease of Business</dt>
@@ -144,25 +147,25 @@ export function ResultsStep({
         })}
       </div>
 
-      <p className="mt-6 text-center text-xs text-muted-foreground/70">
+      <p className="mt-8 text-center text-xs text-muted-foreground/70">
         Figures shown are illustrative estimates for demonstration purposes only and do not
         constitute tariff, legal, or financial advice.
       </p>
 
       {/* Government Support Options */}
-      <div className="mt-24">
-        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+      <div className="mt-28">
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground">
           Government Support Options
         </h2>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-3 text-lg text-muted-foreground">
           Programs that may help offset the cost of entering a new market.
         </p>
 
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
           {SUPPORT_PROGRAMS.map((program) => (
             <div
               key={program.name}
-              className="flex flex-col gap-2 rounded-2xl border border-border/70 p-6"
+              className="flex h-full flex-col gap-2.5 rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
             >
               <span className="font-medium tracking-tight text-foreground">
                 {program.name}
@@ -170,7 +173,7 @@ export function ResultsStep({
               <span className="text-sm text-muted-foreground">{program.description}</span>
               <a
                 href="#"
-                className="mt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                className="mt-auto pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
               >
                 Learn more
               </a>
@@ -179,7 +182,7 @@ export function ResultsStep({
         </div>
       </div>
 
-      <div className="mt-16 flex justify-center">
+      <div className="mt-20 flex justify-center">
         <Button
           type="button"
           variant="ghost"
@@ -197,13 +200,13 @@ export function ResultsStep({
 function FrictionMeter({ level }: { level: CostFriction }) {
   const filled = level === "Low" ? 1 : level === "Medium" ? 2 : 3;
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex gap-1">
+    <div className="flex items-center gap-2.5">
+      <div className="flex gap-1.5">
         {[1, 2, 3].map((segment) => (
           <span
             key={segment}
             className={cn(
-              "h-1.5 w-5 rounded-full",
+              "h-1.5 w-6 rounded-full",
               segment <= filled ? "bg-foreground/70" : "bg-border"
             )}
           />
@@ -218,7 +221,7 @@ function AttractivenessBadge({ level }: { level: Attractiveness }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium tracking-wide",
+        "inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide",
         level === "Excellent" && "border-transparent bg-foreground text-background",
         level === "Good" && "border-foreground/30 text-foreground",
         level === "Fair" && "border-border text-muted-foreground",
