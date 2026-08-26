@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { CANADIAN_PROVINCES } from "@/lib/locations";
-import { getCategoryTariffData, MARKETS, type Attractiveness, type CostFriction } from "@/lib/market-data";
+import {
+  getMarketComparison,
+  resolveScenarioDirection,
+  type Attractiveness,
+  type CostFriction,
+} from "@/lib/market-data";
 import { SCENARIOS } from "@/lib/onboarding-data";
 import { cn } from "@/lib/utils";
 
@@ -34,7 +39,9 @@ export function ResultsStep({
 }) {
   const scenarioLabel = SCENARIOS.find((s) => s.id === scenario)?.title;
   const provinceLabel = CANADIAN_PROVINCES.find((p) => p.value === province)?.label;
-  const categoryData = getCategoryTariffData(category);
+  const direction = resolveScenarioDirection(scenario);
+  const comparisonRows = getMarketComparison(category, scenario);
+  const tariffColumnLabel = direction === "export" ? "Export Tariff" : "Import Duty";
 
   const summaryChips = [scenarioLabel, provinceLabel, category, productName || null].filter(
     (value): value is string => Boolean(value)
@@ -47,7 +54,9 @@ export function ResultsStep({
           Your market comparison
         </h1>
         <p className="mt-5 text-lg text-muted-foreground sm:text-xl">
-          Based on your selections below.
+          {direction === "export"
+            ? "Comparing where you could sell, based on your selections below."
+            : "Comparing where you could source from, based on your selections below."}
         </p>
 
         {summaryChips.length > 0 && (
@@ -73,7 +82,7 @@ export function ResultsStep({
                 Market
               </th>
               <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                Tariff Rate
+                {tariffColumnLabel}
               </th>
               <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
                 Ease of Business
@@ -87,64 +96,58 @@ export function ResultsStep({
             </tr>
           </thead>
           <tbody>
-            {MARKETS.map((market) => {
-              const profile = categoryData[market.key];
-              return (
-                <tr
-                  key={market.key}
-                  className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
-                >
-                  <td className="px-7 py-6 font-medium text-foreground">{market.name}</td>
-                  <td className="px-7 py-6 text-foreground">{profile.tariffRate}</td>
-                  <td className="px-7 py-6">
-                    <span className="font-semibold text-foreground">
-                      {market.easeOfBusiness.toFixed(1)}
-                    </span>
-                    <span className="text-muted-foreground"> / 10</span>
-                  </td>
-                  <td className="px-7 py-6">
-                    <FrictionMeter level={profile.costFriction} />
-                  </td>
-                  <td className="px-7 py-6">
-                    <AttractivenessBadge level={profile.attractiveness} />
-                  </td>
-                </tr>
-              );
-            })}
+            {comparisonRows.map(({ market, profile }) => (
+              <tr
+                key={market.key}
+                className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
+              >
+                <td className="px-7 py-6 font-medium text-foreground">{market.name}</td>
+                <td className="px-7 py-6 text-foreground">{profile.tariffRate}</td>
+                <td className="px-7 py-6">
+                  <span className="font-semibold text-foreground">
+                    {market.easeOfBusiness.toFixed(1)}
+                  </span>
+                  <span className="text-muted-foreground"> / 10</span>
+                </td>
+                <td className="px-7 py-6">
+                  <FrictionMeter level={profile.costFriction} />
+                </td>
+                <td className="px-7 py-6">
+                  <AttractivenessBadge level={profile.attractiveness} />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
       {/* Mobile cards */}
       <div className="mt-20 flex flex-col gap-4 sm:hidden">
-        {MARKETS.map((market) => {
-          const profile = categoryData[market.key];
-          return (
-            <div
-              key={market.key}
-              className="rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-lg font-medium tracking-tight text-foreground">
-                  {market.name}
-                </span>
-                <AttractivenessBadge level={profile.attractiveness} />
-              </div>
-              <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
-                <dt className="text-muted-foreground">Tariff Rate</dt>
-                <dd className="text-right font-medium text-foreground">{profile.tariffRate}</dd>
-                <dt className="text-muted-foreground">Ease of Business</dt>
-                <dd className="text-right font-medium text-foreground">
-                  {market.easeOfBusiness.toFixed(1)} / 10
-                </dd>
-                <dt className="flex items-center text-muted-foreground">Cost / Friction</dt>
-                <dd className="flex justify-end">
-                  <FrictionMeter level={profile.costFriction} />
-                </dd>
-              </dl>
+        {comparisonRows.map(({ market, profile }) => (
+          <div
+            key={market.key}
+            className="rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-lg font-medium tracking-tight text-foreground">
+                {market.name}
+              </span>
+              <AttractivenessBadge level={profile.attractiveness} />
             </div>
-          );
-        })}
+            <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
+              <dt className="text-muted-foreground">{tariffColumnLabel}</dt>
+              <dd className="text-right font-medium text-foreground">{profile.tariffRate}</dd>
+              <dt className="text-muted-foreground">Ease of Business</dt>
+              <dd className="text-right font-medium text-foreground">
+                {market.easeOfBusiness.toFixed(1)} / 10
+              </dd>
+              <dt className="flex items-center text-muted-foreground">Cost / Friction</dt>
+              <dd className="flex justify-end">
+                <FrictionMeter level={profile.costFriction} />
+              </dd>
+            </dl>
+          </div>
+        ))}
       </div>
 
       <p className="mt-8 text-center text-xs text-muted-foreground/70">
