@@ -57,21 +57,19 @@ function KeyDateRow({ entry, isPast }: { entry: KeyDate; isPast: boolean }) {
   );
 }
 
-type TimelineRow = { kind: "today" } | { kind: "entry"; entry: KeyDate; isPast: boolean };
+type TimelineRow = { kind: "divider" } | { kind: "entry"; entry: KeyDate; isPast: boolean };
 
 function buildTimeline(entries: KeyDate[], todayIso: string): TimelineRow[] {
-  const sorted = [...entries].sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate));
-  const rows: TimelineRow[] = [];
-  let todayInserted = false;
+  const upcoming = [...entries]
+    .filter((e) => e.effectiveDate >= todayIso)
+    .sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate));
+  const past = [...entries]
+    .filter((e) => e.effectiveDate < todayIso)
+    .sort((a, b) => b.effectiveDate.localeCompare(a.effectiveDate));
 
-  for (const entry of sorted) {
-    if (!todayInserted && entry.effectiveDate >= todayIso) {
-      rows.push({ kind: "today" });
-      todayInserted = true;
-    }
-    rows.push({ kind: "entry", entry, isPast: entry.effectiveDate < todayIso });
-  }
-  if (!todayInserted) rows.push({ kind: "today" });
+  const rows: TimelineRow[] = upcoming.map((entry) => ({ kind: "entry", entry, isPast: false }));
+  if (upcoming.length > 0 && past.length > 0) rows.push({ kind: "divider" });
+  for (const entry of past) rows.push({ kind: "entry", entry, isPast: true });
 
   return rows;
 }
@@ -80,25 +78,30 @@ export function KeyDatesSection() {
   if (KEY_DATES.length === 0) return null;
 
   const todayIso = new Date().toISOString().slice(0, 10);
+  const hasUpcoming = KEY_DATES.some((e) => e.effectiveDate >= todayIso);
   const rows = buildTimeline(KEY_DATES, todayIso);
 
   return (
     <section className="w-full max-w-2xl px-6 pb-20">
       <div className="text-center">
         <h2 className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
-          What&apos;s coming
+          {hasUpcoming ? "What's coming" : "Recently in force"}
         </h2>
         <p className="mt-3 text-[15px] text-muted-foreground">
-          A timeline of tariff and trade measures that could affect your category.
+          {hasUpcoming
+            ? "A timeline of tariff and trade measures that could affect your category."
+            : "Tariff and trade measures already in force that could affect your category."}
         </p>
       </div>
 
       <div className="relative mt-12 ml-3 border-l-2 border-border/60 pl-8">
         {rows.map((row) =>
-          row.kind === "today" ? (
-            <div key="today" className="relative pb-10">
+          row.kind === "divider" ? (
+            <div key="divider" className="relative pb-10">
               <span className="absolute -left-[39px] top-0.5 size-3.5 rounded-full border-2 border-background bg-[#C8102E]" />
-              <p className="text-xs font-semibold tracking-wide text-[#C8102E] uppercase">Today</p>
+              <p className="text-xs font-semibold tracking-wide text-[#C8102E] uppercase">
+                In force
+              </p>
             </div>
           ) : (
             <div key={row.entry.id} className="relative pb-10 last:pb-0">
