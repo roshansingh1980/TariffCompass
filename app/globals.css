@@ -136,3 +136,16 @@
     color: var(--background);
   }
 }
+
+/*
+ * Soft signal-red vignette around the viewport edges — a brand touch, not a
+ * functional element. Fixed + pointer-events: none so it never intercepts
+ * clicks or shifts layout; sits above content but below dialogs/toasts.
+ */
+.edge-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  box-shadow: inset 0 0 120px -20px rgba(200, 16, 46, 0.15);
+}

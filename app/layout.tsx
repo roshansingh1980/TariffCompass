@@ -55,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <div className="edge-glow" aria-hidden="true" />
         <NavTracker />
         <SiteHeader />
         <main className="flex flex-1 flex-col">{children}</main>
