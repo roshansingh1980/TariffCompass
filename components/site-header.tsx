@@ -8,9 +8,13 @@ import { TcMark } from "@/components/brand/tc-mark";
 export async function SiteHeader() {
   // /dashboard has its own sidebar chrome (see app/dashboard/layout.tsx),
   // which owns account/billing/logout instead — skip the marketing header
-  // there entirely rather than showing both.
-  const pathname = (await headers()).get("x-pathname") ?? "";
-  if (pathname.startsWith("/dashboard")) return null;
+  // there entirely rather than showing both. Same for /updates and /sources
+  // when reached via a dashboard sidebar link (?view=app) rather than
+  // directly or from search.
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") ?? "";
+  const isAppView = headersList.get("x-app-view") === "1";
+  if (pathname.startsWith("/dashboard") || isAppView) return null;
 
   // Renders on every other page via the root layout — a Supabase hiccup
   // here must degrade to the logged-out header, never take the whole site

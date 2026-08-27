@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { UPDATES } from "@/lib/updates-data";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getDashboardShellAuth } from "@/lib/dashboard/shell-auth";
 
 export const metadata: Metadata = {
   title: "Updates | TariffCompass",
   description: "A dated record of changes to TariffCompass's tariff and risk data.",
+  // Always the bare path, regardless of ?view=app — that query param exists
+  // only to render this page inside the dashboard sidebar shell when reached
+  // from there (see DashboardShell's NAV_ITEMS); it's not a distinct page.
   alternates: { canonical: "/updates" },
 };
 
@@ -16,7 +21,7 @@ function formatDate(iso: string): string {
   });
 }
 
-export default function UpdatesPage() {
+function UpdatesContent() {
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-20 sm:px-8 sm:py-28">
       <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
@@ -46,5 +51,21 @@ export default function UpdatesPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default async function UpdatesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
+  const { view } = await searchParams;
+  if (view !== "app") return <UpdatesContent />;
+
+  const { isLoggedIn, isSubscribed, userEmail } = await getDashboardShellAuth();
+  return (
+    <DashboardShell isLoggedIn={isLoggedIn} isSubscribed={isSubscribed} userEmail={userEmail}>
+      <UpdatesContent />
+    </DashboardShell>
   );
 }

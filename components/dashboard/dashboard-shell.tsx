@@ -11,8 +11,11 @@ type NavItem = { label: string; href: string };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Comparison", href: "/dashboard" },
-  { label: "Updates", href: "/updates" },
-  { label: "Sources", href: "/sources" },
+  // ?view=app keeps these at their public URL (for SEO — see the canonical
+  // tag on each page) while rendering inside this sidebar shell instead of
+  // the marketing chrome. See middleware.ts (x-app-view) and each page.
+  { label: "Updates", href: "/updates?view=app" },
+  { label: "Sources", href: "/sources?view=app" },
 ];
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {

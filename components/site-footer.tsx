@@ -3,8 +3,10 @@ import { headers } from "next/headers";
 import { TcLockup } from "@/components/brand/tc-lockup";
 
 export async function SiteFooter() {
-  const pathname = (await headers()).get("x-pathname") ?? "";
-  if (pathname.startsWith("/dashboard")) return null;
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") ?? "";
+  const isAppView = headersList.get("x-app-view") === "1";
+  if (pathname.startsWith("/dashboard") || isAppView) return null;
 
   return (
     <footer className="border-t border-border/30">

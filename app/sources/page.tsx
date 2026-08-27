@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { getUsedSourceRegistry, type SourceRegistryEntry } from "@/lib/data/source-registry";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getDashboardShellAuth } from "@/lib/dashboard/shell-auth";
 
 export const metadata: Metadata = {
   title: "Sources | TariffCompass",
   description: "Every named source behind TariffCompass's tariff rates and program data.",
+  // Always the bare path, regardless of ?view=app — see app/updates/page.tsx.
   alternates: { canonical: "/sources" },
 };
 
@@ -16,7 +19,7 @@ function formatDate(iso: string): string {
   });
 }
 
-export default async function SourcesPage() {
+async function SourcesContent() {
   let registry: SourceRegistryEntry[];
   let loadError = false;
   try {
@@ -65,5 +68,21 @@ export default async function SourcesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default async function SourcesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
+  const { view } = await searchParams;
+  if (view !== "app") return <SourcesContent />;
+
+  const { isLoggedIn, isSubscribed, userEmail } = await getDashboardShellAuth();
+  return (
+    <DashboardShell isLoggedIn={isLoggedIn} isSubscribed={isSubscribed} userEmail={userEmail}>
+      <SourcesContent />
+    </DashboardShell>
   );
 }

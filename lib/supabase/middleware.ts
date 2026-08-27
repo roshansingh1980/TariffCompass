@@ -16,6 +16,14 @@ export async function updateSession(request: NextRequest) {
   // whether they're rendering inside the /dashboard app shell, which has its
   // own sidebar chrome and should suppress the marketing header/footer.
   request.headers.set("x-pathname", request.nextUrl.pathname);
+  // Same idea for pages that live at a public URL (/updates, /sources) but
+  // render inside the sidebar shell when reached via a dashboard nav link
+  // (?view=app) instead of directly/from search — see those pages and
+  // DashboardShell's NAV_ITEMS.
+  request.headers.set(
+    "x-app-view",
+    request.nextUrl.searchParams.get("view") === "app" ? "1" : "0"
+  );
   let supabaseResponse = NextResponse.next({ request });
 
   try {
