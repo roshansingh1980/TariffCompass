@@ -26,6 +26,9 @@ export default function AboutPage() {
       <h1 className="mt-8 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
         About TariffCompass
       </h1>
+      <p className="mt-3 font-serif text-base text-muted-foreground italic sm:text-lg">
+        Navigate tariffs. Find your path.
+      </p>
       <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
         A practical tool for Canadian businesses trying to make sense of tariffs — not a
         government service, and not a substitute for professional advice.

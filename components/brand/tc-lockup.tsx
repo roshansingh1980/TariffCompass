@@ -61,7 +61,7 @@ export function TcLockup({
     <div className="flex items-center gap-2 self-stretch sm:gap-3">
       <span className="h-px flex-grow bg-border" aria-hidden="true" />
       <span className="text-[8px] font-medium tracking-[0.3em] whitespace-nowrap text-muted-foreground uppercase sm:text-[11px]">
-        Trade Intelligence
+        Chart Your Trade Path
       </span>
       <span className="h-px flex-grow bg-border" aria-hidden="true" />
     </div>

@@ -10,6 +10,9 @@ export async function SiteFooter() {
     <footer className="border-t border-border/30">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-14 sm:px-8">
         <TcLockup size="small" orientation="horizontal" />
+        <p className="font-serif text-sm text-muted-foreground italic">
+          Navigate tariffs. Find your path.
+        </p>
         <div className="flex flex-col items-center gap-3 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-left">
           <p className="tracking-wide">
             &copy; {new Date().getFullYear()} TariffCompass. All rights reserved.

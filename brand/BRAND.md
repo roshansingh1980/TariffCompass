@@ -23,7 +23,7 @@ size only two shapes still read. That is `favicon.svg`.
 - **All UI:** Geist. The serif never appears in interface text.
 
 The descriptor sits between two hairline rules that run the full width of the
-wordmark, with `TRADE INTELLIGENCE` centred between them. This is the standard
+wordmark, with `CHART YOUR TRADE PATH` centred between them. This is the standard
 treatment for every lockup that carries a descriptor. Below the hero — header,
 favicon, avatars — the descriptor is dropped entirely.
 
