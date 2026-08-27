@@ -24,6 +24,7 @@ import {
   type CostFriction,
   type MarketDataRow,
 } from "@/lib/data/market-data";
+import { computeExposure } from "@/lib/exposure";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { deleteProfile, saveProfile } from "@/lib/supabase/saved-profiles";
@@ -40,6 +41,18 @@ function formatDate(iso: string): string {
   });
 }
 
+function formatCurrency(amount: number, currency: string): string {
+  return new Intl.NumberFormat("en-CA", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function formatRate(rate: number): string {
+  return `${Number(rate.toFixed(1))}%`;
+}
+
 export function ResultsStep({
   country,
   scenario,
@@ -47,6 +60,9 @@ export function ResultsStep({
   usState,
   category,
   productName,
+  annualValue,
+  currency,
+  hsCode,
   isSubscribed,
   savedProfiles,
   onSavedProfilesChange,
@@ -62,11 +78,14 @@ export function ResultsStep({
   usState: string | null;
   category: string | null;
   productName: string;
+  annualValue: string;
+  currency: string;
+  hsCode: string;
   isSubscribed: boolean;
   savedProfiles: SavedProfile[];
   onSavedProfilesChange: () => void;
   onBack: () => void;
-  onEditStep: (step: "scenario" | "location" | "product") => void;
+  onEditStep: (step: "scenario" | "location" | "product" | "exposure") => void;
   onScenarioChange: (value: string) => void;
   onProvinceChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
@@ -77,6 +96,13 @@ export function ResultsStep({
   const comparisonRows = getMarketDataRows(category, scenario);
   const tariffColumnLabel = direction === "export" ? "Export Tariff" : "Import Duty";
   const dataLastUpdated = comparisonRows[0]?.lastUpdated;
+
+  const usRow = comparisonRows.find((row) => row.market.key === "us");
+  const parsedAnnualValue = Number(annualValue);
+  const exposure =
+    usRow && Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0
+      ? computeExposure(parsedAnnualValue, usRow.tariffRate)
+      : null;
   const supportLastChecked = SUPPORT_PROGRAMS.reduce(
     (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
     SUPPORT_PROGRAMS[0]?.lastChecked ?? ""
@@ -132,12 +158,50 @@ export function ResultsStep({
               <Pencil className="size-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground/60" />
             </button>
           )}
+          {hsCode && (
+            <button
+              type="button"
+              onClick={() => onEditStep("exposure")}
+              className="group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground active:scale-[0.97]"
+            >
+              HS {hsCode}
+              <Pencil className="size-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground/60" />
+            </button>
+          )}
         </div>
+
+        {exposure && (
+          <div className="mt-8 flex flex-col items-center gap-1.5">
+            <p className="text-[13px] font-medium tracking-wide text-muted-foreground">
+              Your estimated U.S. exposure
+            </p>
+            <p className="text-lg font-medium tracking-tight text-foreground">
+              {formatCurrency(exposure.lowAmount, currency)} at {formatRate(exposure.lowRate)}
+              {"  ·  "}
+              {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
+              {"  ·  "}
+              {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
+            </p>
+            <p className="max-w-md text-center text-xs text-muted-foreground/60">
+              Planning range based on the estimated rate above — not a duty determination. Confirm
+              the applicable rate and HS classification with a customs broker.
+            </p>
+          </div>
+        )}
 
         <SavedProfilesPanel
           savedProfiles={savedProfiles}
           onSavedProfilesChange={onSavedProfilesChange}
-          currentSelections={{ scenario, country, province, usState, category }}
+          currentSelections={{
+            scenario,
+            country,
+            province,
+            usState,
+            category,
+            annualValue,
+            currency,
+            hsCode,
+          }}
         />
       </div>
 
@@ -341,6 +405,9 @@ export function ResultsStep({
           category,
           productName,
           tariffColumnLabel,
+          annualValue: Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0 ? parsedAnnualValue : null,
+          currency: currency || null,
+          hsCode: hsCode.trim() || null,
           comparisonRows: comparisonRows.map((row) => ({
             market: row.market.name,
             tariffRate: row.tariffRate,
@@ -389,6 +456,9 @@ function SavedProfilesPanel({
     province: string | null;
     usState: string | null;
     category: string | null;
+    annualValue: string;
+    currency: string;
+    hsCode: string;
   };
 }) {
   const [isNaming, setIsNaming] = useState(false);
@@ -399,6 +469,7 @@ function SavedProfilesPanel({
   async function handleSave() {
     setError(null);
     setIsSaving(true);
+    const parsedAnnualValue = Number(currentSelections.annualValue);
     const result = await saveProfile({
       name,
       scenario: currentSelections.scenario,
@@ -406,6 +477,9 @@ function SavedProfilesPanel({
       province: currentSelections.province,
       usState: currentSelections.usState,
       category: currentSelections.category,
+      annualValue: Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0 ? parsedAnnualValue : null,
+      currency: currentSelections.currency || null,
+      hsCode: currentSelections.hsCode.trim() || null,
     });
     setIsSaving(false);
     if ("error" in result) {
