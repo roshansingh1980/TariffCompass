@@ -1,12 +1,20 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/supabase/actions";
 import { createBillingPortalSession } from "@/lib/stripe/actions";
 import { TcMark } from "@/components/brand/tc-mark";
 
 export async function SiteHeader() {
-  // Renders on every page via the root layout — a Supabase hiccup here must
-  // degrade to the logged-out header, never take the whole site down.
+  // /dashboard has its own sidebar chrome (see app/dashboard/layout.tsx),
+  // which owns account/billing/logout instead — skip the marketing header
+  // there entirely rather than showing both.
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  if (pathname.startsWith("/dashboard")) return null;
+
+  // Renders on every other page via the root layout — a Supabase hiccup
+  // here must degrade to the logged-out header, never take the whole site
+  // down.
   let user: { id: string; email?: string } | null = null;
   let isSubscribed = false;
   try {

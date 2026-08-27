@@ -12,6 +12,10 @@ import { NextResponse, type NextRequest } from "next/server";
  * to send an already-signed-in visitor straight to /dashboard instead.
  */
 export async function updateSession(request: NextRequest) {
+  // Forwarded so Server Components (e.g. SiteHeader/SiteFooter) can tell
+  // whether they're rendering inside the /dashboard app shell, which has its
+  // own sidebar chrome and should suppress the marketing header/footer.
+  request.headers.set("x-pathname", request.nextUrl.pathname);
   let supabaseResponse = NextResponse.next({ request });
 
   try {

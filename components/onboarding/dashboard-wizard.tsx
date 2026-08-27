@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CountryToggle } from "@/components/onboarding/country-toggle";
 import { ScenarioStep } from "@/components/onboarding/scenario-step";
 import { LocationStep } from "@/components/onboarding/location-step";
 import { ProductStep } from "@/components/onboarding/product-step";
 import { ExposureStep, type Currency } from "@/components/onboarding/exposure-step";
 import { ResultsStep } from "@/components/onboarding/results-step";
+import { useCountry } from "@/lib/dashboard/country-context";
 import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { loadPendingWizardState, clearPendingWizardState } from "@/lib/pending-wizard";
@@ -25,7 +25,7 @@ export function DashboardWizard({
   savedProfiles: SavedProfile[];
 }) {
   const [step, setStep] = useState<Step>("scenario");
-  const [country, setCountry] = useState<Country>("CA");
+  const { country, setCountry } = useCountry();
   const [scenario, setScenario] = useState<string | null>(null);
   const [province, setProvince] = useState<string | null>(null);
   const [usState, setUsState] = useState<string | null>(null);
@@ -110,10 +110,6 @@ export function DashboardWizard({
 
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-16 sm:py-20">
-      <div className="mb-8 flex w-full max-w-5xl justify-end">
-        <CountryToggle value={country} onChange={setCountry} />
-      </div>
-
       {step === "scenario" && (
         <>
           {savedProfiles.length > 0 && (
