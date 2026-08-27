@@ -61,6 +61,9 @@ export async function SiteFooter() {
           of Canada, CBSA, EDC, BDC, or any U.S. government agency. Information is provided for
           general guidance only.
         </p>
+        <p className="text-[11px] tracking-wide text-muted-foreground">
+          A Canadian tool for a Canadian problem.
+        </p>
       </div>
     </footer>
   );
