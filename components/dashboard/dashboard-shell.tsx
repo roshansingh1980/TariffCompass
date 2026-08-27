@@ -2,43 +2,32 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Lock, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { TcMark } from "@/components/brand/tc-mark";
 import { CountryToggle } from "@/components/onboarding/country-toggle";
 import { CountryProvider, useCountry } from "@/lib/dashboard/country-context";
 import { signOut } from "@/lib/supabase/actions";
 import { createBillingPortalSession } from "@/lib/stripe/actions";
-import { cn } from "@/lib/utils";
 
-type NavItem = { label: string; href: string; locked?: boolean };
+type NavItem = { label: string; href: string };
 
-function getNavItems(isLoggedIn: boolean): NavItem[] {
-  return [
-    { label: "Comparison", href: "/dashboard" },
-    { label: "Saved profiles", href: isLoggedIn ? "/dashboard" : "/signup", locked: !isLoggedIn },
-    { label: "Updates", href: "/updates" },
-    { label: "Sources", href: "/sources" },
-  ];
-}
+const NAV_ITEMS: NavItem[] = [
+  { label: "Comparison", href: "/dashboard" },
+  { label: "Updates", href: "/updates" },
+  { label: "Sources", href: "/sources" },
+];
 
-function NavLinks({ isLoggedIn, onNavigate }: { isLoggedIn: boolean; onNavigate?: () => void }) {
+function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav className="flex flex-col gap-1">
-      {getNavItems(isLoggedIn).map((item) => (
+      {NAV_ITEMS.map((item) => (
         <Link
           key={item.label}
           href={item.href}
           onClick={onNavigate}
-          aria-disabled={item.locked}
-          className={cn(
-            "flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-[14px] font-medium tracking-tight transition-colors duration-200",
-            item.locked
-              ? "text-muted-foreground hover:bg-foreground/[0.03] hover:text-foreground"
-              : "text-foreground hover:bg-foreground/[0.05]"
-          )}
+          className="flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-[14px] font-medium tracking-tight text-foreground transition-colors duration-200 hover:bg-foreground/[0.05]"
         >
           <span>{item.label}</span>
-          {item.locked && <Lock className="size-3.5 shrink-0" aria-label="Requires a free account" />}
         </Link>
       ))}
     </nav>
@@ -125,7 +114,7 @@ function SidebarContent({
       <CountryToggle value={country} onChange={setCountry} />
 
       <div className="flex-1">
-        <NavLinks isLoggedIn={isLoggedIn} onNavigate={onNavigate} />
+        <NavLinks onNavigate={onNavigate} />
       </div>
 
       <AccountFooter isLoggedIn={isLoggedIn} isSubscribed={isSubscribed} userEmail={userEmail} />
