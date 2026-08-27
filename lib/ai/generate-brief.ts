@@ -14,6 +14,11 @@ export type BriefComparisonRow = {
   attractiveness: Attractiveness;
 };
 
+export type BriefProgram = {
+  name: string;
+  href: string;
+};
+
 export type BriefInput = {
   scenarioLabel: string | null;
   country: string;
@@ -26,6 +31,7 @@ export type BriefInput = {
   currency: string | null;
   hsCode: string | null;
   comparisonRows: BriefComparisonRow[];
+  programs: BriefProgram[];
 };
 
 export type BriefResult = { brief: string } | { error: string } | { requiresUpgrade: true };
@@ -68,17 +74,22 @@ Give a practical next-step recommendation.
 Keep it realistic.
 
 Government programs to review
-Mention only relevant Canadian programs such as RTRI, CanExport, BDC, or EDC if they reasonably fit.
-Do not say the user is eligible. Say they should review the official criteria.
-The reader already has a clickable link to each program's official page directly above this brief
-(in the app's own Government Support Options section) — do not tell them to search for, locate, or
-find these program pages themselves; refer to the programs as already linked above instead.
+A list of real government programs, each with a name and URL, is provided below under "Available
+programs." Reference ONLY programs from that exact list, by their exact name — never mention, imply,
+or introduce any other government program, office, or service, even one you may know about from your
+own training. If none of the provided programs reasonably fit this business's situation, say so
+plainly rather than naming something not on the list.
+Do not say the user is eligible for any program. Say they should review the official criteria.
+The reader already has a clickable link to each listed program's official page directly above this
+brief (in the app's own Government Support Options section) — do not tell them to search for,
+locate, or find these program pages themselves; refer to the programs as already linked above
+instead.
 
 Next actions
 Give 3 to 5 short action items.
-Any action item about a government program must reference it as already linked above (for example,
-"Review the CanExport and RTRI pages linked above for eligibility criteria") rather than instructing
-the reader to go find or look up the program.
+Any action item about a government program must name only a program from the provided list and
+reference it as already linked above (for example, "Review the CanExport and RTRI pages linked
+above for eligibility criteria") rather than instructing the reader to go find or look up a program.
 
 Style rules
 
@@ -152,6 +163,11 @@ export async function generateBrief(input: BriefInput): Promise<BriefResult> {
       ? `\nEstimated U.S. exposure (already computed, state these figures directly): ${input.currency} ${exposure.lowAmount.toFixed(0)} at ${exposure.lowRate}%, ${input.currency} ${exposure.midAmount.toFixed(0)} at ${exposure.midRate}%, ${input.currency} ${exposure.highAmount.toFixed(0)} at ${exposure.highRate}%.`
       : "";
 
+    const programsText =
+      input.programs.length > 0
+        ? input.programs.map((p) => `- ${p.name} (${p.href})`).join("\n")
+        : "(none provided — do not name any government program in this brief)";
+
     const userPrompt = `Business profile:
 - Scenario: ${input.scenarioLabel ?? "Not specified"}
 - Home country: ${homeCountry}
@@ -165,6 +181,9 @@ export async function generateBrief(input: BriefInput): Promise<BriefResult> {
 Comparison table:
 ${rowsText}
 ${exposureText}
+
+Available programs (reference only these, by exact name — introduce no others):
+${programsText}
 
 Write the brief now.`;
 

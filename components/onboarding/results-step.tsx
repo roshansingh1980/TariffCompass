@@ -506,6 +506,7 @@ export function ResultsStep({
               costFriction: row.costFriction,
               attractiveness: row.attractiveness,
             })),
+            programs: (supportPrograms ?? []).map((p) => ({ name: p.name, href: p.href })),
           }}
         />
       )}

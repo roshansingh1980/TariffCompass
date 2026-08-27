@@ -4,7 +4,7 @@ import { useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
-import { generateBrief, type BriefInput } from "@/lib/ai/generate-brief";
+import { generateBrief, type BriefInput, type BriefProgram } from "@/lib/ai/generate-brief";
 import { savePendingWizardState, type PendingWizardState } from "@/lib/pending-wizard";
 
 export function GenerateBriefSection({
@@ -107,7 +107,7 @@ export function GenerateBriefSection({
               day: "numeric",
             })}
           </p>
-          <BriefContent text={brief} />
+          <BriefContent text={brief} programs={input.programs} />
           <p className="mt-8 border-t border-border/50 pt-6 text-xs text-muted-foreground/70">
             This brief is a starting point for a funding or client conversation. It is not a
             determination of program eligibility, and not legal, tax, or financial advice.
@@ -119,25 +119,56 @@ export function GenerateBriefSection({
   );
 }
 
-function renderInline(line: string): ReactNode {
-  const parts = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).filter(Boolean);
-  if (parts.length === 1) return line;
-  return parts.map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={i} className="font-medium text-foreground">
-        {part.slice(2, -2)}
-      </strong>
-    ) : part.startsWith("*") && part.endsWith("*") ? (
-      <em key={i} className="not-italic text-muted-foreground/80">
-        {part.slice(1, -1)}
-      </em>
-    ) : (
-      <span key={i}>{part}</span>
-    )
-  );
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function BriefContent({ text }: { text: string }) {
+function renderInline(line: string, programs: BriefProgram[]): ReactNode {
+  // Longest names first so "CanExport SMEs" matches before a shorter
+  // overlapping name would.
+  const sortedPrograms = [...programs].sort((a, b) => b.name.length - a.name.length);
+  const programPattern = sortedPrograms.map((p) => escapeRegExp(p.name)).join("|");
+  const pattern = programPattern
+    ? `(\\*\\*[^*]+\\*\\*|\\*[^*]+\\*|${programPattern})`
+    : `(\\*\\*[^*]+\\*\\*|\\*[^*]+\\*)`;
+
+  const parts = line.split(new RegExp(pattern, "g")).filter(Boolean);
+  if (parts.length === 1) return line;
+
+  return parts.map((part, i) => {
+    const program = sortedPrograms.find((p) => p.name === part);
+    if (program) {
+      return (
+        <a
+          key={i}
+          href={program.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={i} className="font-medium text-foreground">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith("*") && part.endsWith("*")) {
+      return (
+        <em key={i} className="not-italic text-muted-foreground/80">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
+function BriefContent({ text, programs }: { text: string; programs: BriefProgram[] }) {
   const blocks: ReactNode[] = [];
   let listItems: string[] = [];
   let key = 0;
@@ -147,7 +178,7 @@ function BriefContent({ text }: { text: string }) {
     blocks.push(
       <ul key={`list-${key++}`} className="list-disc space-y-1.5 pl-5 text-foreground">
         {listItems.map((item, i) => (
-          <li key={i}>{renderInline(item)}</li>
+          <li key={i}>{renderInline(item, programs)}</li>
         ))}
       </ul>
     );
@@ -168,7 +199,7 @@ function BriefContent({ text }: { text: string }) {
           key={`h-${key++}`}
           className="text-lg font-semibold tracking-tight text-foreground first:mt-0"
         >
-          {renderInline(headingMatch[1])}
+          {renderInline(headingMatch[1], programs)}
         </h3>
       );
     } else if (bulletMatch) {
@@ -177,7 +208,7 @@ function BriefContent({ text }: { text: string }) {
       flushList();
       blocks.push(
         <p key={`p-${key++}`} className="text-[15px] leading-relaxed text-muted-foreground">
-          {renderInline(line)}
+          {renderInline(line, programs)}
         </p>
       );
     }
