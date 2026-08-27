@@ -1,7 +1,7 @@
 "use server";
 
 import Anthropic from "@anthropic-ai/sdk";
-import type { Attractiveness, CostFriction, TariffConfidence } from "@/lib/data/market-data";
+import type { Attractiveness, CostFriction, TariffConfidence } from "@/lib/data/db-market-data";
 import { computeExposure } from "@/lib/exposure";
 import { createClient } from "@/lib/supabase/server";
 

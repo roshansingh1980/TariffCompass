@@ -16,8 +16,8 @@ function formatDate(iso: string): string {
   });
 }
 
-export default function SourcesPage() {
-  const registry = getUsedSourceRegistry();
+export default async function SourcesPage() {
+  const registry = await getUsedSourceRegistry();
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-20 sm:px-8 sm:py-28">

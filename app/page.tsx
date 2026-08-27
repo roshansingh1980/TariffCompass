@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { TcLockup } from "@/components/brand/tc-lockup";
 import { CanadaUsHeatmap } from "@/components/homepage/canada-us-heatmap";
 import { KeyDatesSection } from "@/components/homepage/key-dates-section";
@@ -39,10 +40,29 @@ export default async function Home() {
           Navigate tariffs. Find your path.
         </p>
       </div>
-      <CanadaUsHeatmap />
+      <Suspense fallback={<HeatmapSkeleton />}>
+        <CanadaUsHeatmap />
+      </Suspense>
       <KeyDatesSection />
       <SourcesCountLine />
       <CtaSection isLoggedIn={isLoggedIn} savedProfileCount={savedProfileCount} />
     </div>
+  );
+}
+
+function HeatmapSkeleton() {
+  return (
+    <section className="w-full max-w-4xl px-6 pb-28">
+      <div className="mx-auto h-7 w-64 animate-pulse rounded-full bg-foreground/[0.06]" />
+      <div className="mx-auto mt-3 h-4 w-80 animate-pulse rounded-full bg-foreground/[0.05]" />
+      <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+        {[0, 1].map((i) => (
+          <div
+            key={i}
+            className="h-32 animate-pulse rounded-3xl border border-border/60 bg-foreground/[0.02]"
+          />
+        ))}
+      </div>
+    </section>
   );
 }

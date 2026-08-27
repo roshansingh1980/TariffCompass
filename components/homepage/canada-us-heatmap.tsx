@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getUsHeatmapSummary, type Attractiveness, type RiskStatus } from "@/lib/data/market-data";
+import { getUsHeatmapSummary, type Attractiveness, type RiskStatus } from "@/lib/data/db-market-data";
 import { cn } from "@/lib/utils";
 
 function AttractivenessBadge({ level }: { level: Attractiveness }) {
@@ -34,8 +34,25 @@ function RiskBadge({ level }: { level: RiskStatus }) {
   );
 }
 
-export function CanadaUsHeatmap() {
-  const summary = getUsHeatmapSummary();
+export async function CanadaUsHeatmap() {
+  let summary;
+  try {
+    summary = await getUsHeatmapSummary();
+  } catch (error) {
+    console.error("Failed to load homepage heatmap data:", error);
+    return (
+      <section className="w-full max-w-4xl px-6 pb-28">
+        <div className="text-center">
+          <h2 className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
+            Canada &ndash; U.S. trade, at a glance
+          </h2>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Couldn&apos;t load this section right now — try refreshing the page.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   const panels = [
     {

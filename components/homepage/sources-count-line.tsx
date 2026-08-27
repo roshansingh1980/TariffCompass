@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getUsedSourceRegistry } from "@/lib/data/source-registry";
 
-export function SourcesCountLine() {
-  const count = getUsedSourceRegistry().length;
+export async function SourcesCountLine() {
+  const count = (await getUsedSourceRegistry()).length;
 
   return (
     <div className="w-full px-6 pb-20 text-center">

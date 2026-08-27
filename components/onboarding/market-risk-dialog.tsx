@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
-import { getRiskStatus, type MarketDataRow, type RiskStatus } from "@/lib/data/market-data";
+import { getRiskStatus, type MarketDataRow, type RiskStatus } from "@/lib/data/db-market-data";
 import { cn } from "@/lib/utils";
 
 const RISK_HINTS: Record<RiskStatus, string> = {

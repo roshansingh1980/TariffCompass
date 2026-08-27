@@ -25,13 +25,13 @@ import {
   type Attractiveness,
   type CostFriction,
   type MarketDataRow,
-} from "@/lib/data/market-data";
+} from "@/lib/data/db-market-data";
+import { getSupportPrograms, type SupportProgram } from "@/lib/data/db-support-programs";
 import { computeExposure } from "@/lib/exposure";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { savePendingWizardState } from "@/lib/pending-wizard";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { deleteProfile, saveProfile } from "@/lib/supabase/saved-profiles";
-import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
 import type { SavedProfile } from "@/types/database";
 import { cn } from "@/lib/utils";
 
@@ -94,22 +94,58 @@ export function ResultsStep({
   const scenarioLabel = SCENARIOS.find((s) => s.id === scenario)?.title;
   const provinceLabel = CANADIAN_PROVINCES.find((p) => p.value === province)?.label;
   const direction = resolveScenarioDirection(scenario);
-  const comparisonRows = getMarketDataRows(category, scenario);
   const tariffColumnLabel = direction === "export" ? "Export Tariff" : "Import Duty";
-  const dataLastUpdated = comparisonRows[0]?.lastUpdated;
 
-  const usRow = comparisonRows.find((row) => row.market.key === "us");
+  const [detailsRow, setDetailsRow] = useState<MarketDataRow | null>(null);
+
+  const [comparisonRows, setComparisonRows] = useState<MarketDataRow[] | null>(null);
+  const [rowsError, setRowsError] = useState<string | null>(null);
+  const [supportPrograms, setSupportPrograms] = useState<SupportProgram[] | null>(null);
+  const [programsError, setProgramsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setComparisonRows(null);
+    setRowsError(null);
+    getMarketDataRows(category, scenario)
+      .then((rows) => {
+        if (!cancelled) setComparisonRows(rows);
+      })
+      .catch((err) => {
+        console.error("Failed to load market comparison data:", err);
+        if (!cancelled) setRowsError("Couldn't load the market comparison. Please try again.");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [category, scenario]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSupportPrograms()
+      .then((programs) => {
+        if (!cancelled) setSupportPrograms(programs);
+      })
+      .catch((err) => {
+        console.error("Failed to load support programs:", err);
+        if (!cancelled) setProgramsError("Couldn't load government support programs.");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const dataLastUpdated = comparisonRows?.[0]?.lastUpdated;
+  const usRow = comparisonRows?.find((row) => row.market.key === "us");
   const parsedAnnualValue = Number(annualValue);
   const exposure =
     usRow && Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0
       ? computeExposure(parsedAnnualValue, usRow.tariffRate)
       : null;
-  const supportLastChecked = SUPPORT_PROGRAMS.reduce(
+  const supportLastChecked = supportPrograms?.reduce(
     (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
-    SUPPORT_PROGRAMS[0]?.lastChecked ?? ""
+    supportPrograms[0]?.lastChecked ?? ""
   );
-
-  const [detailsRow, setDetailsRow] = useState<MarketDataRow | null>(null);
 
   useEffect(() => {
     // Anonymous visitors write nothing to the database — their answers stay
@@ -222,112 +258,129 @@ export function ResultsStep({
         />
       </div>
 
-      {/* Desktop table */}
-      <div className="mt-20 hidden overflow-hidden rounded-3xl border border-border/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:block">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-border/60 bg-foreground/[0.015]">
-              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                Market
-              </th>
-              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                {tariffColumnLabel}
-              </th>
-              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                Ease of Business
-              </th>
-              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                Cost / Friction
-              </th>
-              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                Overall Attractiveness
-              </th>
-              <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                Current Risk
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+      {rowsError && (
+        <div className="mt-20 rounded-3xl border border-destructive/30 bg-destructive/[0.03] p-8 text-center">
+          <p className="text-[15px] font-medium text-destructive">{rowsError}</p>
+        </div>
+      )}
+
+      {!rowsError && !comparisonRows && (
+        <div className="mt-20 flex flex-col items-center gap-3 rounded-3xl border border-border/60 p-16 text-center">
+          <div className="size-6 animate-spin rounded-full border-2 border-border border-t-foreground/60" />
+          <p className="text-sm text-muted-foreground">Loading your market comparison…</p>
+        </div>
+      )}
+
+      {comparisonRows && (
+        <>
+          {/* Desktop table */}
+          <div className="mt-20 hidden overflow-hidden rounded-3xl border border-border/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:block">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-border/60 bg-foreground/[0.015]">
+                  <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    Market
+                  </th>
+                  <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    {tariffColumnLabel}
+                  </th>
+                  <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    Ease of Business
+                  </th>
+                  <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    Cost / Friction
+                  </th>
+                  <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    Overall Attractiveness
+                  </th>
+                  <th className="px-7 py-5 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+                    Current Risk
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonRows.map((row) => (
+                  <tr
+                    key={row.market.key}
+                    className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
+                  >
+                    <td className="px-7 py-6 font-medium text-foreground">{row.market.name}</td>
+                    <td className="px-7 py-6 text-foreground">
+                      <LockedValue locked={!isSubscribed}>
+                        <TariffValue row={row} />
+                      </LockedValue>
+                      <DataStatusLine row={row} />
+                    </td>
+                    <td className="px-7 py-6">
+                      <span className="font-semibold text-foreground">
+                        {row.market.easeOfBusiness.toFixed(1)}
+                      </span>
+                      <span className="text-muted-foreground"> / 10</span>
+                    </td>
+                    <td className="px-7 py-6">
+                      <LockedValue locked={!isSubscribed}>
+                        <FrictionMeter level={row.costFriction} />
+                      </LockedValue>
+                    </td>
+                    <td className="px-7 py-6">
+                      <AttractivenessBadge
+                        level={row.attractiveness}
+                        onClick={() => setDetailsRow(row)}
+                      />
+                    </td>
+                    <td className="px-7 py-6">
+                      <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="mt-20 flex flex-col gap-4 sm:hidden">
             {comparisonRows.map((row) => (
-              <tr
+              <div
                 key={row.market.key}
-                className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
+                className="rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
               >
-                <td className="px-7 py-6 font-medium text-foreground">{row.market.name}</td>
-                <td className="px-7 py-6 text-foreground">
-                  <LockedValue locked={!isSubscribed}>
-                    <TariffValue row={row} />
-                  </LockedValue>
-                  <DataStatusLine row={row} />
-                </td>
-                <td className="px-7 py-6">
-                  <span className="font-semibold text-foreground">
-                    {row.market.easeOfBusiness.toFixed(1)}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-lg font-medium tracking-tight text-foreground">
+                    {row.market.name}
                   </span>
-                  <span className="text-muted-foreground"> / 10</span>
-                </td>
-                <td className="px-7 py-6">
-                  <LockedValue locked={!isSubscribed}>
-                    <FrictionMeter level={row.costFriction} />
-                  </LockedValue>
-                </td>
-                <td className="px-7 py-6">
                   <AttractivenessBadge
                     level={row.attractiveness}
                     onClick={() => setDetailsRow(row)}
                   />
-                </td>
-                <td className="px-7 py-6">
-                  <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
-                </td>
-              </tr>
+                </div>
+                <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
+                  <dt className="text-muted-foreground">{tariffColumnLabel}</dt>
+                  <dd className="text-right font-medium text-foreground">
+                    <LockedValue locked={!isSubscribed}>
+                      <TariffValue row={row} />
+                    </LockedValue>
+                  </dd>
+                  <dt className="text-muted-foreground">Ease of Business</dt>
+                  <dd className="text-right font-medium text-foreground">
+                    {row.market.easeOfBusiness.toFixed(1)} / 10
+                  </dd>
+                  <dt className="flex items-center text-muted-foreground">Cost / Friction</dt>
+                  <dd className="flex justify-end">
+                    <LockedValue locked={!isSubscribed}>
+                      <FrictionMeter level={row.costFriction} />
+                    </LockedValue>
+                  </dd>
+                  <dt className="flex items-center text-muted-foreground">Current Risk</dt>
+                  <dd className="flex justify-end">
+                    <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
+                  </dd>
+                </dl>
+                <DataStatusLine row={row} className="mt-3" />
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile cards */}
-      <div className="mt-20 flex flex-col gap-4 sm:hidden">
-        {comparisonRows.map((row) => (
-          <div
-            key={row.market.key}
-            className="rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-lg font-medium tracking-tight text-foreground">
-                {row.market.name}
-              </span>
-              <AttractivenessBadge
-                level={row.attractiveness}
-                onClick={() => setDetailsRow(row)}
-              />
-            </div>
-            <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
-              <dt className="text-muted-foreground">{tariffColumnLabel}</dt>
-              <dd className="text-right font-medium text-foreground">
-                <LockedValue locked={!isSubscribed}>
-                  <TariffValue row={row} />
-                </LockedValue>
-              </dd>
-              <dt className="text-muted-foreground">Ease of Business</dt>
-              <dd className="text-right font-medium text-foreground">
-                {row.market.easeOfBusiness.toFixed(1)} / 10
-              </dd>
-              <dt className="flex items-center text-muted-foreground">Cost / Friction</dt>
-              <dd className="flex justify-end">
-                <LockedValue locked={!isSubscribed}>
-                  <FrictionMeter level={row.costFriction} />
-                </LockedValue>
-              </dd>
-              <dt className="flex items-center text-muted-foreground">Current Risk</dt>
-              <dd className="flex justify-end">
-                <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
-              </dd>
-            </dl>
-            <DataStatusLine row={row} className="mt-3" />
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
       {dataLastUpdated && (
         <p className="mt-8 text-center text-xs text-muted-foreground/60">
@@ -375,8 +428,15 @@ export function ResultsStep({
           </p>
         )}
 
+        {programsError && (
+          <p className="mt-10 text-sm text-destructive">{programsError}</p>
+        )}
+        {!programsError && !supportPrograms && (
+          <p className="mt-10 text-sm text-muted-foreground">Loading government programs…</p>
+        )}
+
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {SUPPORT_PROGRAMS.map((program) => (
+          {supportPrograms?.map((program) => (
             <div
               key={program.name}
               className="flex h-full flex-col gap-3 rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
@@ -412,41 +472,43 @@ export function ResultsStep({
         </div>
       </div>
 
-      <GenerateBriefSection
-        isLoggedIn={isLoggedIn}
-        isSubscribed={isSubscribed}
-        wizardSelections={{
-          scenario,
-          country,
-          province,
-          usState,
-          category,
-          productName,
-          annualValue,
-          currency: currency as Currency,
-          hsCode,
-        }}
-        input={{
-          scenarioLabel: scenarioLabel ?? null,
-          country,
-          province: provinceLabel ?? province,
-          usState,
-          category,
-          productName,
-          tariffColumnLabel,
-          annualValue: Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0 ? parsedAnnualValue : null,
-          currency: currency || null,
-          hsCode: hsCode.trim() || null,
-          comparisonRows: comparisonRows.map((row) => ({
-            market: row.market.name,
-            tariffRate: row.tariffRate,
-            tariffConfidence: row.tariffConfidence,
-            easeOfBusiness: row.market.easeOfBusiness,
-            costFriction: row.costFriction,
-            attractiveness: row.attractiveness,
-          })),
-        }}
-      />
+      {comparisonRows && (
+        <GenerateBriefSection
+          isLoggedIn={isLoggedIn}
+          isSubscribed={isSubscribed}
+          wizardSelections={{
+            scenario,
+            country,
+            province,
+            usState,
+            category,
+            productName,
+            annualValue,
+            currency: currency as Currency,
+            hsCode,
+          }}
+          input={{
+            scenarioLabel: scenarioLabel ?? null,
+            country,
+            province: provinceLabel ?? province,
+            usState,
+            category,
+            productName,
+            tariffColumnLabel,
+            annualValue: Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0 ? parsedAnnualValue : null,
+            currency: currency || null,
+            hsCode: hsCode.trim() || null,
+            comparisonRows: comparisonRows.map((row) => ({
+              market: row.market.name,
+              tariffRate: row.tariffRate,
+              tariffConfidence: row.tariffConfidence,
+              easeOfBusiness: row.market.easeOfBusiness,
+              costFriction: row.costFriction,
+              attractiveness: row.attractiveness,
+            })),
+          }}
+        />
+      )}
 
       <div className="mt-20 flex justify-center">
         <Button
