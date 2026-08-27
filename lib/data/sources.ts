@@ -107,6 +107,27 @@ export const SOURCES = {
     usedFor: "Financing for established exporters adapting operations in response to U.S. tariffs.",
     lastChecked: "2026-08-26",
   },
+  edcSteelAluminumTariffs: {
+    key: "edcSteelAluminumTariffs",
+    name: "EDC — U.S. Steel and Aluminum Tariffs: What Exporters Need to Know",
+    url: "https://www.edc.ca/en/article/us-steel-and-aluminum-tariffs.html",
+    usedFor: "Export Development Canada's summary of the Section 232 steel/aluminum/copper tariff tiers (10%-50%) and the sub-15%-metal-content de minimis exemption.",
+    lastChecked: "2026-08-26",
+  },
+  dutiableAutoParts232: {
+    key: "dutiableAutoParts232",
+    name: "Dutiable — Section 232 Covered Auto Parts (2026)",
+    url: "https://dutiable.io/blog/section-232-covered-auto-parts-2026-list-explained",
+    usedFor: "Explains the Section 232 25% auto-parts tariff and the USMCA rules-of-origin exemption path that keeps most Canada-U.S. auto trade at a low effective rate.",
+    lastChecked: "2026-08-26",
+  },
+  ghyCounterTariffsSept2026: {
+    key: "ghyCounterTariffsSept2026",
+    name: "GHY — Canada to Impose New Counter-Tariffs on U.S. Goods (Sept 2026)",
+    url: "https://www.ghy.com/trade-compliance/canada-counter-tariffs-us-goods-september-2026/",
+    usedFor: "Summary of the sectors and duty tiers (15%/25%/50%) in Canada's September 8, 2026 counter-tariff list on U.S. goods.",
+    lastChecked: "2026-08-26",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceKey = keyof typeof SOURCES;
@@ -134,4 +155,22 @@ export type SourceKey = keyof typeof SOURCES;
  * currently resolve — the former appears to still serve the trade-agreement
  * subpages directly rather than redirecting, so URLs above use it, but a
  * future refresh should re-check whether that migration has completed.
+ *
+ * 2026-08-26 review (Steel & Metals / Auto parts / Agri-food / Apparel /
+ * Machinery / Electronics / Furniture, US export+import rows): every
+ * primary government page attempted was blocked from direct fetch —
+ * - canada.ca's Sept 8, 2026 counter-tariff list (403, same as the prior
+ *   review's attempt above)
+ * - federalregister.gov's Section 338 Proclamation 11048 (Motor Vehicle
+ *   Annex, https://www.federalregister.gov/documents/2026/07/23/2026-14997/)
+ *   and Proclamation 11047 (Dairy Annex, .../2026/07/23/2026-14992/) —
+ *   both redirect to an "unblock.federalregister.gov" wall
+ * - cbp.gov's Section 232 auto-parts FAQ and congress.gov's CRS report on
+ *   Section 232 automotive tariffs — both 403
+ * These proclamation numbers, HTS headings (9903.03.13, 9903.03.14), and
+ * canada.ca's list are corroborated by multiple independent secondary
+ * professional-services sources (see the new entries above) and are the
+ * correct citations for a human — or a future refresh with different fetch
+ * access — to check directly; no `tariffConfidence` was raised to
+ * "official" on the strength of secondary corroboration alone.
  */
