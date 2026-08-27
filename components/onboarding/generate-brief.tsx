@@ -71,10 +71,20 @@ export function GenerateBriefSection({
 
       {brief && (
         <div className="mt-8 rounded-3xl border border-border/60 p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-10">
+          <p className="mb-6 text-sm text-muted-foreground/80">
+            Prepared for: {input.productName || input.category || "your business"}
+            {input.scenarioLabel ? ` — ${input.scenarioLabel}` : ""} —{" "}
+            {new Date().toLocaleDateString("en-CA", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
           <BriefContent text={brief} />
           <p className="mt-8 border-t border-border/50 pt-6 text-xs text-muted-foreground/70">
-            This brief was generated using your inputs and available data. It is a starting point
-            for discussion, not a determination of eligibility, duty rates, or legal status.
+            This brief is a starting point for a funding or client conversation. It is not a
+            determination of program eligibility, and not legal, tax, or financial advice.
+            Confirm program details and figures with official sources before acting.
           </p>
         </div>
       )}

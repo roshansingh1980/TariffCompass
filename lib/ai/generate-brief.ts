@@ -63,11 +63,11 @@ Recommended path
 Give a practical next-step recommendation.
 Keep it realistic.
 
-Government support to review
+Government programs to review
 Mention only relevant Canadian programs such as RTRI, CanExport, BDC, or EDC if they reasonably fit.
 Do not say the user is eligible. Say they should review the official criteria.
 
-Suggested next actions
+Next actions
 Give 3 to 5 short action items.
 
 Style rules
