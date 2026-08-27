@@ -10,6 +10,9 @@ export type SaveProfileInput = {
   province: string | null;
   usState: string | null;
   category: string | null;
+  annualValue: number | null;
+  currency: string | null;
+  hsCode: string | null;
 };
 
 export type SaveProfileResult = { error: string } | { success: true; id: string };
@@ -60,6 +63,9 @@ export async function saveProfile(input: SaveProfileInput): Promise<SaveProfileR
       province: input.province,
       us_state: input.usState,
       category: input.category,
+      annual_value: input.annualValue,
+      currency: input.currency,
+      hs_code: input.hsCode,
     })
     .select("id")
     .single();

@@ -1,8 +1,8 @@
 /**
  * Hand-written types mirroring supabase/migrations/001_initial_schema.sql,
- * 002_add_trade_profile_columns.sql, 003_add_subscription_fields.sql, and
- * 004_add_saved_profiles.sql. Keep these in sync with the migrations if the
- * schema changes.
+ * 002_add_trade_profile_columns.sql, 003_add_subscription_fields.sql,
+ * 004_add_saved_profiles.sql, and 005_add_exposure_fields_to_saved_profiles.sql.
+ * Keep these in sync with the migrations if the schema changes.
  */
 
 // ============================================================
@@ -104,6 +104,9 @@ export interface SavedProfile {
   province: string | null;
   us_state: string | null;
   category: string | null;
+  annual_value: number | null;
+  currency: string | null;
+  hs_code: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -117,6 +120,9 @@ export type SavedProfileInsert = {
   province?: string | null;
   us_state?: string | null;
   category?: string | null;
+  annual_value?: number | null;
+  currency?: string | null;
+  hs_code?: string | null;
   created_at?: string;
   updated_at?: string;
 };
