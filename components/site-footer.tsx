@@ -41,6 +41,12 @@ export function SiteFooter() {
             >
               Notices
             </Link>
+            <Link
+              href="/updates"
+              className="tracking-wide transition-colors duration-200 hover:text-foreground"
+            >
+              Updates
+            </Link>
           </div>
         </div>
         <p className="max-w-2xl text-center text-[11px] leading-relaxed text-muted-foreground/60">
