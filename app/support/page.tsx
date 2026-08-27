@@ -26,26 +26,30 @@ export default function SupportPage() {
             How to use TariffCompass
           </h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            After you sign up, you&apos;ll walk through four short steps: tell us your scenario
-            (exporting or importing, U.S. or elsewhere), where your business is based, and what
-            product category you sell or import. TariffCompass then shows a market comparison —
-            tariff exposure, ease of doing business, cost/friction, and an overall rating for each
-            market — along with government support programs that may be relevant, and an option to
-            generate a personalized AI diversification brief.
+            No account needed to start. Go to the dashboard and walk through four short steps:
+            tell us your scenario (exporting or importing, U.S. or elsewhere), where your business
+            is based, what product category you sell or import, and roughly how much you ship.
+            TariffCompass then shows a market comparison — ease of doing business, overall
+            attractiveness, and current risk for each market — along with government support
+            programs that may be relevant.
           </p>
         </section>
 
         <section className="flex flex-col gap-3">
           <h2 className="text-xl font-medium tracking-tight text-foreground">Free vs. paid</h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            Everyone can complete onboarding and see their Results screen for free, including
-            market names, ease of doing business scores, overall attractiveness ratings, and a
-            preview of government support programs.
+            Anyone can complete the wizard and see their Results screen for free, with no account
+            required — market names, ease of doing business scores, overall attractiveness and
+            risk ratings, each rate&apos;s data status and source, and the names of relevant
+            government support programs.
           </p>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            A paid subscription unlocks the full tariff rate and cost/friction detail for every
-            market, complete government support program details, and the ability to generate an
-            AI diversification brief.
+            A free account (no payment) lets you save profiles and reopen them later.
+          </p>
+          <p className="text-[15.5px] leading-[1.75] text-foreground/90">
+            A paid subscription unlocks the exact tariff rate and cost/friction detail for every
+            market, full government support program descriptions and links, and the ability to
+            generate an AI diversification brief.
           </p>
         </section>
 
