@@ -185,7 +185,7 @@ export function DashboardShell({
         </div>
       )}
 
-      <main className="flex min-w-0 flex-1 flex-col pt-14 lg:pt-0">{children}</main>
+      <div className="flex min-w-0 flex-1 flex-col pt-14 lg:pt-0">{children}</div>
     </div>
   );
 }
