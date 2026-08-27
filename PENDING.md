@@ -1,6 +1,6 @@
 # TariffCompass — Pending
 
-Last updated: 27 August 2026. Repo at `a3ce8a6` (plus whatever has landed since).
+Last updated: 27 August 2026. Repo at `42842f7` (plus whatever has landed since). Build work now lives in [ROADMAP.md](ROADMAP.md); this file covers strategy, outreach, legal, and everything that isn't code.
 
 ---
 
@@ -19,7 +19,7 @@ The whole point of everything below. Nobody outside this project has used the to
 - [ ] Book the lawyer. All blocking decisions are made ($29, gating split, Adithana Capital Ltd.)
 - [ ] Ask the lawyer: does the AI brief's specific business guidance cross into regulated advice, and do current disclaimers cover it? Bring `/updates`, a generated brief, and `/notices`
 - [ ] Ask the lawyer whether TariffCompass belongs under Adithana Capital Ltd. or a separate operating company — mixing a capital/advisory vehicle with a product publishing tariff figures may be the wrong liability shape, and it affects grant eligibility
-- [ ] Meetings with an accountant, a banker, and a lawyer
+- [ ] Meeting with the lawyer — the other two are different now: per ROADMAP.md, the accountant/banker/consultant meetings are held until its Week 6 is done ("those are the conversations that need the wow version")
 - [ ] Five exporters, five accountants — the validation round
 - [ ] One call with PacifiCan, one with an NRC IRAP advisor (free, informal, tells you whether you're fundable)
 
@@ -66,79 +66,34 @@ The whole point of everything below. Nobody outside this project has used the to
 
 ---
 
-## Pre-meeting build candidates — the professional tier
-
-The accountant/banker meeting hinges on three features. None of them exist today. The question "would you pay for this?" is unanswerable if they can't see it working, and a mock is worse than nothing — people react badly to being shown something that isn't real, even when told so. A thin real version beats a polished mock.
-
-Estimated three to four days total for thin versions of all three. Thin means thin: ship the shape, not the finish.
-
-- [ ] **White-label PDF export** — hardest of the three, still small. The brief already streams as text; this is a PDF renderer plus a firm name and logo in the header. ~1-2 days. Trap: spending three days on typography. A plainly-set document with their name on it does the whole job.
-- [ ] **Multi-client view** — easiest, and most of the data exists. `saved_profiles` holds every input; `analyses` holds computed exposure with rate snapshots. This is a client name column plus a table view: client, category, exposure, last updated. No new logic. ~1 day. A list, not a dashboard with charts.
-- [ ] **Defensible paper trail** — mostly built already. Sources, dates, confidence labels, corrections log, and `analyses` capturing a rate snapshot per run all exist. What's missing is surfacing it: a "sources as of" block on the PDF and a visible timestamp. Hours, not days.
-- [ ] **Manual end-to-end payment test** — subscribe with a real credit card on the deployed site, confirm the subscription appears in Stripe with Live mode on, cancel via the billing portal, refund. This is the only way to know checkout actually works. A broken checkout discovered in front of an accountant is the worst possible time. Blocked until Cloudflare Access lifts, or run it from a browser session that passes Access.
-- [ ] Set the C$29 price as default in Stripe and archive the C$99 price (0 active subscriptions on both, so archiving breaks nothing). Right now C$99 is still marked Default — anything creating a subscription without an explicit price ID would use it.
-
-**Hard limit: four days.** Then the meetings happen regardless of state. This project has a pattern of the next feature always feeling necessary before talking to anyone.
-
-**Anything not shipped is described as planned, never implied to exist.**
-
----
-
-## In flight
-
-- [ ] Canada/US toggle removal + `country-context` investigation (sent; stop and report if the context genuinely controls something)
-- [ ] Footer line "A Canadian tool for a Canadian problem."
-- [ ] Doc/dead-file audit — report first, approve before deleting. Scope is docs and orphans only; no refactoring of working code before the meetings
-- [ ] Delete the `/api/debug-source-check` route and redeploy (verification came back all-200 from the Worker runtime)
-
----
-
 ## Build queue
 
-**Broken navigation**
-- [ ] **[PRE-MEETING]** Sidebar shell consistency — sidebar links to `/updates` and `/sources`, but those render with the marketing top nav, so a sidebar click drops you out with no way back. Rule: any page reachable from the sidebar renders inside it. Complication: both are also public pages anonymous visitors reach from search. `/updates` is specifically on the lawyer's demo list — a dead-end there is a bad live moment
+Superseded by [ROADMAP.md](ROADMAP.md) — the six-week feature build (HS-code-level rates → Section 232/338 → CUSMA/CKFTA qualification → alerts → professional tier). Update ROADMAP.md directly for anything build-related; this file no longer carries a parallel task list for it, to avoid the two drifting apart the way `key_dates` did.
 
-**Landing page**
-- [ ] **[V2]** Heatmap rebuilt as a real grid — 8 categories down, five columns across, direction and market dropdowns. **Plan first**, resolving: market coverage varies by category (8 distinct markets, only 5 per category); Cost/Friction rating is free but its reasoning is paid; colour scale must carry text labels (zero axe violations currently, don't break it)
-- [ ] **[V2]** Direction × market summary pages (~16, not 144 — thin pages hurt SEO). Sitemap derived, not hardcoded
-- [ ] **[V2]** Asymmetric layout: heatmap 2/3 left, timeline 1/3 right. After the grid. Truncate timeline descriptions to first sentence, keep category chips
-- [ ] **[V2]** Heatmap dropdown for EU, UK, Japan, and other combinations (folded in from `future.md`) — after the grid rebuild
-- [ ] **[V2]** Province/state heat layers (folded in from `future.md`) — after the grid rebuild
-- [ ] **[V2]** Category-specific heat layers (folded in from `future.md`) — after the grid rebuild
+Everything previously tracked here that ROADMAP.md now actively schedules (official data ingestion, white-label PDF export, multi-client view, `/for-advisors`, change detection, program deadline warnings) has moved there. Sidebar shell consistency, the one item that was in flight, shipped and is no longer tracked anywhere.
 
-**Product**
-- [ ] **[V2]** `/for-advisors` page — one page for accountants, bankers, consultants. White-label and multi-client labelled PLANNED, not available. The live demo of the actual features is the pitch; this page doesn't change whether the meetings land
-- [ ] **[V2]** Wizard collapse to a single page, live-updating results below. **Plan first** — touches `sessionStorage` persistence, the anonymous→signup handoff, and the debounced `analyses` write
+---
 
-**Official data ingestion** — the foundation everything else sits on
+## V2 — deliberately cut
 
-Production verification passed: all five sources return 200 from the Cloudflare Worker runtime.
+Carried over from the old Build queue; ROADMAP.md's own "Deferred to V2" list is authoritative going forward — this is just the subset of it that used to live here.
 
-- [ ] **[V2]** Federal Register API connector first — documented, stable, and it fills `effective_from`, which alerts depend on
-- [ ] **[V2]** USITC HTS connector for base MFN rates (note: `reststop/search` is undocumented/internal, could break without warning)
-- [ ] **[V2]** Canada Gazette Part II RSS for counter-tariff and remission orders
-- [ ] **[V2]** Three-tier data model: *official* (HTS base rates), *official source, human-read* (232/338 and counter-tariffs — the rate exists only in proclamation prose, so a person extracts it), *estimated* (everything else)
-- [ ] **[V2]** Curated category → HS code mapping. Neither API supplies this
-- [ ] **[V2]** `open.canada.ca` respects `Crawl-delay: 20`. OGL-Canada requires attribution; US federal sources are public domain and don't. Attribution treatment must differ by source
-
-**Paid features — none exist yet, and they are what makes $29 worth paying**
-- [ ] **[V2]** Change detection job + weekly digest email (needs `effective_from`)
-- [ ] **[PRE-MEETING]** Exportable dated exposure record — overlaps with the paper-trail item above; this is the SME-facing version of the same underlying capability
-- [ ] **[V2]** Program deadline warnings (schema exists, all NULL, needs research)
-- [ ] **[PRE-MEETING]** White-label PDF export → unlocks the professional tier (same item as above, tracked here as the backlog entry)
-- [ ] **[PRE-MEETING]** Multi-client portfolio view (same item as above, tracked here as the backlog entry)
+- [ ] Homepage heatmap rebuilt as a real category × column grid, with market dropdowns (folds in the EU/UK/Japan, province/state, and category-specific layers previously noted in `future.md`)
+- [ ] Direction × market summary pages (~16, sitemap-derived)
+- [ ] Asymmetric landing layout (heatmap 2/3, timeline 1/3)
+- [ ] Wizard collapse to a single page
 
 ---
 
 ## Data debt
 
-- [ ] CUSMA annotation lost in migration — "0% (CUSMA)" now renders "0%". That parenthetical was the highest-value fact on screen for a Canadian exporter. Needs a column and a restore
+- [ ] **Scheduled — ROADMAP.md Week 1–2.** CUSMA annotation lost in migration — "0% (CUSMA)" now renders "0%". That parenthetical was the highest-value fact on screen for a Canadian exporter. Needs a column and a restore
 - [ ] `key_dates` seeded in Postgres but the homepage still reads `lib/data/key-dates.ts`. Two sources of truth
 - [ ] `companies` / `products` not dropped (3 and 6 rows). `saveOnboardingSelections` still writes there. Removal plan proposed, not approved
 - [ ] `lib/stripe/actions.ts` has no try/catch and no inline error UI. Root error boundary catches it, but a proper fix needs the billing forms rebuilt around `useActionState`
-- [ ] `effective_from` NULL on all 90 rows — by design until the Federal Register connector lands
+- [ ] **Scheduled — ROADMAP.md Week 3.** `effective_from` NULL on all 90 rows — by design until the Federal Register connector lands
 - [ ] `measure_type` NULL on 12 of 90 rows
-- [ ] Not one row is marked "official". All 90 are estimated or unknown
+- [ ] **Scheduled — ROADMAP.md Week 1–2** (three-tier confidence model). Not one row is marked "official". All 90 are estimated or unknown
 - [ ] "Other / Custom" produces nothing — 10 rows, all null. Interstitial shipped, but the category still has no data
 - [ ] Agri-food imports read 0–298% identically from all five origins. Behind the paywall and worth nothing
 - [ ] Four of nine categories return 0–0% on every import row
