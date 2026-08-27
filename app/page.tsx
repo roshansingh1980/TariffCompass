@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TcLockup } from "@/components/brand/tc-lockup";
 import { CanadaUsHeatmap } from "@/components/homepage/canada-us-heatmap";
+import { KeyDatesSection } from "@/components/homepage/key-dates-section";
+import { SourcesCountLine } from "@/components/homepage/sources-count-line";
 
 export const metadata: Metadata = {
   title: "TariffCompass | Canadian Export Tariff & Market Diversification Tool",
@@ -29,6 +31,8 @@ export default function Home() {
         </Button>
       </div>
       <CanadaUsHeatmap />
+      <KeyDatesSection />
+      <SourcesCountLine />
     </div>
   );
 }
