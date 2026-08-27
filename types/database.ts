@@ -1,7 +1,8 @@
 /**
  * Hand-written types mirroring supabase/migrations/001_initial_schema.sql,
- * 002_add_trade_profile_columns.sql, and 003_add_subscription_fields.sql.
- * Keep these in sync with the migrations if the schema changes.
+ * 002_add_trade_profile_columns.sql, 003_add_subscription_fields.sql, and
+ * 004_add_saved_profiles.sql. Keep these in sync with the migrations if the
+ * schema changes.
  */
 
 // ============================================================
@@ -89,3 +90,35 @@ export type ProductInsert = {
 };
 
 export type ProductUpdate = Partial<ProductInsert>;
+
+// ============================================================
+// saved_profiles
+// ============================================================
+
+export interface SavedProfile {
+  id: string;
+  user_id: string;
+  name: string;
+  scenario: string | null;
+  country: string | null;
+  province: string | null;
+  us_state: string | null;
+  category: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type SavedProfileInsert = {
+  id?: string;
+  user_id: string;
+  name: string;
+  scenario?: string | null;
+  country?: string | null;
+  province?: string | null;
+  us_state?: string | null;
+  category?: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type SavedProfileUpdate = Partial<SavedProfileInsert>;

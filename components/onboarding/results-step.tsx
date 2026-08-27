@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ArrowUpRight, Lock, Pencil } from "lucide-react";
+import { ArrowUpRight, Lock, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
 import { MarketRiskDialog, RiskBadge } from "@/components/onboarding/market-risk-dialog";
@@ -25,7 +26,9 @@ import {
 } from "@/lib/data/market-data";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
+import { deleteProfile, saveProfile } from "@/lib/supabase/saved-profiles";
 import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
+import type { SavedProfile } from "@/types/database";
 import { cn } from "@/lib/utils";
 
 function formatDate(iso: string): string {
@@ -45,6 +48,8 @@ export function ResultsStep({
   category,
   productName,
   isSubscribed,
+  savedProfiles,
+  onSavedProfilesChange,
   onBack,
   onEditStep,
   onScenarioChange,
@@ -58,6 +63,8 @@ export function ResultsStep({
   category: string | null;
   productName: string;
   isSubscribed: boolean;
+  savedProfiles: SavedProfile[];
+  onSavedProfilesChange: () => void;
   onBack: () => void;
   onEditStep: (step: "scenario" | "location" | "product") => void;
   onScenarioChange: (value: string) => void;
@@ -126,6 +133,12 @@ export function ResultsStep({
             </button>
           )}
         </div>
+
+        <SavedProfilesPanel
+          savedProfiles={savedProfiles}
+          onSavedProfilesChange={onSavedProfilesChange}
+          currentSelections={{ scenario, country, province, usState, category }}
+        />
       </div>
 
       {/* Desktop table */}
@@ -360,6 +373,120 @@ export function ResultsStep({
       />
     </div>
     </TooltipProvider>
+  );
+}
+
+function SavedProfilesPanel({
+  savedProfiles,
+  onSavedProfilesChange,
+  currentSelections,
+}: {
+  savedProfiles: SavedProfile[];
+  onSavedProfilesChange: () => void;
+  currentSelections: {
+    scenario: string | null;
+    country: Country;
+    province: string | null;
+    usState: string | null;
+    category: string | null;
+  };
+}) {
+  const [isNaming, setIsNaming] = useState(false);
+  const [name, setName] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSave() {
+    setError(null);
+    setIsSaving(true);
+    const result = await saveProfile({
+      name,
+      scenario: currentSelections.scenario,
+      country: currentSelections.country,
+      province: currentSelections.province,
+      usState: currentSelections.usState,
+      category: currentSelections.category,
+    });
+    setIsSaving(false);
+    if ("error" in result) {
+      setError(result.error);
+      return;
+    }
+    setName("");
+    setIsNaming(false);
+    onSavedProfilesChange();
+  }
+
+  async function handleDelete(id: string) {
+    await deleteProfile(id);
+    onSavedProfilesChange();
+  }
+
+  return (
+    <div className="mt-7 flex flex-col items-center gap-3">
+      {savedProfiles.length > 0 && (
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {savedProfiles.map((profile) => (
+            <span
+              key={profile.id}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-foreground/[0.015] py-1.5 pr-1.5 pl-3.5 text-xs text-muted-foreground"
+            >
+              {profile.name}
+              <button
+                type="button"
+                onClick={() => handleDelete(profile.id)}
+                aria-label={`Delete saved profile ${profile.name}`}
+                className="rounded-full p-1 text-muted-foreground/50 transition-colors duration-200 hover:bg-foreground/10 hover:text-foreground"
+              >
+                <X className="size-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {isNaming ? (
+        <div className="flex items-center gap-2">
+          <Input
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Profile name"
+            className="h-9 w-48 rounded-full border-border/50 px-4 text-sm"
+          />
+          <Button
+            type="button"
+            size="sm"
+            disabled={!name.trim() || isSaving}
+            onClick={handleSave}
+            className="h-9 rounded-full px-4 text-sm"
+          >
+            {isSaving ? "Saving…" : "Save"}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setIsNaming(false);
+              setError(null);
+            }}
+            className="h-9 rounded-full px-3 text-sm text-muted-foreground"
+          >
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setIsNaming(true)}
+          className="text-xs font-medium tracking-wide text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        >
+          Save this profile
+        </button>
+      )}
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
   );
 }
 

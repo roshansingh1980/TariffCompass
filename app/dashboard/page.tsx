@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { DashboardWizard } from "@/components/onboarding/dashboard-wizard";
 import { createClient } from "@/lib/supabase/server";
+import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -16,6 +17,7 @@ export default async function DashboardPage() {
     .maybeSingle();
 
   const isSubscribed = profile?.subscription_status === "active";
+  const savedProfiles = await listSavedProfiles();
 
-  return <DashboardWizard isSubscribed={isSubscribed} />;
+  return <DashboardWizard isSubscribed={isSubscribed} savedProfiles={savedProfiles} />;
 }
