@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { TcLockup } from "@/components/brand/tc-lockup";
 import { CanadaUsHeatmap } from "@/components/homepage/canada-us-heatmap";
 import { KeyDatesSection } from "@/components/homepage/key-dates-section";
 import { SourcesCountLine } from "@/components/homepage/sources-count-line";
+import { CtaSection } from "@/components/homepage/cta-section";
+import { createClient } from "@/lib/supabase/server";
+import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
 
 export const metadata: Metadata = {
   title: "TariffCompass | Canadian Export Tariff & Market Diversification Tool",
@@ -13,7 +14,23 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function Home() {
+export default async function Home() {
+  let isLoggedIn = false;
+  let savedProfileCount = 0;
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    isLoggedIn = Boolean(user);
+    if (isLoggedIn) {
+      savedProfileCount = (await listSavedProfiles()).length;
+    }
+  } catch (error) {
+    console.error("Homepage failed to load auth state:", error);
+  }
+
   return (
     <div className="flex flex-1 flex-col items-center">
       <div className="flex flex-col items-center justify-center px-6 py-36 text-center sm:py-48">
@@ -21,18 +38,11 @@ export default function Home() {
         <p className="mt-10 max-w-md text-xl font-normal text-muted-foreground sm:text-2xl">
           Navigate tariffs. Find your path.
         </p>
-        <Button
-          size="lg"
-          render={<Link href="/dashboard" />}
-          nativeButton={false}
-          className="mt-16 h-12 rounded-full px-10 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
-        >
-          Get Started
-        </Button>
       </div>
       <CanadaUsHeatmap />
       <KeyDatesSection />
       <SourcesCountLine />
+      <CtaSection isLoggedIn={isLoggedIn} savedProfileCount={savedProfileCount} />
     </div>
   );
 }
