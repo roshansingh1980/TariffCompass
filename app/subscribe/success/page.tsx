@@ -56,7 +56,7 @@ export default async function SubscribeSuccessPage({
       </h1>
       <p className="mt-4 max-w-sm text-lg text-muted-foreground">
         {isComplete
-          ? "Your C$99/month plan is active. You can now generate AI diversification briefs."
+          ? "Your C$29/month plan is active. You can now generate AI diversification briefs."
           : "We couldn't confirm your payment. If you were charged, contact support — otherwise you can try again from your dashboard."}
       </p>
       <Button

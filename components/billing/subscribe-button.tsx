@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function SubscribeButton({
-  label = "Subscribe — C$99/month",
+  label = "Subscribe — C$29/month",
   className,
 }: {
   label?: string;

@@ -58,7 +58,7 @@ export default function SupportPage() {
             How billing works
           </h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            The paid plan is C$99/month, billed monthly through Stripe. Stripe handles all payment
+            The paid plan is C$29/month, billed monthly through Stripe. Stripe handles all payment
             details directly — TariffCompass never sees or stores your card number. Your
             subscription renews automatically each month until you cancel.
           </p>

@@ -221,7 +221,7 @@ export function MarketRiskDialog({
                     Unlock the full risk breakdown for {row.market.name} — why it&apos;s rated
                     this way, key risks, and a relevant next step.
                   </p>
-                  <SubscribeButton label="Upgrade — C$99/month" className="h-11 px-7" />
+                  <SubscribeButton label="Upgrade — C$29/month" className="h-11 px-7" />
                 </div>
               )}
 
