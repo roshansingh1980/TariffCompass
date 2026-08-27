@@ -75,10 +75,10 @@ export default function SupportPage() {
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             Have a question or run into a problem? Email us at{" "}
             <a
-              href="mailto:support@tariffcompass.com"
+              href="mailto:support@tariffcompass.ca"
               className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
             >
-              support@tariffcompass.com
+              support@tariffcompass.ca
             </a>{" "}
             and we&apos;ll get back to you.
           </p>

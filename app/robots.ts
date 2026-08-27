@@ -13,6 +13,8 @@ export default function robots(): MetadataRoute.Robots {
         "/privacy",
         "/terms",
         "/notices",
+        "/updates",
+        "/sources",
       ],
       disallow: ["/dashboard", "/login", "/signup", "/subscribe", "/api/"],
     },

@@ -17,10 +17,10 @@ export default function PrivacyPage() {
       <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
         Last updated August 26, 2026. Written in plain language — if anything is unclear, email{" "}
         <a
-          href="mailto:support@tariffcompass.com"
+          href="mailto:support@tariffcompass.ca"
           className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
         >
-          support@tariffcompass.com
+          support@tariffcompass.ca
         </a>
         .
       </p>
@@ -90,10 +90,10 @@ export default function PrivacyPage() {
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             To request deletion of your account and the data associated with it, email{" "}
             <a
-              href="mailto:support@tariffcompass.com"
+              href="mailto:support@tariffcompass.ca"
               className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
             >
-              support@tariffcompass.com
+              support@tariffcompass.ca
             </a>{" "}
             from the address on your account. We&apos;ll confirm once your data has been removed.
           </p>

@@ -17,10 +17,10 @@ export default function TermsPage() {
       <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
         Last updated August 26, 2026. Plain-language terms — if anything is unclear, email{" "}
         <a
-          href="mailto:support@tariffcompass.com"
+          href="mailto:support@tariffcompass.ca"
           className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
         >
-          support@tariffcompass.com
+          support@tariffcompass.ca
         </a>
         .
       </p>
