@@ -1,4 +1,5 @@
 import { KEY_DATES, type KeyDate } from "@/lib/data/key-dates";
+import { cn } from "@/lib/utils";
 
 function formatDate(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-CA", {
@@ -9,18 +10,30 @@ function formatDate(iso: string): string {
   });
 }
 
-function KeyDateRow({ entry }: { entry: KeyDate }) {
+function KeyDateRow({ entry, isPast }: { entry: KeyDate; isPast: boolean }) {
   return (
-    <div className="flex flex-col gap-2 py-6">
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <span className="text-sm font-medium tracking-tight text-foreground">
+        <span
+          className={cn(
+            "text-sm font-medium tracking-tight",
+            isPast ? "text-muted-foreground" : "text-foreground"
+          )}
+        >
           {formatDate(entry.effectiveDate)}
         </span>
         <span className="text-[11px] text-muted-foreground/60">
           {entry.confidence === "official" ? "Official" : "Estimated"}
         </span>
       </div>
-      <p className="text-[15px] font-medium tracking-tight text-foreground">{entry.title}</p>
+      <p
+        className={cn(
+          "text-[15px] font-medium tracking-tight",
+          isPast ? "text-muted-foreground" : "text-foreground"
+        )}
+      >
+        {entry.title}
+      </p>
       <p className="text-sm leading-relaxed text-muted-foreground">{entry.description}</p>
       <div className="mt-1 flex flex-wrap items-center gap-1.5">
         {entry.affectedCategories.map((category) => (
@@ -44,46 +57,62 @@ function KeyDateRow({ entry }: { entry: KeyDate }) {
   );
 }
 
-export function KeyDatesSection() {
-  const todayIso = new Date().toISOString().slice(0, 10);
-  const upcoming = KEY_DATES.filter((entry) => entry.effectiveDate >= todayIso).sort((a, b) =>
-    a.effectiveDate.localeCompare(b.effectiveDate)
-  );
-  const recent = KEY_DATES.filter((entry) => entry.effectiveDate < todayIso).sort((a, b) =>
-    b.effectiveDate.localeCompare(a.effectiveDate)
-  );
+type TimelineRow = { kind: "today" } | { kind: "entry"; entry: KeyDate; isPast: boolean };
 
-  if (upcoming.length === 0) return null;
+function buildTimeline(entries: KeyDate[], todayIso: string): TimelineRow[] {
+  const sorted = [...entries].sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate));
+  const rows: TimelineRow[] = [];
+  let todayInserted = false;
+
+  for (const entry of sorted) {
+    if (!todayInserted && entry.effectiveDate >= todayIso) {
+      rows.push({ kind: "today" });
+      todayInserted = true;
+    }
+    rows.push({ kind: "entry", entry, isPast: entry.effectiveDate < todayIso });
+  }
+  if (!todayInserted) rows.push({ kind: "today" });
+
+  return rows;
+}
+
+export function KeyDatesSection() {
+  if (KEY_DATES.length === 0) return null;
+
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const rows = buildTimeline(KEY_DATES, todayIso);
 
   return (
-    <section className="w-full max-w-3xl px-6 pb-20">
+    <section className="w-full max-w-2xl px-6 pb-20">
       <div className="text-center">
         <h2 className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
           What&apos;s coming
         </h2>
         <p className="mt-3 text-[15px] text-muted-foreground">
-          Upcoming tariff and trade measures that could affect your category.
+          A timeline of tariff and trade measures that could affect your category.
         </p>
       </div>
 
-      <div className="mt-8 divide-y divide-border/50 border-t border-border/50">
-        {upcoming.map((entry) => (
-          <KeyDateRow key={entry.id} entry={entry} />
-        ))}
+      <div className="relative mt-12 ml-3 border-l-2 border-border/60 pl-8">
+        {rows.map((row) =>
+          row.kind === "today" ? (
+            <div key="today" className="relative pb-10">
+              <span className="absolute -left-[39px] top-0.5 size-3.5 rounded-full border-2 border-background bg-[#C8102E]" />
+              <p className="text-xs font-semibold tracking-wide text-[#C8102E] uppercase">Today</p>
+            </div>
+          ) : (
+            <div key={row.entry.id} className="relative pb-10 last:pb-0">
+              <span
+                className={cn(
+                  "absolute -left-[37px] top-1 size-2.5 rounded-full",
+                  row.isPast ? "border-2 border-border bg-background" : "bg-foreground"
+                )}
+              />
+              <KeyDateRow entry={row.entry} isPast={row.isPast} />
+            </div>
+          )
+        )}
       </div>
-
-      {recent.length > 0 && (
-        <details className="mt-8 group">
-          <summary className="cursor-pointer list-none text-center text-[13px] font-medium tracking-wide text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
-            Recently in force ({recent.length})
-          </summary>
-          <div className="mt-4 divide-y divide-border/50 border-t border-border/50">
-            {recent.map((entry) => (
-              <KeyDateRow key={entry.id} entry={entry} />
-            ))}
-          </div>
-        </details>
-      )}
     </section>
   );
 }

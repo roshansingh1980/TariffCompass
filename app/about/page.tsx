@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackLink } from "@/components/back-link";
+import { AboutLiveExample } from "@/components/about/live-example";
 
 export const metadata: Metadata = {
   title: "About TariffCompass — Helping Canadian Businesses Navigate Tariffs",
@@ -8,6 +9,15 @@ export const metadata: Metadata = {
     "Learn how TariffCompass helps Canadian small and medium-sized businesses assess tariff exposure, diversify markets, and access government support.",
   alternates: { canonical: "/about" },
 };
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="flex items-center gap-2.5 text-xl font-medium tracking-tight text-foreground">
+      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#C8102E]" />
+      {children}
+    </h2>
+  );
+}
 
 export default function AboutPage() {
   return (
@@ -22,43 +32,73 @@ export default function AboutPage() {
       </p>
 
       <div className="mt-12 flex flex-col gap-10">
-        <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-medium tracking-tight text-foreground">
-            What TariffCompass is
-          </h2>
-          <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            TariffCompass is an independent software tool that helps Canadian businesses
-            understand their tariff exposure, compare alternative export and import markets, and
-            find relevant government support programs — in minutes, not weeks of research.
-          </p>
-        </section>
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
+          <section className="flex flex-col gap-3">
+            <SectionHeading>What TariffCompass is</SectionHeading>
+            <p className="text-[15.5px] leading-[1.75] text-foreground/90">
+              TariffCompass is an independent software tool that helps Canadian businesses
+              understand their tariff exposure, compare alternative export and import markets, and
+              find relevant government support programs — in minutes, not weeks of research.
+            </p>
+          </section>
 
-        <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-medium tracking-tight text-foreground">Who it&apos;s for</h2>
-          <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            Canadian small and medium-sized businesses that export to or import from the United
-            States or other markets, and the accountants, consultants, and advisors who support
-            them. It&apos;s built for people who need a clear starting point, not a customs law
-            textbook.
-          </p>
-        </section>
+          <section className="flex flex-col gap-3">
+            <SectionHeading>Who it&apos;s for</SectionHeading>
+            <p className="text-[15.5px] leading-[1.75] text-foreground/90">
+              Canadian small and medium-sized businesses that export to or import from the United
+              States or other markets, and the accountants, consultants, and advisors who support
+              them. It&apos;s built for people who need a clear starting point, not a customs law
+              textbook.
+            </p>
+          </section>
+        </div>
 
-        <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-medium tracking-tight text-foreground">What it does</h2>
+        <figure className="border-y border-border/60 py-8 text-center">
+          <blockquote className="font-serif text-2xl leading-snug font-medium tracking-tight text-foreground sm:text-3xl">
+            &ldquo;in minutes, not weeks of research.&rdquo;
+          </blockquote>
+          <div className="mx-auto mt-5 h-[3px] w-12 bg-[#C8102E]" />
+        </figure>
+
+        <section className="flex flex-col gap-6">
+          <SectionHeading>What it does</SectionHeading>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             You describe your business — your trade scenario, where you&apos;re based, and what
-            you sell or import — and TariffCompass shows a side-by-side comparison of markets:
-            estimated tariff rates, ease of doing business, cost and friction, and an overall
-            attractiveness rating. It also surfaces real Canadian government support programs that
-            may be relevant, and can generate a short, personalized AI diversification brief you
-            can share with a client or your own team.
+            you sell or import.
           </p>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div className="flex flex-col gap-2">
+              <h3 className="text-sm font-medium tracking-tight text-foreground">
+                Market comparison
+              </h3>
+              <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                TariffCompass shows a side-by-side comparison of markets: estimated tariff rates,
+                ease of doing business, cost and friction, and an overall attractiveness rating.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-sm font-medium tracking-tight text-foreground">
+                Government programs
+              </h3>
+              <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                It also surfaces real Canadian government support programs that may be relevant.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-sm font-medium tracking-tight text-foreground">AI brief</h3>
+              <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                It can generate a short, personalized AI diversification brief you can share with a
+                client or your own team.
+              </p>
+            </div>
+          </div>
+
+          <AboutLiveExample />
         </section>
 
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-medium tracking-tight text-foreground">
-            What it does not do
-          </h2>
+          <SectionHeading>What it does not do</SectionHeading>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             TariffCompass does not provide legal, tax, customs, or financial advice. It is not a
             customs broker, does not file paperwork on your behalf, and does not determine your
@@ -69,23 +109,18 @@ export default function AboutPage() {
         </section>
 
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-medium tracking-tight text-foreground">
-            How data is collected and updated
-          </h2>
+          <SectionHeading>How data is collected and updated</SectionHeading>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             Market and tariff data is maintained as a structured dataset, not scraped or invented
             on the fly. Every figure carries a confidence label — official, estimated, or unknown
-            — along with the source it&apos;s based on and when it was last reviewed. An
-            AI-assisted review process periodically checks tracked government and industry sources
-            for signs that the data may be stale, but it only ever proposes changes; a person
-            reviews and applies them by hand before anything changes in the app.
+            — along with the source it&apos;s based on and when it was last reviewed. Data is
+            reviewed and updated by hand against tracked government and industry sources; the
+            review date shown against each figure reflects when that was last done.
           </p>
         </section>
 
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-medium tracking-tight text-foreground">
-            Rates can be estimated
-          </h2>
+          <SectionHeading>Rates can be estimated</SectionHeading>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             Tariff treatment often depends on the exact product classification, its origin, and
             rules that can change with little notice. Where TariffCompass shows a figure as
@@ -95,9 +130,7 @@ export default function AboutPage() {
         </section>
 
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-medium tracking-tight text-foreground">
-            Not a government tool
-          </h2>
+          <SectionHeading>Not a government tool</SectionHeading>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             TariffCompass is independently built and operated. It is not affiliated with, endorsed
             by, or acting on behalf of the Government of Canada, the Canada Border Services Agency

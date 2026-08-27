@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const BUTTON_CLASSNAME =
-  "h-12 rounded-full px-10 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]";
+  "h-auto min-h-12 max-w-full rounded-full px-6 py-3 text-center text-[15px] leading-snug font-medium tracking-tight whitespace-normal shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)] sm:px-10";
 
 export function CtaSection({
   isLoggedIn,

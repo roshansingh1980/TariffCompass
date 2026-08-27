@@ -34,9 +34,12 @@ export default async function Home() {
 
   return (
     <div className="flex flex-1 flex-col items-center">
-      <div className="flex flex-col items-center justify-center px-6 py-36 text-center sm:py-48">
+      <div className="flex flex-col items-center justify-center px-6 pt-24 pb-14 text-center sm:pt-32 sm:pb-16">
         <TcLockup size="hero" orientation="horizontal" showDescriptor />
-        <p className="mt-10 max-w-md text-xl font-normal text-muted-foreground sm:text-2xl">
+        <p className="mt-10 max-w-lg text-xl font-normal text-foreground sm:text-2xl">
+          Understand your tariffs in minutes, not weeks of research.
+        </p>
+        <p className="mt-3 max-w-md text-base text-muted-foreground sm:text-lg">
           Navigate tariffs. Find your path.
         </p>
       </div>

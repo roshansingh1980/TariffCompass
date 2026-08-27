@@ -109,7 +109,7 @@ export function DashboardWizard({
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center px-6 py-16 sm:py-20">
+    <div className="flex flex-1 flex-col items-center px-6 py-10 sm:py-14">
       {step === "scenario" && (
         <>
           {savedProfiles.length > 0 && (
