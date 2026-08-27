@@ -5,12 +5,13 @@ import { CountryToggle } from "@/components/onboarding/country-toggle";
 import { ScenarioStep } from "@/components/onboarding/scenario-step";
 import { LocationStep } from "@/components/onboarding/location-step";
 import { ProductStep } from "@/components/onboarding/product-step";
+import { ExposureStep, type Currency } from "@/components/onboarding/exposure-step";
 import { ResultsStep } from "@/components/onboarding/results-step";
 import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
 import type { Country } from "@/lib/onboarding-data";
 import type { SavedProfile } from "@/types/database";
 
-type Step = "scenario" | "location" | "product" | "results";
+type Step = "scenario" | "location" | "product" | "exposure" | "results";
 
 export function DashboardWizard({
   isSubscribed,
@@ -26,6 +27,9 @@ export function DashboardWizard({
   const [usState, setUsState] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [productName, setProductName] = useState("");
+  const [annualValue, setAnnualValue] = useState("");
+  const [currency, setCurrency] = useState<Currency>("CAD");
+  const [hsCode, setHsCode] = useState("");
   const [savedProfiles, setSavedProfiles] = useState<SavedProfile[]>(initialSavedProfiles);
   /** True while the user is editing a single answer from a Results summary chip. */
   const [returnToResults, setReturnToResults] = useState(false);
@@ -40,6 +44,9 @@ export function DashboardWizard({
     setProvince(profile.province);
     setUsState(profile.us_state);
     setCategory(profile.category);
+    setAnnualValue(profile.annual_value != null ? String(profile.annual_value) : "");
+    setCurrency((profile.currency as Currency) ?? "CAD");
+    setHsCode(profile.hs_code ?? "");
     setStep("results");
   }
 
@@ -56,7 +63,7 @@ export function DashboardWizard({
     }
   }
 
-  function editStep(target: "scenario" | "location" | "product") {
+  function editStep(target: "scenario" | "location" | "product" | "exposure") {
     setReturnToResults(true);
     setStep(target);
   }
@@ -112,6 +119,18 @@ export function DashboardWizard({
           onCategoryChange={setCategory}
           onProductNameChange={setProductName}
           onBack={() => setStep("location")}
+          onContinue={() => goNext("exposure")}
+        />
+      )}
+      {step === "exposure" && (
+        <ExposureStep
+          annualValue={annualValue}
+          currency={currency}
+          hsCode={hsCode}
+          onAnnualValueChange={setAnnualValue}
+          onCurrencyChange={setCurrency}
+          onHsCodeChange={setHsCode}
+          onBack={() => setStep("product")}
           onContinue={() => goNext("results")}
         />
       )}
@@ -123,10 +142,13 @@ export function DashboardWizard({
           usState={usState}
           category={category}
           productName={productName}
+          annualValue={annualValue}
+          currency={currency}
+          hsCode={hsCode}
           isSubscribed={isSubscribed}
           savedProfiles={savedProfiles}
           onSavedProfilesChange={refreshSavedProfiles}
-          onBack={() => setStep("product")}
+          onBack={() => setStep("exposure")}
           onEditStep={editStep}
           onScenarioChange={setScenario}
           onProvinceChange={setProvince}
