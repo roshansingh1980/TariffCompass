@@ -120,7 +120,6 @@ Cut deliberately, not forgotten.
 - [ ] Three exporter and three retail conversations during weeks 1–3. Not to validate the plan — to watch someone use it. Surfaces things building never does
 - [ ] NRC IRAP advisor call, PacifiCan call
 - [ ] Manual end-to-end credit card test once Access lifts
-- [ ] Set C$29 as Stripe default price, archive C$99
 
 Hold the three accountants, two bankers and two consultants until week 6 is done. Those are the conversations that need the wow version.
 
