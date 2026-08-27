@@ -25,3 +25,7 @@ Permissions the token deliberately does NOT have — these stay manual and must 
 Note: `wrangler whoami` reports "not authenticated" with this token because it reads account user settings the token can't access. That is expected and not an error. Use `wrangler deployments list` to verify authentication instead.
 
 Also note: tariffcompass.ca sits behind Cloudflare Access (pre-launch gating). Server-side fetches of the deployed site from outside will hit a login redirect. If a task needs a deployed route called, ask me to call it in my browser rather than trying to work around Access.
+
+## Product decisions
+
+- **Home country is intentionally hardcoded to Canada.** There is no Canada/US toggle and no `CountryContext` — both were removed deliberately, not lost. TariffCompass is positioned as a Canadian tool; a US-home-country option had no real upside and one real cost (a disclaimer apologizing for the product being Canadian). Do not reintroduce a country selector. The `country` field itself still exists everywhere it was already wired — `companies.country`, `saved_profiles.country`, and the AI brief's "Home country" prompt field — it's just always `"CA"` now (see `HOME_COUNTRY` in `components/onboarding/dashboard-wizard.tsx`).

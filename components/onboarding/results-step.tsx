@@ -465,8 +465,6 @@ export function ResultsStep({
           situation.
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
-          {country === "US" &&
-            "These are Government of Canada programs — since you've selected United States, most won't apply directly to a U.S.-based business. "}
           This is general guidance, not eligibility confirmation, application support, or
           financial advice. Program details and eligibility change — confirm everything on the
           official page before acting.

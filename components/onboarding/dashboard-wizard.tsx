@@ -7,12 +7,21 @@ import { ProductStep } from "@/components/onboarding/product-step";
 import { ExposureStep, type Currency } from "@/components/onboarding/exposure-step";
 import { ResultsStep } from "@/components/onboarding/results-step";
 import { OtherCategoryInterstitial } from "@/components/onboarding/other-category-interstitial";
-import { useCountry } from "@/lib/dashboard/country-context";
 import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { loadPendingWizardState, clearPendingWizardState } from "@/lib/pending-wizard";
 import { OTHER_CATEGORY, type Country } from "@/lib/onboarding-data";
 import type { SavedProfile } from "@/types/database";
+
+/**
+ * Home country is intentionally hardcoded, not user-selectable — see
+ * CLAUDE.md. TariffCompass is positioned as a Canadian tool; a
+ * US-home-country option had no upside and one real cost (a disclaimer
+ * apologizing for the product being Canadian). The field itself stays
+ * live everywhere it's written (companies.country, saved_profiles.country,
+ * the AI brief's "Home country" prompt field) — only the value is fixed.
+ */
+const HOME_COUNTRY: Country = "CA";
 
 type Step = "scenario" | "location" | "product" | "exposure" | "results";
 
@@ -26,7 +35,6 @@ export function DashboardWizard({
   savedProfiles: SavedProfile[];
 }) {
   const [step, setStep] = useState<Step>("scenario");
-  const { country, setCountry } = useCountry();
   const [scenario, setScenario] = useState<string | null>(null);
   const [province, setProvince] = useState<string | null>(null);
   const [usState, setUsState] = useState<string | null>(null);
@@ -45,7 +53,6 @@ export function DashboardWizard({
 
   function loadSavedProfile(profile: SavedProfile) {
     setScenario(profile.scenario);
-    setCountry((profile.country as Country) ?? "CA");
     setProvince(profile.province);
     setUsState(profile.us_state);
     setCategory(profile.category);
@@ -68,7 +75,6 @@ export function DashboardWizard({
     if (!pending) return;
 
     setScenario(pending.scenario);
-    setCountry(pending.country);
     setProvince(pending.province);
     setUsState(pending.usState);
     setCategory(pending.category);
@@ -82,7 +88,7 @@ export function DashboardWizard({
       clearPendingWizardState();
       saveOnboardingSelections({
         scenario: pending.scenario,
-        country: pending.country,
+        country: HOME_COUNTRY,
         province: pending.province,
         usState: pending.usState,
         category: pending.category,
@@ -176,7 +182,7 @@ export function DashboardWizard({
       )}
       {step === "results" && category !== OTHER_CATEGORY && (
         <ResultsStep
-          country={country}
+          country={HOME_COUNTRY}
           scenario={scenario}
           province={province}
           usState={usState}
