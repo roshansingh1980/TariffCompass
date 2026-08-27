@@ -1,9 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { ArrowUpRight, Lock, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
+import type { Currency } from "@/components/onboarding/exposure-step";
 import { MarketRiskDialog, RiskBadge } from "@/components/onboarding/market-risk-dialog";
 import { ChipSelect } from "@/components/onboarding/chip-select";
 import {
@@ -26,6 +28,7 @@ import {
 } from "@/lib/data/market-data";
 import { computeExposure } from "@/lib/exposure";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
+import { savePendingWizardState } from "@/lib/pending-wizard";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { deleteProfile, saveProfile } from "@/lib/supabase/saved-profiles";
 import { SUPPORT_PROGRAMS } from "@/lib/support-programs";
@@ -63,6 +66,7 @@ export function ResultsStep({
   annualValue,
   currency,
   hsCode,
+  isLoggedIn,
   isSubscribed,
   savedProfiles,
   onSavedProfilesChange,
@@ -81,6 +85,7 @@ export function ResultsStep({
   annualValue: string;
   currency: string;
   hsCode: string;
+  isLoggedIn: boolean;
   isSubscribed: boolean;
   savedProfiles: SavedProfile[];
   onSavedProfilesChange: () => void;
@@ -111,10 +116,14 @@ export function ResultsStep({
   const [detailsRow, setDetailsRow] = useState<MarketDataRow | null>(null);
 
   useEffect(() => {
+    // Anonymous visitors write nothing to the database — their answers stay
+    // in client state until they have a real account (see lib/pending-wizard.ts
+    // for how that state survives the /signup or /login round-trip).
+    if (!isLoggedIn) return;
     saveOnboardingSelections({ scenario, country, province, usState, category, productName });
     // Re-save whenever a filter changes inline — ResultsStep now stays
     // mounted across edits instead of remounting on step navigation.
-  }, [scenario, country, province, usState, category, productName]);
+  }, [isLoggedIn, scenario, country, province, usState, category, productName]);
 
   return (
     <TooltipProvider delay={150}>
@@ -190,6 +199,7 @@ export function ResultsStep({
         )}
 
         <SavedProfilesPanel
+          isLoggedIn={isLoggedIn}
           savedProfiles={savedProfiles}
           onSavedProfilesChange={onSavedProfilesChange}
           currentSelections={{
@@ -198,6 +208,7 @@ export function ResultsStep({
             province,
             usState,
             category,
+            productName,
             annualValue,
             currency,
             hsCode,
@@ -396,7 +407,19 @@ export function ResultsStep({
       </div>
 
       <GenerateBriefSection
+        isLoggedIn={isLoggedIn}
         isSubscribed={isSubscribed}
+        wizardSelections={{
+          scenario,
+          country,
+          province,
+          usState,
+          category,
+          productName,
+          annualValue,
+          currency: currency as Currency,
+          hsCode,
+        }}
         input={{
           scenarioLabel: scenarioLabel ?? null,
           country,
@@ -444,10 +467,12 @@ export function ResultsStep({
 }
 
 function SavedProfilesPanel({
+  isLoggedIn,
   savedProfiles,
   onSavedProfilesChange,
   currentSelections,
 }: {
+  isLoggedIn: boolean;
   savedProfiles: SavedProfile[];
   onSavedProfilesChange: () => void;
   currentSelections: {
@@ -456,6 +481,7 @@ function SavedProfilesPanel({
     province: string | null;
     usState: string | null;
     category: string | null;
+    productName: string;
     annualValue: string;
     currency: string;
     hsCode: string;
@@ -465,6 +491,30 @@ function SavedProfilesPanel({
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!isLoggedIn) {
+    return (
+      <Link
+        href="/signup"
+        onClick={() =>
+          savePendingWizardState({
+            scenario: currentSelections.scenario,
+            country: currentSelections.country,
+            province: currentSelections.province,
+            usState: currentSelections.usState,
+            category: currentSelections.category,
+            productName: currentSelections.productName,
+            annualValue: currentSelections.annualValue,
+            currency: currentSelections.currency as Currency,
+            hsCode: currentSelections.hsCode,
+          })
+        }
+        className="mt-7 text-xs font-medium tracking-wide text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+      >
+        Create a free account to save this profile
+      </Link>
+    );
+  }
 
   async function handleSave() {
     setError(null);

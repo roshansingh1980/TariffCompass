@@ -1,16 +1,22 @@
 "use client";
 
 import { useState, useTransition, type ReactNode } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { generateBrief, type BriefInput } from "@/lib/ai/generate-brief";
+import { savePendingWizardState, type PendingWizardState } from "@/lib/pending-wizard";
 
 export function GenerateBriefSection({
   input,
+  isLoggedIn,
   isSubscribed,
+  wizardSelections,
 }: {
   input: BriefInput;
+  isLoggedIn: boolean;
   isSubscribed: boolean;
+  wizardSelections: PendingWizardState;
 }) {
   const [isPending, startTransition] = useTransition();
   const [brief, setBrief] = useState<string | null>(null);
@@ -41,7 +47,28 @@ export function GenerateBriefSection({
         A short, personalized brief generated from your results.
       </p>
 
-      {!brief && !requiresUpgrade && (
+      {!isLoggedIn && (
+        <div className="mt-8 rounded-3xl border border-border/60 p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-10">
+          <p className="text-lg font-medium tracking-tight text-foreground">
+            Create a free account to generate your brief
+          </p>
+          <p className="mt-2 text-muted-foreground">
+            Your answers stay exactly as they are — signing up just lets us generate and save your
+            brief.
+          </p>
+          <Button
+            size="lg"
+            render={<Link href="/signup" />}
+            nativeButton={false}
+            onClick={() => savePendingWizardState(wizardSelections)}
+            className="mt-6 h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
+          >
+            Create a free account
+          </Button>
+        </div>
+      )}
+
+      {isLoggedIn && !brief && !requiresUpgrade && (
         <Button
           type="button"
           onClick={handleGenerate}
@@ -53,7 +80,7 @@ export function GenerateBriefSection({
         </Button>
       )}
 
-      {requiresUpgrade && (
+      {isLoggedIn && requiresUpgrade && (
         <div className="mt-8 rounded-3xl border border-border/60 p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-10">
           <p className="text-lg font-medium tracking-tight text-foreground">
             Upgrade to generate your AI brief
