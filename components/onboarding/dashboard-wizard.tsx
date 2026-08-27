@@ -8,15 +8,19 @@ import { ProductStep } from "@/components/onboarding/product-step";
 import { ExposureStep, type Currency } from "@/components/onboarding/exposure-step";
 import { ResultsStep } from "@/components/onboarding/results-step";
 import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
+import { saveOnboardingSelections } from "@/lib/supabase/save";
+import { loadPendingWizardState, clearPendingWizardState } from "@/lib/pending-wizard";
 import type { Country } from "@/lib/onboarding-data";
 import type { SavedProfile } from "@/types/database";
 
 type Step = "scenario" | "location" | "product" | "exposure" | "results";
 
 export function DashboardWizard({
+  isLoggedIn,
   isSubscribed,
   savedProfiles: initialSavedProfiles,
 }: {
+  isLoggedIn: boolean;
   isSubscribed: boolean;
   savedProfiles: SavedProfile[];
 }) {
@@ -53,6 +57,42 @@ export function DashboardWizard({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [step]);
+
+  // One-time restore across the /signup or /login round-trip an anonymous
+  // visitor takes from Results (see lib/pending-wizard.ts). Clearing the key
+  // synchronously, before the async save below, prevents a double-fire under
+  // React Strict Mode's double-invoke.
+  useEffect(() => {
+    const pending = loadPendingWizardState();
+    if (!pending) return;
+
+    setScenario(pending.scenario);
+    setCountry(pending.country);
+    setProvince(pending.province);
+    setUsState(pending.usState);
+    setCategory(pending.category);
+    setProductName(pending.productName);
+    setAnnualValue(pending.annualValue);
+    setCurrency(pending.currency);
+    setHsCode(pending.hsCode);
+    setStep("results");
+
+    if (isLoggedIn) {
+      clearPendingWizardState();
+      saveOnboardingSelections({
+        scenario: pending.scenario,
+        country: pending.country,
+        province: pending.province,
+        usState: pending.usState,
+        category: pending.category,
+        productName: pending.productName,
+      });
+    }
+    // Intentionally runs once on mount only — isLoggedIn is read fresh each
+    // time via the effect body, not tracked as a dependency, since restoring
+    // itself is a one-shot action regardless of later auth-state changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function goNext(next: Step) {
     if (returnToResults) {
@@ -145,6 +185,7 @@ export function DashboardWizard({
           annualValue={annualValue}
           currency={currency}
           hsCode={hsCode}
+          isLoggedIn={isLoggedIn}
           isSubscribed={isSubscribed}
           savedProfiles={savedProfiles}
           onSavedProfilesChange={refreshSavedProfiles}

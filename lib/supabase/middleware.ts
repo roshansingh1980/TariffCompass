@@ -5,9 +5,11 @@ import { NextResponse, type NextRequest } from "next/server";
  * Runs on every request, so a Supabase misconfiguration here (missing/blank
  * env vars, a transient outage) must never take the whole site down. On any
  * failure this fails OPEN — pass the request through unredirected — rather
- * than 500ing. Auth-gated pages (e.g. app/dashboard/page.tsx) do their own
- * server-side getUser()+redirect check regardless, so this is a UX
- * convenience layer, not the only line of defense.
+ * than 500ing.
+ *
+ * /dashboard is intentionally NOT gated here — the wizard and Results table
+ * are open to anonymous visitors. Only /login and /signup get a redirect,
+ * to send an already-signed-in visitor straight to /dashboard instead.
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -40,11 +42,7 @@ export async function updateSession(request: NextRequest) {
 
     const path = request.nextUrl.pathname;
     const isAuthPage = path === "/login" || path === "/signup";
-    const isProtected = path.startsWith("/dashboard");
 
-    if (!user && isProtected) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
     if (user && isAuthPage) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
