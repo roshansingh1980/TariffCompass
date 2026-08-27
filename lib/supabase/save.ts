@@ -1,12 +1,9 @@
 "use server";
 
-import { cookies } from "next/headers";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { CompanyInsert, ProductInsert } from "@/types/database";
-
-const TEMP_USER_COOKIE = "tc_uid";
 
 export type OnboardingSelections = {
   scenario: string | null;
@@ -18,50 +15,19 @@ export type OnboardingSelections = {
 };
 
 /**
- * Prefer a real, logged-in user if one exists. Otherwise fall back to the
- * ghost/temporary user mechanism below. This means the moment someone logs
- * in, every future save uses their real auth.uid() — no ghost involved.
+ * Every caller of saveOnboardingSelections is gated behind isLoggedIn, so
+ * this always resolves a real session user. Throws (rather than falling
+ * back to any kind of synthetic user) if that invariant is ever violated —
+ * the outer try/catch in saveOnboardingSelections logs it instead of
+ * silently creating a row under no real owner.
  */
-async function resolveUserId(supabase: SupabaseClient): Promise<string> {
+async function resolveUserId(): Promise<string> {
   const sessionClient = await createClient();
   const {
     data: { user },
   } = await sessionClient.auth.getUser();
-  if (user) return user.id;
-
-  return getOrCreateTempUserId(supabase);
-}
-
-/**
- * We don't have authentication for every visitor yet. Rather than persisting
- * data under no user at all, we create a real (but synthetic/"ghost") row in
- * auth.users via the Admin API and remember its id in an httpOnly cookie.
- * This keeps every foreign key and RLS policy intact, and — because it's a
- * genuine auth.users row — it can be linked to a real account later (see
- * lib/supabase/link-ghost-user.ts) without any data loss. The admin API
- * requires an email or phone, so we use one on the reserved `.invalid` TLD
- * (RFC 2606) — guaranteed to never resolve or receive mail.
- */
-async function getOrCreateTempUserId(supabase: SupabaseClient): Promise<string> {
-  const cookieStore = await cookies();
-  const existing = cookieStore.get(TEMP_USER_COOKIE)?.value;
-  if (existing) return existing;
-
-  const email = `guest-${crypto.randomUUID()}@temp.tariffcompass.invalid`;
-  const { data, error } = await supabase.auth.admin.createUser({ email });
-  if (error || !data.user) {
-    throw error ?? new Error("Failed to create a temporary user reference");
-  }
-
-  cookieStore.set(TEMP_USER_COOKIE, data.user.id, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 365,
-    path: "/",
-  });
-
-  return data.user.id;
+  if (!user) throw new Error("resolveUserId called with no signed-in user");
+  return user.id;
 }
 
 async function ensureProfile(supabase: SupabaseClient, userId: string): Promise<void> {
@@ -70,8 +36,8 @@ async function ensureProfile(supabase: SupabaseClient, userId: string): Promise<
 }
 
 /**
- * One company per (temporary) user for now — repeat visits to the Results
- * screen update the same row rather than piling up duplicates.
+ * One company per user for now — repeat visits to the Results screen
+ * update the same row rather than piling up duplicates.
  */
 async function upsertCompany(
   supabase: SupabaseClient,
@@ -146,7 +112,7 @@ async function upsertProduct(
 export async function saveOnboardingSelections(selections: OnboardingSelections): Promise<void> {
   try {
     const supabase = createAdminClient();
-    const userId = await resolveUserId(supabase);
+    const userId = await resolveUserId();
     await ensureProfile(supabase, userId);
     const companyId = await upsertCompany(supabase, userId, selections);
     await upsertProduct(supabase, companyId, selections);
