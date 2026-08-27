@@ -29,6 +29,8 @@ export const SCENARIOS: Scenario[] = [
   },
 ];
 
+export const OTHER_CATEGORY = "Other / Custom";
+
 export const CATEGORIES = [
   "Auto parts",
   "Electronics",
@@ -38,5 +40,5 @@ export const CATEGORIES = [
   "Agri-food",
   "Machinery",
   "Chemicals",
-  "Other / Custom",
+  OTHER_CATEGORY,
 ];

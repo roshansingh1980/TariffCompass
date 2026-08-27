@@ -14,6 +14,7 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
+import { OTHER_CATEGORY } from "@/lib/onboarding-data";
 
 function getAnonClient() {
   return createClient(
@@ -126,7 +127,7 @@ export async function getMarketDataRows(
   category: string | null,
   scenario: string | null
 ): Promise<MarketDataRow[]> {
-  const cat = category ?? "Other / Custom";
+  const cat = category ?? OTHER_CATEGORY;
   const direction = resolveScenarioDirection(scenario);
   const fifth = FIFTH_MARKET_BY_CATEGORY[cat] ?? MEXICO;
   const markets = [US, EU, UK, JAPAN, fifth];

@@ -6,11 +6,12 @@ import { LocationStep } from "@/components/onboarding/location-step";
 import { ProductStep } from "@/components/onboarding/product-step";
 import { ExposureStep, type Currency } from "@/components/onboarding/exposure-step";
 import { ResultsStep } from "@/components/onboarding/results-step";
+import { OtherCategoryInterstitial } from "@/components/onboarding/other-category-interstitial";
 import { useCountry } from "@/lib/dashboard/country-context";
 import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { loadPendingWizardState, clearPendingWizardState } from "@/lib/pending-wizard";
-import type { Country } from "@/lib/onboarding-data";
+import { OTHER_CATEGORY, type Country } from "@/lib/onboarding-data";
 import type { SavedProfile } from "@/types/database";
 
 type Step = "scenario" | "location" | "product" | "exposure" | "results";
@@ -155,7 +156,7 @@ export function DashboardWizard({
           onCategoryChange={setCategory}
           onProductNameChange={setProductName}
           onBack={() => setStep("location")}
-          onContinue={() => goNext("exposure")}
+          onContinue={() => goNext(category === OTHER_CATEGORY ? "results" : "exposure")}
         />
       )}
       {step === "exposure" && (
@@ -170,7 +171,10 @@ export function DashboardWizard({
           onContinue={() => goNext("results")}
         />
       )}
-      {step === "results" && (
+      {step === "results" && category === OTHER_CATEGORY && (
+        <OtherCategoryInterstitial onBack={() => setStep("product")} />
+      )}
+      {step === "results" && category !== OTHER_CATEGORY && (
         <ResultsStep
           country={country}
           scenario={scenario}
