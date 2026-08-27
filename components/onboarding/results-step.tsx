@@ -30,6 +30,7 @@ import { getSupportPrograms, type SupportProgram } from "@/lib/data/db-support-p
 import { computeExposure } from "@/lib/exposure";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { savePendingWizardState } from "@/lib/pending-wizard";
+import { recordAnalysis } from "@/lib/supabase/analyses";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { deleteProfile, saveProfile } from "@/lib/supabase/saved-profiles";
 import type { SavedProfile } from "@/types/database";
@@ -156,6 +157,44 @@ export function ResultsStep({
     // Re-save whenever a filter changes inline — ResultsStep now stays
     // mounted across edits instead of remounting on step navigation.
   }, [isLoggedIn, scenario, country, province, usState, category, productName]);
+
+  useEffect(() => {
+    // Logs one history row per meaningful change, not per keystroke —
+    // debounced the same way a "save on settle" field would be.
+    if (!isLoggedIn || !usRow || !exposure || !comparisonRows) return;
+    const timer = setTimeout(() => {
+      recordAnalysis({
+        category,
+        hsCode: hsCode.trim() || null,
+        annualValue: parsedAnnualValue,
+        currency: currency || null,
+        destinationCountry: usRow.market.key,
+        computedRateMin: exposure.lowRate,
+        computedRateMax: exposure.highRate,
+        exposureLow: exposure.lowAmount,
+        exposureMid: exposure.midAmount,
+        exposureHigh: exposure.highAmount,
+        rateSnapshot: comparisonRows,
+      });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [
+    isLoggedIn,
+    comparisonRows,
+    category,
+    hsCode,
+    parsedAnnualValue,
+    currency,
+    usRow?.market.key,
+    usRow?.tariffRate,
+    exposure?.lowAmount,
+    exposure?.midAmount,
+    exposure?.highAmount,
+    exposure?.lowRate,
+    exposure?.highRate,
+    usRow,
+    exposure,
+  ]);
 
   return (
     <TooltipProvider delay={150}>
