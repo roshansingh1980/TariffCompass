@@ -70,13 +70,13 @@
 - **Title:** Sign Up — TariffCompass | Navigate Tariffs with Confidence
 - **Meta description:** Create a free TariffCompass account to compare export and import markets, assess tariff exposure, and find funding support for your Canadian business.
 
-### About (`/about` — planned page)
+### About (`/about` — built)
 - **Title:** About TariffCompass — Helping Canadian Businesses Navigate Tariffs
 - **Meta description:** Learn how TariffCompass helps Canadian small and medium-sized businesses assess tariff exposure, diversify markets, and access government support.
 
 ---
 
-## 3. First 5 Blog Posts
+## 3. First 5 Insights Posts
 
 ### Post 1
 - **Title:** How U.S. Tariffs Are Affecting Canadian Small Businesses in 2026
@@ -134,13 +134,13 @@
 
 ## 4. Indexation Setup Steps
 
-1. **Per-page metadata** — use Next.js App Router's `metadata` export (or `generateMetadata`) on every public route (`/`, `/about`, `/blog`, `/blog/[slug]`) with the titles/descriptions above.
+1. **Per-page metadata** — use Next.js App Router's `metadata` export (or `generateMetadata`) on every public route (`/`, `/about`, `/insights`, `/insights/[slug]`) with the titles/descriptions above.
 2. **Noindex authenticated routes** — set `robots: { index: false, follow: false }` on `/dashboard`, `/login`, and `/signup` metadata so personalized or transactional pages don't compete for search rankings.
-3. **`robots.txt`** — allow crawling of `/`, `/about`, `/blog/*`; disallow `/dashboard` and any future API routes.
-4. **`sitemap.xml`** — add `app/sitemap.ts` listing all public marketing and blog URLs (exclude authenticated routes); regenerate automatically as blog posts are added.
+3. **`robots.txt`** — allow crawling of `/`, `/about`, `/insights/*`; disallow `/dashboard` and any future API routes.
+4. **`sitemap.xml`** — add `app/sitemap.ts` listing all public marketing and insights URLs (exclude authenticated routes); regenerate automatically as insights posts are added.
 5. **Canonical URLs** — set a canonical `<link>` on every public page to avoid duplicate-content issues from query params or trailing slashes.
-6. **Open Graph & Twitter meta tags** — add `og:title`, `og:description`, `og:image`, and `twitter:card` to the homepage, About page, and each blog post for clean social-share previews.
-7. **Structured data** — add `Organization` schema on the homepage and `Article` schema on each blog post for richer search results.
+6. **Open Graph & Twitter meta tags** — add `og:title`, `og:description`, `og:image`, and `twitter:card` to the homepage, About page, and each insights post for clean social-share previews.
+7. **Structured data** — add `Organization` schema on the homepage and `Article` schema on each insights post for richer search results.
 8. **Search Console verification** — verify the domain in Google Search Console (DNS TXT record) and Bing Webmaster Tools once the production domain is live.
 9. **Submit the sitemap** — submit `sitemap.xml` in both Search Console and Bing Webmaster Tools after verification.
 10. **Monitor post-launch** — check Search Console weekly for crawl errors, indexation coverage, and any pages flagged as "discovered but not indexed."

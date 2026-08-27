@@ -102,6 +102,9 @@ Estimated three to four days total for thin versions of all three. Thin means th
 - [ ] **[V2]** Heatmap rebuilt as a real grid — 8 categories down, five columns across, direction and market dropdowns. **Plan first**, resolving: market coverage varies by category (8 distinct markets, only 5 per category); Cost/Friction rating is free but its reasoning is paid; colour scale must carry text labels (zero axe violations currently, don't break it)
 - [ ] **[V2]** Direction × market summary pages (~16, not 144 — thin pages hurt SEO). Sitemap derived, not hardcoded
 - [ ] **[V2]** Asymmetric layout: heatmap 2/3 left, timeline 1/3 right. After the grid. Truncate timeline descriptions to first sentence, keep category chips
+- [ ] **[V2]** Heatmap dropdown for EU, UK, Japan, and other combinations (folded in from `future.md`) — after the grid rebuild
+- [ ] **[V2]** Province/state heat layers (folded in from `future.md`) — after the grid rebuild
+- [ ] **[V2]** Category-specific heat layers (folded in from `future.md`) — after the grid rebuild
 
 **Product**
 - [ ] **[V2]** `/for-advisors` page — one page for accountants, bankers, consultants. White-label and multi-client labelled PLANNED, not available. The live demo of the actual features is the pitch; this page doesn't change whether the meetings land
