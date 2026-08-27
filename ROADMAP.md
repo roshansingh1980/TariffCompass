@@ -8,6 +8,34 @@ Everything else — the brief, the comparison, the exposure math — is already 
 
 ---
 
+## Week 0 — Free tier and public surface
+
+This is the top of the funnel and the SEO surface. It's free by design — the rate ranges, friction ratings, attractiveness and risk badges are all public. It doesn't justify C$29; it's what makes someone believe the product is worth signing up to.
+
+Built now rather than deferred, with one hard constraint: **render from the data layer, not from the current shape of the data.** Week 1-2 moves rates to HS-code level. The grid's columns don't change — only the granularity underneath. Built against a data function, it survives that migration and gets better rows for free. Built against hardcoded category rows, it gets rebuilt.
+
+- [ ] Homepage heatmap as a real grid. Rows: the 8 product categories (exclude Other/Custom, no data). Columns: Export Tariff, Ease of Business, Cost/Friction, Overall Attractiveness, Current Risk. Two dropdowns above: direction (Export to / Import from, default Export to) and market (default United States)
+- [ ] Resolve before building: market coverage varies by category (8 distinct markets across the dataset, only 5 per category). Either restrict the dropdown or show honest "not covered" cells. Do not fabricate rows
+- [ ] Colour scale mapping the existing rating values (Excellent / Good / Fair / Challenging, Stable / Watch / Elevated / Uncertain). Every cell must carry its text label — colour alone fails WCAG and we are at zero axe violations
+- [ ] Cell hover detail; cell links through to a summary page
+- [ ] Cost/Friction rating is free on the grid; its reasoning stays paid, matching how Current Risk already works
+- [ ] Direction × market summary pages (~16, e.g. /trade/export/united-states), each showing the full category grid for that market with real prose, sources and dates. NOT one page per category × market — 144 thin pages hurt SEO. Sitemap derived, not hardcoded
+- [ ] Asymmetric landing layout: heatmap ~2/3 left, "What's coming" timeline ~1/3 right at lg and above, stacked below. Timeline descriptions truncated to first sentence, category chips kept
+
+---
+
+## Prerequisites — do before Week 3
+
+These are not optional polish. Each one blocks or corrupts later roadmap work if deferred.
+
+- [ ] `key_dates` cutover from `lib/data/key-dates.ts` to Postgres. Week 3 writes effective dates via the Federal Register connector. If the homepage still reads a static file, live data and stale data diverge on screen
+- [ ] `measure_type` backfill on the 12 NULL rows. Week 3 builds stacking logic that needs to know whether a row is MFN, 232, or counter-tariff. NULLs break it
+- [ ] `companies` / `products` cleanup. Week 1-2 restructures `tariff_rates` around HS codes; doing schema work with two vestigial tables still being written to invites confusion
+- [ ] Stripe checkout error UI (`useActionState` rebuild). Live payments are now enabled. A checkout failure with no inline message is a lost customer who never tells you
+- [ ] Rebuild the AI freshness-review pipeline against Postgres. It was a real differentiator, deleted as migration collateral. The whole roadmap is about data currency — this fits Week 3 naturally
+
+---
+
 ## Week 1–2 — HS-code-level rates
 
 The foundation. Every other improvement multiplies off this.
@@ -81,16 +109,8 @@ Only possible once `effective_from` exists and rates are per-code. This is the s
 
 Cut deliberately, not forgotten.
 
-- Homepage heatmap as a category × column grid with market dropdowns
-- Direction × market summary pages (~16, sitemap-derived)
-- Asymmetric landing layout (heatmap 2/3, timeline 1/3)
-- Wizard collapse to a single page
-- `companies` / `products` table cleanup
-- `measure_type` backfill on the 12 NULL rows
-- Stripe checkout error UI (`useActionState` rebuild)
-- `key_dates` cutover from static file to Postgres
-- Rebuilding the AI freshness-review pipeline against Postgres
-- SEO-Blueprint execution
+- Wizard collapse to a single page (Week 1 changes the intake with HS code lookup and description search — collapsing it now means redoing it then)
+- SEO-Blueprint execution (nothing to index until Cloudflare Access lifts)
 
 ---
 

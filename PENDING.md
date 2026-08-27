@@ -76,23 +76,21 @@ Everything previously tracked here that ROADMAP.md now actively schedules (offic
 
 ## V2 — deliberately cut
 
-Carried over from the old Build queue; ROADMAP.md's own "Deferred to V2" list is authoritative going forward — this is just the subset of it that used to live here.
+ROADMAP.md's own "Deferred to V2" list is authoritative — this just mirrors it so it's visible from here without duplicating the reasoning. The heatmap grid, market summary pages, and asymmetric layout that used to be listed here moved the other way: into ROADMAP.md's new Week 0 (they're the free tier and public SEO surface, built now against the data layer so the Week 1-2 HS migration improves them instead of invalidating them).
 
-- [ ] Homepage heatmap rebuilt as a real category × column grid, with market dropdowns (folds in the EU/UK/Japan, province/state, and category-specific layers previously noted in `future.md`)
-- [ ] Direction × market summary pages (~16, sitemap-derived)
-- [ ] Asymmetric landing layout (heatmap 2/3, timeline 1/3)
 - [ ] Wizard collapse to a single page
+- [ ] SEO-Blueprint execution
 
 ---
 
 ## Data debt
 
 - [ ] **Scheduled — ROADMAP.md Week 1–2.** CUSMA annotation lost in migration — "0% (CUSMA)" now renders "0%". That parenthetical was the highest-value fact on screen for a Canadian exporter. Needs a column and a restore
-- [ ] `key_dates` seeded in Postgres but the homepage still reads `lib/data/key-dates.ts`. Two sources of truth
-- [ ] `companies` / `products` not dropped (3 and 6 rows). `saveOnboardingSelections` still writes there. Removal plan proposed, not approved
-- [ ] `lib/stripe/actions.ts` has no try/catch and no inline error UI. Root error boundary catches it, but a proper fix needs the billing forms rebuilt around `useActionState`
+- [ ] **Scheduled — ROADMAP.md Prerequisites.** `key_dates` seeded in Postgres but the homepage still reads `lib/data/key-dates.ts`. Two sources of truth
+- [ ] **Scheduled — ROADMAP.md Prerequisites.** `companies` / `products` not dropped (3 and 6 rows). `saveOnboardingSelections` still writes there. Removal plan proposed, not approved
+- [ ] **Scheduled — ROADMAP.md Prerequisites.** `lib/stripe/actions.ts` has no try/catch and no inline error UI. Root error boundary catches it, but a proper fix needs the billing forms rebuilt around `useActionState`
 - [ ] **Scheduled — ROADMAP.md Week 3.** `effective_from` NULL on all 90 rows — by design until the Federal Register connector lands
-- [ ] `measure_type` NULL on 12 of 90 rows
+- [ ] **Scheduled — ROADMAP.md Prerequisites.** `measure_type` NULL on 12 of 90 rows
 - [ ] **Scheduled — ROADMAP.md Week 1–2** (three-tier confidence model). Not one row is marked "official". All 90 are estimated or unknown
 - [ ] "Other / Custom" produces nothing — 10 rows, all null. Interstitial shipped, but the category still has no data
 - [ ] Agri-food imports read 0–298% identically from all five origins. Behind the paywall and worth nothing
