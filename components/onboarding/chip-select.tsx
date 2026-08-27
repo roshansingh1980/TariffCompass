@@ -24,8 +24,9 @@ export function ChipSelect({
   return (
     <Select value={value} onValueChange={(v) => onChange(v as string)}>
       <SelectPrimitive.Trigger
+        aria-label={placeholder}
         className={cn(
-          "group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground outline-none transition-all duration-200 active:scale-[0.97]",
+          "group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground outline-none transition-all duration-200 active:scale-[0.97] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
           "hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground",
           "data-popup-open:border-foreground/30 data-popup-open:bg-foreground/[0.05] data-popup-open:text-foreground"
         )}
@@ -35,7 +36,7 @@ export function ChipSelect({
         </SelectPrimitive.Value>
         <SelectPrimitive.Icon
           render={
-            <ChevronDown className="size-3.5 text-muted-foreground/50 transition-transform duration-200 group-data-popup-open:rotate-180" />
+            <ChevronDown className="size-3.5 text-muted-foreground transition-transform duration-200 group-data-popup-open:rotate-180" />
           }
         />
       </SelectPrimitive.Trigger>

@@ -98,7 +98,7 @@ export function GenerateBriefSection({
 
       {brief && (
         <div className="mt-8 rounded-3xl border border-border/60 p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-10">
-          <p className="mb-6 text-sm text-muted-foreground/80">
+          <p className="mb-6 text-sm text-muted-foreground">
             Prepared for: {input.productName || input.category || "your business"}
             {input.scenarioLabel ? ` — ${input.scenarioLabel}` : ""} —{" "}
             {new Date().toLocaleDateString("en-CA", {
@@ -108,7 +108,7 @@ export function GenerateBriefSection({
             })}
           </p>
           <BriefContent text={brief} programs={input.programs} />
-          <p className="mt-8 border-t border-border/50 pt-6 text-xs text-muted-foreground/70">
+          <p className="mt-8 border-t border-border/50 pt-6 text-xs text-muted-foreground">
             This brief is a starting point for a funding or client conversation. It is not a
             determination of program eligibility, and not legal, tax, or financial advice.
             Confirm program details and figures with official sources before acting.
@@ -159,7 +159,7 @@ function renderInline(line: string, programs: BriefProgram[]): ReactNode {
     }
     if (part.startsWith("*") && part.endsWith("*")) {
       return (
-        <em key={i} className="not-italic text-muted-foreground/80">
+        <em key={i} className="not-italic text-muted-foreground">
           {part.slice(1, -1)}
         </em>
       );

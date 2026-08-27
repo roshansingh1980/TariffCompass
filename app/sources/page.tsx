@@ -41,7 +41,7 @@ export default async function SourcesPage() {
               >
                 Visit source
               </a>
-              <span className="text-muted-foreground/70">
+              <span className="text-muted-foreground">
                 Last checked {formatDate(source.lastChecked)}
               </span>
             </div>

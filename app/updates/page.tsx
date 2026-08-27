@@ -29,7 +29,7 @@ export default function UpdatesPage() {
       <div className="mt-14 flex flex-col gap-14 divide-y divide-border/50">
         {UPDATES.map((entry, i) => (
           <div key={entry.date} className={i > 0 ? "pt-14" : ""}>
-            <p className="text-xs font-medium tracking-wide text-muted-foreground/70 uppercase">
+            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               {formatDate(entry.date)}
             </p>
             <h2 className="mt-2 text-xl font-medium tracking-tight text-foreground">

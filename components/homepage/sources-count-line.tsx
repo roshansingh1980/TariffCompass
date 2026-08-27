@@ -26,7 +26,7 @@ export async function SourcesCountLine() {
         Built on {registry.length} named sources
       </Link>
       {lastReviewed && (
-        <span className="text-sm text-muted-foreground/70"> · Last reviewed {formatDate(lastReviewed)}</span>
+        <span className="text-sm text-muted-foreground"> · Last reviewed {formatDate(lastReviewed)}</span>
       )}
     </div>
   );

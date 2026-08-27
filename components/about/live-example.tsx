@@ -46,7 +46,7 @@ export async function AboutLiveExample() {
           <p className="mt-1 text-lg font-medium tracking-tight text-foreground">{getDataStatus(row)}</p>
         </div>
       </div>
-      <p className="border-t border-border/50 px-5 py-3 text-[11px] text-muted-foreground/70">
+      <p className="border-t border-border/50 px-5 py-3 text-[11px] text-muted-foreground">
         Risk: {getRiskStatus(row)} · Source: {row.sourceName}
       </p>
     </div>

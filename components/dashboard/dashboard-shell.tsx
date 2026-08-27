@@ -33,7 +33,7 @@ function NavLinks({ isLoggedIn, onNavigate }: { isLoggedIn: boolean; onNavigate?
           className={cn(
             "flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-[14px] font-medium tracking-tight transition-colors duration-200",
             item.locked
-              ? "text-muted-foreground/40 hover:bg-foreground/[0.03] hover:text-muted-foreground/60"
+              ? "text-muted-foreground hover:bg-foreground/[0.03] hover:text-foreground"
               : "text-foreground hover:bg-foreground/[0.05]"
           )}
         >
@@ -76,7 +76,7 @@ function AccountFooter({
   return (
     <div className="flex flex-col gap-2 border-t border-border/50 pt-4">
       {userEmail && (
-        <p className="truncate px-3.5 text-xs text-muted-foreground/70">{userEmail}</p>
+        <p className="truncate px-3.5 text-xs text-muted-foreground">{userEmail}</p>
       )}
       {isSubscribed && (
         <form action={createBillingPortalSession}>

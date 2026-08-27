@@ -38,7 +38,7 @@ export function BackLink({
         }
       }}
       className={cn(
-        "inline-flex items-center gap-1.5 text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground",
+        "inline-flex items-center gap-1.5 text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground",
         className
       )}
     >

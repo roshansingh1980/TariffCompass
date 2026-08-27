@@ -235,7 +235,7 @@ export function ResultsStep({
               className="group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground active:scale-[0.97]"
             >
               {productName}
-              <Pencil className="size-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground/60" />
+              <Pencil className="size-3 text-muted-foreground transition-colors duration-200 group-hover:text-foreground" />
             </button>
           )}
           {hsCode && (
@@ -245,7 +245,7 @@ export function ResultsStep({
               className="group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground active:scale-[0.97]"
             >
               HS {hsCode}
-              <Pencil className="size-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground/60" />
+              <Pencil className="size-3 text-muted-foreground transition-colors duration-200 group-hover:text-foreground" />
             </button>
           )}
         </div>
@@ -272,7 +272,7 @@ export function ResultsStep({
                 </>
               )}
             </p>
-            <p className="max-w-md text-center text-xs text-muted-foreground/60">
+            <p className="max-w-md text-center text-xs text-muted-foreground">
               Planning range based on the estimated rate above — not a duty determination. Confirm
               the applicable rate and HS classification with a customs broker.
             </p>
@@ -422,14 +422,14 @@ export function ResultsStep({
       )}
 
       {dataLastUpdated && (
-        <p className="mt-8 text-center text-xs text-muted-foreground/60">
+        <p className="mt-8 text-center text-xs text-muted-foreground">
           Rates and scores are based on the latest available data. Last updated{" "}
           {formatDate(dataLastUpdated)}. Sources: official trade publications and current program
           pages.
         </p>
       )}
 
-      <p className="mt-3 text-center text-xs text-muted-foreground/70">
+      <p className="mt-3 text-center text-xs text-muted-foreground">
         Disclaimer: TariffCompass provides general information and estimates only. It is not
         legal, tax, customs, or financial advice. Tariff rates, trade rules, logistics costs, and
         government programs can change. Always verify details with official sources or a
@@ -454,7 +454,7 @@ export function ResultsStep({
           Real federal and Crown-corporation programs that may be relevant to your trade
           situation.
         </p>
-        <p className="mt-2 text-sm text-muted-foreground/70">
+        <p className="mt-2 text-sm text-muted-foreground">
           {country === "US" &&
             "These are Government of Canada programs — since you've selected United States, most won't apply directly to a U.S.-based business. "}
           This is general guidance, not eligibility confirmation, application support, or
@@ -462,7 +462,7 @@ export function ResultsStep({
           official page before acting.
         </p>
         {supportLastChecked && (
-          <p className="mt-1 text-xs text-muted-foreground/60">
+          <p className="mt-1 text-xs text-muted-foreground">
             Program details last checked {formatDate(supportLastChecked)}.
           </p>
         )}
@@ -496,15 +496,25 @@ export function ResultsStep({
                     {program.importCaveat}
                   </div>
                 )}
-                <a
-                  href={program.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
-                >
-                  Learn more
-                  <ArrowUpRight className="size-3.5" />
-                </a>
+                {isSubscribed ? (
+                  <a
+                    href={program.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                  >
+                    Learn more
+                    <ArrowUpRight className="size-3.5" />
+                  </a>
+                ) : (
+                  // Not a real link while locked — the wrapping LockedValue already
+                  // hides this from assistive tech, and a focusable-but-hidden <a>
+                  // here would be a real keyboard trap (tabbable, invisible to AT).
+                  <span className="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-foreground">
+                    Learn more
+                    <ArrowUpRight className="size-3.5" />
+                  </span>
+                )}
               </LockedValue>
             </div>
           ))}
@@ -668,7 +678,7 @@ function SavedProfilesPanel({
                 type="button"
                 onClick={() => handleDelete(profile.id)}
                 aria-label={`Delete saved profile ${profile.name}`}
-                className="rounded-full p-1 text-muted-foreground/50 transition-colors duration-200 hover:bg-foreground/10 hover:text-foreground"
+                className="rounded-full p-1 text-muted-foreground transition-colors duration-200 hover:bg-foreground/10 hover:text-foreground"
               >
                 <X className="size-3" />
               </button>
@@ -730,7 +740,7 @@ function TariffValue({ row }: { row: MarketDataRow }) {
     <span>
       {row.tariffRate}
       {row.tariffConfidence === "estimated" && (
-        <span className="ml-1 text-[11px] font-normal text-muted-foreground/60">est.</span>
+        <span className="ml-1 text-[11px] font-normal text-muted-foreground">est.</span>
       )}
     </span>
   );
@@ -738,7 +748,7 @@ function TariffValue({ row }: { row: MarketDataRow }) {
 
 function DataStatusLine({ row, className }: { row: MarketDataRow; className?: string }) {
   return (
-    <p className={cn("text-[11px] leading-snug text-muted-foreground/60", className)}>
+    <p className={cn("text-[11px] leading-snug text-muted-foreground", className)}>
       {getDataStatus(row)} ·{" "}
       <a
         href={row.sourceUrl}
@@ -790,7 +800,7 @@ function LockedValue({
       <span className="select-none blur-[4px]" aria-hidden="true">
         {children}
       </span>
-      {showIcon && <Lock className="size-3 shrink-0 text-muted-foreground/40" />}
+      {showIcon && <Lock className="size-3 shrink-0 text-muted-foreground" />}
     </span>
   );
 }
@@ -814,7 +824,7 @@ function AttractivenessBadge({
     level === "Excellent" && "border-transparent bg-foreground text-background",
     level === "Good" && "border-foreground/30 text-foreground",
     level === "Fair" && "border-border text-muted-foreground",
-    level === "Challenging" && "border-dashed border-border text-muted-foreground/70"
+    level === "Challenging" && "border-dashed border-border text-muted-foreground"
   );
 
   const badge = onClick ? (

@@ -53,7 +53,7 @@ export async function SiteHeader() {
         <nav className="flex items-center gap-3 sm:gap-6">
           <Link
             href="/insights"
-            className="text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
+            className="text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground"
           >
             Insights
           </Link>
@@ -61,18 +61,18 @@ export async function SiteHeader() {
             <>
               <Link
                 href="/support"
-                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground sm:inline"
+                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground sm:inline"
               >
                 Support
               </Link>
-              <span className="hidden text-[13px] text-muted-foreground/80 sm:inline">
+              <span className="hidden text-[13px] text-muted-foreground sm:inline">
                 {user.email}
               </span>
               {isSubscribed && (
                 <form action={createBillingPortalSession}>
                   <button
                     type="submit"
-                    className="text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
+                    className="text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground"
                   >
                     <span className="sm:hidden">Billing</span>
                     <span className="hidden sm:inline">Manage billing</span>
@@ -82,7 +82,7 @@ export async function SiteHeader() {
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
+                  className="text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground"
                 >
                   Log out
                 </button>
@@ -92,7 +92,7 @@ export async function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground sm:inline"
+                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground sm:inline"
               >
                 Log in
               </Link>

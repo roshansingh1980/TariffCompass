@@ -9,8 +9,8 @@ function AttractivenessBadge({ level }: { level: Attractiveness }) {
         "inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide",
         level === "Excellent" && "border-transparent bg-foreground text-background",
         level === "Good" && "border-foreground/30 text-foreground",
-        level === "Fair" && "border-border text-muted-foreground",
-        level === "Challenging" && "border-dashed border-border text-muted-foreground/70"
+        level === "Fair" && "border-border text-foreground/70",
+        level === "Challenging" && "border-dashed border-border text-foreground/70"
       )}
     >
       {level}
@@ -25,8 +25,8 @@ function RiskBadge({ level }: { level: RiskStatus }) {
         "inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide",
         level === "Elevated" && "border-transparent bg-foreground text-background",
         level === "Watch" && "border-foreground/30 text-foreground",
-        level === "Stable" && "border-border text-muted-foreground",
-        level === "Uncertain" && "border-dashed border-border text-muted-foreground/70"
+        level === "Stable" && "border-border text-foreground/70",
+        level === "Uncertain" && "border-dashed border-border text-foreground/70"
       )}
     >
       {level}
@@ -96,7 +96,7 @@ export async function CanadaUsHeatmap() {
           >
             <div>
               <p className="text-lg font-medium tracking-tight text-foreground">{panel.title}</p>
-              <p className="mt-1 text-xs tracking-wide text-muted-foreground/80">{panel.subtitle}</p>
+              <p className="mt-1 text-xs tracking-wide text-foreground/70">{panel.subtitle}</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <AttractivenessBadge level={panel.data.attractiveness} />
@@ -106,7 +106,7 @@ export async function CanadaUsHeatmap() {
         ))}
       </Link>
 
-      <p className="mt-8 text-center text-xs text-muted-foreground/70">
+      <p className="mt-8 text-center text-xs text-muted-foreground">
         Illustrative view based on current TariffCompass attractiveness and risk scores. Not official
         tariff determinations.
       </p>

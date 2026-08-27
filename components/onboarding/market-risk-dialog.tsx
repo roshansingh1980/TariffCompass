@@ -81,7 +81,7 @@ export function RiskBadge({
     level === "Elevated" && "border-transparent bg-foreground text-background",
     level === "Watch" && "border-foreground/30 text-foreground",
     level === "Stable" && "border-border text-muted-foreground",
-    level === "Uncertain" && "border-dashed border-border text-muted-foreground/70"
+    level === "Uncertain" && "border-dashed border-border text-muted-foreground"
   );
 
   const badge = onClick ? (
@@ -137,7 +137,10 @@ export function MarketRiskDialog({
                     <RiskBadge level={risk} />
                   </div>
                 </div>
-                <DialogClose className="rounded-full p-1.5 text-muted-foreground/60 transition-colors duration-200 hover:bg-foreground/5 hover:text-foreground">
+                <DialogClose
+                  aria-label="Close"
+                  className="rounded-full p-1.5 text-muted-foreground transition-colors duration-200 hover:bg-foreground/5 hover:text-foreground"
+                >
                   <X className="size-4" />
                 </DialogClose>
               </div>
@@ -207,7 +210,7 @@ export function MarketRiskDialog({
                     href={row.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[13px] font-medium text-muted-foreground/70 underline decoration-border underline-offset-4 transition-colors duration-200 hover:text-foreground hover:decoration-foreground"
+                    className="text-[13px] font-medium text-muted-foreground underline decoration-border underline-offset-4 transition-colors duration-200 hover:text-foreground hover:decoration-foreground"
                   >
                     Source: {row.sourceName}
                   </a>
@@ -226,7 +229,7 @@ export function MarketRiskDialog({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="mx-auto block text-[13px] font-medium tracking-wide text-muted-foreground/80 transition-colors duration-200 hover:text-foreground"
+                  className="mx-auto block text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground"
                 >
                   Back to Results
                 </button>

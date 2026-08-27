@@ -22,7 +22,7 @@ function KeyDateRow({ entry, isPast }: { entry: KeyDate; isPast: boolean }) {
         >
           {formatDate(entry.effectiveDate)}
         </span>
-        <span className="text-[11px] text-muted-foreground/60">
+        <span className="text-[11px] text-muted-foreground">
           {entry.confidence === "official" ? "Official" : "Estimated"}
         </span>
       </div>
@@ -49,7 +49,7 @@ function KeyDateRow({ entry, isPast }: { entry: KeyDate; isPast: boolean }) {
         href={entry.sourceUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[11px] text-muted-foreground/60 underline-offset-2 hover:text-foreground hover:underline"
+        className="text-[11px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
       >
         Source: {entry.sourceName}
       </a>
