@@ -255,23 +255,25 @@ export function ResultsStep({
             <p className="text-[13px] font-medium tracking-wide text-muted-foreground">
               Your estimated U.S. exposure
             </p>
-            <p className="text-lg font-medium tracking-tight text-foreground">
-              {exposure.lowRate > 0 ? (
-                <>
-                  {formatCurrency(exposure.lowAmount, currency)} at {formatRate(exposure.lowRate)}
-                  {"  ·  "}
-                  {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
-                  {"  ·  "}
-                  {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
-                </>
-              ) : (
-                <>
-                  {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
-                  {"  ·  "}
-                  {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
-                </>
-              )}
-            </p>
+            <LockedValue locked={!isSubscribed}>
+              <p className="text-lg font-medium tracking-tight text-foreground">
+                {exposure.lowRate > 0 ? (
+                  <>
+                    {formatCurrency(exposure.lowAmount, currency)} at {formatRate(exposure.lowRate)}
+                    {"  ·  "}
+                    {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
+                    {"  ·  "}
+                    {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
+                  </>
+                ) : (
+                  <>
+                    {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
+                    {"  ·  "}
+                    {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
+                  </>
+                )}
+              </p>
+            </LockedValue>
             <p className="max-w-md text-center text-xs text-muted-foreground">
               Planning range based on the estimated rate above — not a duty determination. Confirm
               the applicable rate and HS classification with a customs broker.
@@ -345,9 +347,7 @@ export function ResultsStep({
                   >
                     <td className="px-7 py-6 font-medium text-foreground">{row.market.name}</td>
                     <td className="px-7 py-6 text-foreground">
-                      <LockedValue locked={!isSubscribed}>
-                        <TariffValue row={row} />
-                      </LockedValue>
+                      <TariffValue row={row} />
                       <DataStatusLine row={row} />
                     </td>
                     <td className="px-7 py-6">
@@ -395,9 +395,7 @@ export function ResultsStep({
                 <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
                   <dt className="text-muted-foreground">{tariffColumnLabel}</dt>
                   <dd className="text-right font-medium text-foreground">
-                    <LockedValue locked={!isSubscribed}>
-                      <TariffValue row={row} />
-                    </LockedValue>
+                    <TariffValue row={row} />
                   </dd>
                   <dt className="text-muted-foreground">Ease of Business</dt>
                   <dd className="text-right font-medium text-foreground">
@@ -439,7 +437,7 @@ export function ResultsStep({
       {!isSubscribed && (
         <div className="mt-8 flex flex-col items-center gap-4 rounded-3xl border border-border/60 bg-foreground/[0.02] p-7 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:flex-row sm:justify-between sm:text-left">
           <p className="text-[15px] font-medium tracking-tight text-foreground">
-            Unlock full tariff details and generate your brief — C$29/month
+            Unlock dollar exposure, cost/friction, and full program details — C$29/month
           </p>
           <SubscribeButton label="Upgrade" className="h-11 shrink-0 px-7" />
         </div>

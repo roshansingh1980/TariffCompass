@@ -40,16 +40,17 @@ export default function SupportPage() {
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             Anyone can complete the wizard and see their Results screen for free, with no account
             required — market names, ease of doing business scores, overall attractiveness and
-            risk ratings, each rate&apos;s data status and source, and the names of relevant
-            government support programs.
+            risk ratings, the export tariff rate range for every market, each rate&apos;s data
+            status and source, and the names of relevant government support programs.
           </p>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             A free account (no payment) lets you save profiles and reopen them later.
           </p>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            A paid subscription unlocks the exact tariff rate and cost/friction detail for every
-            market, full government support program descriptions and links, and the ability to
-            generate an AI diversification brief.
+            A paid subscription unlocks your estimated dollar exposure, the cost/friction detail
+            for every market, the full risk breakdown behind each rating, full government support
+            program descriptions and links, and the ability to generate an AI diversification
+            brief.
           </p>
         </section>
 
