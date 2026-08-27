@@ -6,6 +6,16 @@ export type UpdateEntry = {
 
 export const UPDATES: UpdateEntry[] = [
   {
+    date: "2026-08-27",
+    title: "Correction: primary government tariff sources are not blocked",
+    body: [
+      "Our August 26 entry below said we checked primary Government of Canada and U.S. sources directly and couldn't load them because they block automated access. That was wrong, and we want to say so plainly rather than quietly fix the wording.",
+      "We re-checked five primary sources — the U.S. Harmonized Tariff Schedule, the CBSA Customs Tariff, the U.S. Federal Register (where Section 232 and Section 338 measures and their effective dates are actually published), Canada's open data portal, and the Canada Gazette — using a request that identifies itself as TariffCompass rather than a generic script. Every one of them responded normally. The only genuine block we found was on the U.S. International Trade Commission's main corporate website (www.usitc.gov) — a different host from the one the tariff data itself lives on (hts.usitc.gov), which was open the whole time, including a working JSON search endpoint.",
+      "So the earlier claim was simply incorrect: it wasn't that these sources block automated access in general — our first attempt likely just wasn't identifying itself properly, or hit the one host that does block. It doesn't mean every rate can be pulled from a clean, structured feed today — some of what these sources publish is legal text or scanned tables rather than a database field, which is a real, separate limitation we're still working through — but access itself was never the barrier we said it was.",
+      "We're leaving the original entry below exactly as written rather than editing it, because the record of what we got wrong is part of what this log is for.",
+    ],
+  },
+  {
     date: "2026-08-26",
     title: "Data reviewed following Section 338 and Canada's counter-tariffs",
     body: [
