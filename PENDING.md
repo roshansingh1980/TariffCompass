@@ -22,6 +22,7 @@ The whole point of everything below. Nobody outside this project has used the to
 - [ ] Meeting with the lawyer — the other two are different now: per ROADMAP.md, the accountant/banker/consultant meetings are held until its Week 6 is done ("those are the conversations that need the wow version")
 - [ ] Five exporters, five accountants — the validation round
 - [ ] One call with PacifiCan, one with an NRC IRAP advisor (free, informal, tells you whether you're fundable)
+- [ ] In Stripe: set the C$29 price as default and archive the C$99 price. C$99 is still marked Default, so anything creating a subscription without an explicit price ID would use it. Both have 0 active subscriptions
 
 **Meeting materials to write:**
 - [ ] One-page PDF leave-behind
@@ -38,6 +39,14 @@ The whole point of everything below. Nobody outside this project has used the to
 **Entity structure**
 - [ ] Should TariffCompass sit under Adithana Capital Ltd. (BC + federally incorporated, 100% owned by Roshan), or under a separate operating company? Adithana is a capital/advisory vehicle; a product publishing tariff figures that businesses may act on is a different liability profile. This also affects eligibility for tech-development grants (NRC IRAP, PacifiCan), which look at the entity's activity.
 - [ ] The Stripe account has now been activated in live mode. Confirm which entity it should be registered under before taking any payment — changing it afterward is painful.
+
+**Where the entity is named** — every place in the app "Adithana Capital Ltd." appears (or, in one case, doesn't):
+- `app/terms/page.tsx` — "TariffCompass is a product of Adithana Capital Ltd. In these terms, 'we,' 'us,' and 'our' mean Adithana Capital Ltd."
+- `app/privacy/page.tsx` — "TariffCompass is a product of Adithana Capital Ltd., the data controller for the information described below."
+- `app/notices/page.tsx` (page body) — "TariffCompass is a software product independently built and operated by Adithana Capital Ltd. It is not a government service."
+- `app/notices/page.tsx` (page metadata description) — "TariffCompass, a product of Adithana Capital Ltd., is an independent software tool not affiliated with any government agency."
+- `components/site-footer.tsx` — "© [year] Adithana Capital Ltd. All rights reserved."
+- `app/about/page.tsx` — carries the near-identical sentence "TariffCompass is independently built and operated. It is not affiliated with, endorsed by, or acting on behalf of the Government of Canada..." but does **not** name Adithana Capital Ltd. here, unlike the matching sentence on /notices. Inconsistency, not yet resolved.
 
 **Liability on published figures**
 - [ ] If a business relies on a rate shown in the app, gets it wrong, and loses money — what is the exposure, and does the current disclaimer language actually protect against it? This is the question that determines whether we launch.
