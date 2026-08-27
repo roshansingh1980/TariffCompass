@@ -1,14 +1,16 @@
 /**
  * Calendar of dated tariff/trade measures shown on the homepage's "What's
  * coming" section. Every entry maps to a source already cited (and fetched)
- * elsewhere in this codebase — see lib/data/sources.ts — and to only the
- * categories market-data.ts itself already attributes to that exact measure.
- * No new research went into this file; it restructures what the app already
- * knows into a chronological view.
+ * elsewhere in this codebase — see lib/data/source-registry.ts — and to only
+ * the categories lib/data/db-market-data.ts itself already attributes to
+ * that exact measure. No new research went into this file; it restructures
+ * what the app already knows into a chronological view.
  *
- * Shape mirrors the planned Postgres `key_dates` table columns 1:1
- * (effective_date, title, description, affected_categories, source, confidence,
- * last_checked) so this can move over later without reshaping.
+ * Shape mirrors the Postgres `key_dates` table columns 1:1 (effective_date,
+ * title, description, affected_categories, source, confidence, last_checked)
+ * so this can move over later without reshaping. That table exists
+ * (migration 006) but isn't queried yet — this file is still the source of
+ * truth the homepage reads from.
  */
 
 export type KeyDateConfidence = "official" | "estimated";
