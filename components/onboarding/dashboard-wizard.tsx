@@ -109,8 +109,8 @@ export function DashboardWizard({
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center px-6 py-28 sm:py-36">
-      <div className="mb-12 flex w-full max-w-5xl justify-end">
+    <div className="flex flex-1 flex-col items-center px-6 py-16 sm:py-20">
+      <div className="mb-8 flex w-full max-w-5xl justify-end">
         <CountryToggle value={country} onChange={setCountry} />
       </div>
 

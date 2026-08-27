@@ -45,11 +45,7 @@ function formatDate(iso: string): string {
 }
 
 function formatCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat("en-CA", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  return `${currency} ${Math.round(amount).toLocaleString("en-CA")}`;
 }
 
 function formatRate(rate: number): string {
@@ -185,11 +181,21 @@ export function ResultsStep({
               Your estimated U.S. exposure
             </p>
             <p className="text-lg font-medium tracking-tight text-foreground">
-              {formatCurrency(exposure.lowAmount, currency)} at {formatRate(exposure.lowRate)}
-              {"  ·  "}
-              {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
-              {"  ·  "}
-              {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
+              {exposure.lowRate > 0 ? (
+                <>
+                  {formatCurrency(exposure.lowAmount, currency)} at {formatRate(exposure.lowRate)}
+                  {"  ·  "}
+                  {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
+                  {"  ·  "}
+                  {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
+                </>
+              ) : (
+                <>
+                  {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
+                  {"  ·  "}
+                  {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
+                </>
+              )}
             </p>
             <p className="max-w-md text-center text-xs text-muted-foreground/60">
               Planning range based on the estimated rate above — not a duty determination. Confirm
