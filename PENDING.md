@@ -22,7 +22,6 @@ The whole point of everything below. Nobody outside this project has used the to
 - [ ] Meeting with the lawyer — the other two are different now: per ROADMAP.md, the accountant/banker/consultant meetings are held until its Week 6 is done ("those are the conversations that need the wow version")
 - [ ] Five exporters, five accountants — the validation round
 - [ ] One call with PacifiCan, one with an NRC IRAP advisor (free, informal, tells you whether you're fundable)
-- [ ] In Stripe: set the C$29 price as default and archive the C$99 price. C$99 is still marked Default, so anything creating a subscription without an explicit price ID would use it. Both have 0 active subscriptions
 
 **Meeting materials to write:**
 - [ ] One-page PDF leave-behind
