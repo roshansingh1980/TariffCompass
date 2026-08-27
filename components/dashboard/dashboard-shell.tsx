@@ -114,7 +114,7 @@ function SidebarContent({
   const { country, setCountry } = useCountry();
 
   return (
-    <div className="flex h-full flex-col gap-8 p-5">
+    <div className="flex min-h-full flex-col gap-8 p-5">
       <Link href="/" aria-label="TariffCompass home" className="flex items-center gap-2 px-1">
         <TcMark className="h-[22px] w-[22px]" />
         <span className="font-serif text-lg leading-none font-medium text-foreground">
@@ -182,7 +182,7 @@ export function DashboardShell({
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
-            <div className="absolute inset-y-0 left-0 w-72 max-w-[85vw] bg-background shadow-xl">
+            <div className="absolute inset-y-0 left-0 w-72 max-w-[85vw] overflow-y-auto bg-background shadow-xl">
               <div className="flex justify-end p-3">
                 <button
                   type="button"
