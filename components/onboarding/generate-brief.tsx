@@ -136,7 +136,7 @@ export function GenerateBriefSection({
             AI-generated diversification briefs are available on the C$29/month plan.
           </p>
           <div className="mt-6">
-            <SubscribeButton />
+            <SubscribeButton label="Unlock with TariffCompass — C$29/month" />
           </div>
         </div>
       )}

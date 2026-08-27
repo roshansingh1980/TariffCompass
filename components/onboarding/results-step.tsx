@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
 import { GenerateBriefSection } from "@/components/onboarding/generate-brief";
 import type { Currency } from "@/components/onboarding/exposure-step";
-import { MarketRiskDialog, RiskBadge } from "@/components/onboarding/market-risk-dialog";
+import { MarketRiskDialog, RiskBadge, type DialogFocus } from "@/components/onboarding/market-risk-dialog";
+import { firstSentence, MaskedSection } from "@/components/onboarding/masked-section";
 import { ChipSelect } from "@/components/onboarding/chip-select";
 import {
   Tooltip,
@@ -97,7 +98,9 @@ export function ResultsStep({
   const direction = resolveScenarioDirection(scenario);
   const tariffColumnLabel = direction === "export" ? "Export Tariff" : "Import Duty";
 
-  const [detailsRow, setDetailsRow] = useState<MarketDataRow | null>(null);
+  const [detailsRow, setDetailsRow] = useState<{ row: MarketDataRow; focus: DialogFocus } | null>(
+    null
+  );
 
   const [comparisonRows, setComparisonRows] = useState<MarketDataRow[] | null>(null);
   const [rowsError, setRowsError] = useState<string | null>(null);
@@ -357,18 +360,22 @@ export function ResultsStep({
                       <span className="text-muted-foreground"> / 10</span>
                     </td>
                     <td className="px-7 py-6">
-                      <LockedValue locked={!isSubscribed}>
-                        <FrictionMeter level={row.costFriction} />
-                      </LockedValue>
+                      <FrictionMeter
+                        level={row.costFriction}
+                        onClick={() => setDetailsRow({ row, focus: "friction" })}
+                      />
                     </td>
                     <td className="px-7 py-6">
                       <AttractivenessBadge
                         level={row.attractiveness}
-                        onClick={() => setDetailsRow(row)}
+                        onClick={() => setDetailsRow({ row, focus: "risk" })}
                       />
                     </td>
                     <td className="px-7 py-6">
-                      <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
+                      <RiskBadge
+                        level={getRiskStatus(row)}
+                        onClick={() => setDetailsRow({ row, focus: "risk" })}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -389,7 +396,7 @@ export function ResultsStep({
                   </span>
                   <AttractivenessBadge
                     level={row.attractiveness}
-                    onClick={() => setDetailsRow(row)}
+                    onClick={() => setDetailsRow({ row, focus: "risk" })}
                   />
                 </div>
                 <dl className="mt-5 grid grid-cols-2 gap-y-3.5 text-sm">
@@ -403,13 +410,17 @@ export function ResultsStep({
                   </dd>
                   <dt className="flex items-center text-muted-foreground">Cost / Friction</dt>
                   <dd className="flex justify-end">
-                    <LockedValue locked={!isSubscribed}>
-                      <FrictionMeter level={row.costFriction} />
-                    </LockedValue>
+                    <FrictionMeter
+                      level={row.costFriction}
+                      onClick={() => setDetailsRow({ row, focus: "friction" })}
+                    />
                   </dd>
                   <dt className="flex items-center text-muted-foreground">Current Risk</dt>
                   <dd className="flex justify-end">
-                    <RiskBadge level={getRiskStatus(row)} onClick={() => setDetailsRow(row)} />
+                    <RiskBadge
+                      level={getRiskStatus(row)}
+                      onClick={() => setDetailsRow({ row, focus: "risk" })}
+                    />
                   </dd>
                 </dl>
                 <DataStatusLine row={row} className="mt-3" />
@@ -437,7 +448,8 @@ export function ResultsStep({
       {!isSubscribed && (
         <div className="mt-8 flex flex-col items-center gap-4 rounded-3xl border border-border/60 bg-foreground/[0.02] p-7 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:flex-row sm:justify-between sm:text-left">
           <p className="text-[15px] font-medium tracking-tight text-foreground">
-            Unlock dollar exposure, cost/friction, and full program details — C$29/month
+            Unlock dollar exposure, the reasoning behind each rating, and full program details —
+            C$29/month
           </p>
           <SubscribeButton label="Upgrade" className="h-11 shrink-0 px-7" />
         </div>
@@ -479,22 +491,18 @@ export function ResultsStep({
               className="flex h-full flex-col gap-3 rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
             >
               <span className="font-medium tracking-tight text-foreground">{program.name}</span>
-              <LockedValue
-                locked={!isSubscribed}
-                showIcon={false}
-                className="flex flex-1 flex-col items-start gap-3"
-              >
-                <span className="text-sm text-muted-foreground">{program.description}</span>
-                <div className="text-sm">
-                  <span className="font-medium text-foreground">Who it&apos;s for: </span>
-                  <span className="text-muted-foreground">{program.whoItsFor}</span>
-                </div>
-                {direction === "import" && program.importCaveat && (
-                  <div className="rounded-xl bg-foreground/[0.03] px-3.5 py-2.5 text-xs text-muted-foreground">
-                    {program.importCaveat}
+              {isSubscribed ? (
+                <div className="flex flex-1 flex-col items-start gap-3">
+                  <span className="text-sm text-muted-foreground">{program.description}</span>
+                  <div className="text-sm">
+                    <span className="font-medium text-foreground">Who it&apos;s for: </span>
+                    <span className="text-muted-foreground">{program.whoItsFor}</span>
                   </div>
-                )}
-                {isSubscribed ? (
+                  {direction === "import" && program.importCaveat && (
+                    <div className="rounded-xl bg-foreground/[0.03] px-3.5 py-2.5 text-xs text-muted-foreground">
+                      {program.importCaveat}
+                    </div>
+                  )}
                   <a
                     href={program.href}
                     target="_blank"
@@ -504,16 +512,14 @@ export function ResultsStep({
                     Learn more
                     <ArrowUpRight className="size-3.5" />
                   </a>
-                ) : (
-                  // Not a real link while locked — the wrapping LockedValue already
-                  // hides this from assistive tech, and a focusable-but-hidden <a>
-                  // here would be a real keyboard trap (tabbable, invisible to AT).
-                  <span className="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-foreground">
-                    Learn more
-                    <ArrowUpRight className="size-3.5" />
-                  </span>
-                )}
-              </LockedValue>
+                </div>
+              ) : (
+                <MaskedSection
+                  heading="Program details"
+                  preview={firstSentence(program.description)}
+                  className="flex-1"
+                />
+              )}
             </div>
           ))}
         </div>
@@ -571,7 +577,8 @@ export function ResultsStep({
       </div>
 
       <MarketRiskDialog
-        row={detailsRow}
+        row={detailsRow?.row ?? null}
+        focus={detailsRow?.focus ?? "risk"}
         isSubscribed={isSubscribed}
         tariffColumnLabel={tariffColumnLabel}
         category={category}
@@ -761,9 +768,9 @@ function DataStatusLine({ row, className }: { row: MarketDataRow; className?: st
   );
 }
 
-function FrictionMeter({ level }: { level: CostFriction }) {
+function FrictionMeter({ level, onClick }: { level: CostFriction; onClick?: () => void }) {
   const filled = level === "Low" ? 1 : level === "Medium" ? 2 : 3;
-  return (
+  const content = (
     <div className="flex items-center gap-2.5">
       <div className="flex gap-1.5">
         {[1, 2, 3].map((segment) => (
@@ -778,6 +785,29 @@ function FrictionMeter({ level }: { level: CostFriction }) {
       </div>
       <span className="text-sm text-muted-foreground">{level}</span>
     </div>
+  );
+
+  if (!onClick) return content;
+
+  const button = (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-md transition-opacity duration-150 hover:opacity-70 active:scale-[0.98]"
+    >
+      {content}
+    </button>
+  );
+
+  return (
+    <Tooltip>
+      <TooltipTrigger render={button} />
+      <TooltipPortal>
+        <TooltipPositioner>
+          <TooltipPopup>See why this is rated {level.toLowerCase()} friction.</TooltipPopup>
+        </TooltipPositioner>
+      </TooltipPortal>
+    </Tooltip>
   );
 }
 

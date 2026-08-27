@@ -47,7 +47,7 @@ export default function TermsPage() {
             The C$29/month subscription
           </h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            Estimated dollar exposure, cost/friction detail, the full risk breakdown, full
+            Estimated dollar exposure, the reasoning behind cost/friction and risk ratings, full
             government program detail, and AI brief generation require a paid subscription at
             C$29/month, billed through Stripe and renewing automatically each
             month. You can cancel at any time through the billing portal linked from your account;

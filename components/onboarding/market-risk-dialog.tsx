@@ -14,7 +14,7 @@ import {
   TooltipPositioner,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SubscribeButton } from "@/components/billing/subscribe-button";
+import { firstSentence, MaskedSection } from "@/components/onboarding/masked-section";
 import { getRiskStatus, type MarketDataRow, type RiskStatus } from "@/lib/data/db-market-data";
 import { cn } from "@/lib/utils";
 
@@ -108,14 +108,18 @@ export function RiskBadge({
   );
 }
 
+export type DialogFocus = "risk" | "friction";
+
 export function MarketRiskDialog({
   row,
+  focus,
   isSubscribed,
   tariffColumnLabel,
   category,
   onClose,
 }: {
   row: MarketDataRow | null;
+  focus: DialogFocus;
   isSubscribed: boolean;
   tariffColumnLabel: string;
   category: string | null;
@@ -145,85 +149,107 @@ export function MarketRiskDialog({
                 </DialogClose>
               </div>
 
-              {isSubscribed ? (
-                <div className="flex flex-col gap-6 p-7">
-                  <section className="flex flex-col gap-2">
-                    <h3 className="text-sm font-medium tracking-wide text-foreground">
-                      Current situation
-                    </h3>
-                    <p className="text-[14.5px] leading-relaxed text-muted-foreground">
-                      For {category ?? "your product category"}, {row.market.name} currently shows
-                      a {tariffColumnLabel.toLowerCase()} of{" "}
-                      <span className="font-medium text-foreground">
-                        {row.tariffConfidence === "unknown" ? "Unavailable" : row.tariffRate}
-                      </span>
-                      , with {row.costFriction.toLowerCase()} cost/friction and an overall rating
-                      of {row.attractiveness.toLowerCase()}.
-                    </p>
-                  </section>
-
-                  <section className="flex flex-col gap-2">
-                    <h3 className="text-sm font-medium tracking-wide text-foreground">
-                      Why this market is rated this way
-                    </h3>
-                    <p className="text-[14.5px] leading-relaxed text-muted-foreground">
-                      {row.rationale}
-                    </p>
-                  </section>
-
-                  <section className="flex flex-col gap-2">
-                    <h3 className="text-sm font-medium tracking-wide text-foreground">
-                      Key risks
-                    </h3>
-                    <ul className="flex flex-col gap-1.5">
-                      {keyRisks(row).map((riskLine, i) => (
-                        <li
-                          key={i}
-                          className="flex gap-2.5 text-[14.5px] leading-relaxed text-muted-foreground"
-                        >
-                          <span className="mt-2 size-1 shrink-0 rounded-full bg-foreground/40" />
-                          {riskLine}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-
-                  <section className="flex flex-col gap-2">
-                    <h3 className="text-sm font-medium tracking-wide text-foreground">
-                      Tariff figure status
-                    </h3>
-                    <p className="text-[14.5px] leading-relaxed text-muted-foreground">
-                      {tariffStatusLine(row)}
-                    </p>
-                  </section>
-
-                  <section className="flex flex-col gap-2">
-                    <h3 className="text-sm font-medium tracking-wide text-foreground">
-                      Relevant next step
-                    </h3>
-                    <p className="text-[14.5px] leading-relaxed text-muted-foreground">
-                      {NEXT_STEP[risk]}
-                    </p>
-                  </section>
-
-                  <a
-                    href={row.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[13px] font-medium text-muted-foreground underline decoration-border underline-offset-4 transition-colors duration-200 hover:text-foreground hover:decoration-foreground"
-                  >
-                    Source: {row.sourceName}
-                  </a>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-4 p-7 text-center">
-                  <p className="text-[15px] leading-relaxed text-muted-foreground">
-                    Unlock the full risk breakdown for {row.market.name} — why it&apos;s rated
-                    this way, key risks, and a relevant next step.
+              <div className="flex flex-col gap-6 p-7">
+                {/* Free: restates figures already visible on the Results table. */}
+                <section className="flex flex-col gap-2">
+                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                    Current situation
+                  </h3>
+                  <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                    For {category ?? "your product category"}, {row.market.name} currently shows
+                    a {tariffColumnLabel.toLowerCase()} of{" "}
+                    <span className="font-medium text-foreground">
+                      {row.tariffConfidence === "unknown" ? "Unavailable" : row.tariffRate}
+                    </span>
+                    , with {row.costFriction.toLowerCase()} cost/friction and an overall rating
+                    of {row.attractiveness.toLowerCase()}.
                   </p>
-                  <SubscribeButton label="Upgrade — C$29/month" className="h-11 px-7" />
-                </div>
-              )}
+                </section>
+
+                {focus === "friction" ? (
+                  isSubscribed ? (
+                    <section className="flex flex-col gap-2">
+                      <h3 className="text-sm font-medium tracking-wide text-foreground">
+                        Why this is rated {row.costFriction.toLowerCase()} friction
+                      </h3>
+                      <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                        {row.rationale}
+                      </p>
+                    </section>
+                  ) : (
+                    <MaskedSection
+                      heading={`Why this is rated ${row.costFriction.toLowerCase()} friction`}
+                      preview={firstSentence(row.rationale)}
+                    />
+                  )
+                ) : isSubscribed ? (
+                  <>
+                    <section className="flex flex-col gap-2">
+                      <h3 className="text-sm font-medium tracking-wide text-foreground">
+                        Why this market is rated this way
+                      </h3>
+                      <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                        {row.rationale}
+                      </p>
+                    </section>
+
+                    <section className="flex flex-col gap-2">
+                      <h3 className="text-sm font-medium tracking-wide text-foreground">
+                        Key risks
+                      </h3>
+                      <ul className="flex flex-col gap-1.5">
+                        {keyRisks(row).map((riskLine, i) => (
+                          <li
+                            key={i}
+                            className="flex gap-2.5 text-[14.5px] leading-relaxed text-muted-foreground"
+                          >
+                            <span className="mt-2 size-1 shrink-0 rounded-full bg-foreground/40" />
+                            {riskLine}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+
+                    <section className="flex flex-col gap-2">
+                      <h3 className="text-sm font-medium tracking-wide text-foreground">
+                        Relevant next step
+                      </h3>
+                      <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                        {NEXT_STEP[risk]}
+                      </p>
+                    </section>
+                  </>
+                ) : (
+                  // One masked block for the whole risk breakdown (why rated, key
+                  // risks, next step) rather than one CTA per sub-section — those
+                  // three unlock together, so they should mask as one gate, not
+                  // three repeated upgrade prompts stacked in the same dialog.
+                  <MaskedSection
+                    heading="Why this market is rated this way"
+                    preview={firstSentence(row.rationale)}
+                    ctaLabel="Unlock the full risk breakdown — C$29/month"
+                  />
+                )}
+
+                {/* Free: supplementary context on the already-free confidence label. */}
+                <section className="flex flex-col gap-2">
+                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                    Tariff figure status
+                  </h3>
+                  <p className="text-[14.5px] leading-relaxed text-muted-foreground">
+                    {tariffStatusLine(row)}
+                  </p>
+                </section>
+
+                <a
+                  href={row.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[13px] font-medium text-muted-foreground underline decoration-border underline-offset-4 transition-colors duration-200 hover:text-foreground hover:decoration-foreground"
+                >
+                  Source: {row.sourceName}
+                </a>
+              </div>
 
               <div className="border-t border-border/50 p-5">
                 <button

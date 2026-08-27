@@ -39,18 +39,19 @@ export default function SupportPage() {
           <h2 className="text-xl font-medium tracking-tight text-foreground">Free vs. paid</h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             Anyone can complete the wizard and see their Results screen for free, with no account
-            required — market names, ease of doing business scores, overall attractiveness and
-            risk ratings, the export tariff rate range for every market, each rate&apos;s data
-            status and source, and the names of relevant government support programs.
+            required — market names, ease of doing business scores, the export tariff rate range,
+            the cost/friction rating, the overall attractiveness and current risk badges, each
+            rate&apos;s data status and source, and the names of relevant government support
+            programs.
           </p>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             A free account (no payment) lets you save profiles and reopen them later.
           </p>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            A paid subscription unlocks your estimated dollar exposure, the cost/friction detail
-            for every market, the full risk breakdown behind each rating, full government support
-            program descriptions and links, and the ability to generate an AI diversification
-            brief.
+            A paid subscription unlocks your estimated dollar exposure, the AI diversification
+            brief, full government support program descriptions and links, the reasoning behind
+            each cost/friction rating, and the full risk breakdown behind each risk rating — why
+            it&apos;s rated that way, key risks, and a relevant next step.
           </p>
         </section>
 
