@@ -4,7 +4,7 @@ import { BackLink } from "@/components/back-link";
 export const metadata: Metadata = {
   title: "Notices | TariffCompass",
   description:
-    "TariffCompass is an independent software tool, not affiliated with any government agency.",
+    "TariffCompass, a product of Adithana Capital Ltd., is an independent software tool not affiliated with any government agency.",
   alternates: { canonical: "/notices" },
 };
 
@@ -25,8 +25,8 @@ export default function NoticesPage() {
             Independent software tool
           </h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            TariffCompass is an independently built and operated software product. It is not a
-            government service.
+            TariffCompass is a software product independently built and operated by Adithana
+            Capital Ltd. It is not a government service.
           </p>
         </section>
 

@@ -24,6 +24,10 @@ export default function TermsPage() {
         </a>
         .
       </p>
+      <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+        TariffCompass is a product of Adithana Capital Ltd. In these terms, &ldquo;we,&rdquo;
+        &ldquo;us,&rdquo; and &ldquo;our&rdquo; mean Adithana Capital Ltd.
+      </p>
 
       <div className="mt-12 flex flex-col gap-10">
         <section className="flex flex-col gap-3">

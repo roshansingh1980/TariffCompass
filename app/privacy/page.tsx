@@ -24,6 +24,10 @@ export default function PrivacyPage() {
         </a>
         .
       </p>
+      <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
+        TariffCompass is a product of Adithana Capital Ltd., the data controller for the
+        information described below.
+      </p>
 
       <div className="mt-12 flex flex-col gap-10">
         <section className="flex flex-col gap-3">

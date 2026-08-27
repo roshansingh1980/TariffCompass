@@ -15,7 +15,7 @@ export async function SiteFooter() {
         </p>
         <div className="flex flex-col items-center gap-3 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-left">
           <p className="tracking-wide">
-            &copy; {new Date().getFullYear()} TariffCompass. All rights reserved.
+            &copy; {new Date().getFullYear()} Adithana Capital Ltd. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
             <Link
