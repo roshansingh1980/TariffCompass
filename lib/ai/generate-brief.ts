@@ -2,6 +2,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import type { Attractiveness, CostFriction, TariffConfidence } from "@/lib/data/market-data";
+import { computeExposure } from "@/lib/exposure";
 import { createClient } from "@/lib/supabase/server";
 
 export type BriefComparisonRow = {
@@ -21,6 +22,9 @@ export type BriefInput = {
   category: string | null;
   productName: string;
   tariffColumnLabel: string;
+  annualValue: number | null;
+  currency: string | null;
+  hsCode: string | null;
   comparisonRows: BriefComparisonRow[];
 };
 
@@ -85,7 +89,16 @@ Use only the provided rates and confidence values — never substitute your own 
 Every tariff figure in the comparison table carries a confidence label: official, estimated, or unknown.
 If a rate is estimated, say so plainly when you cite it (for example, "an estimated 25%").
 If a rate is unknown or unavailable, say so plainly and do not guess a number.
-Do not present an estimated or unknown figure as an official determination.`;
+Do not present an estimated or unknown figure as an official determination.
+
+Exposure figures
+
+If an annual value shipped and a computed U.S. exposure range are provided below, state those actual
+dollar figures directly in the Exposure section instead of instructing the reader to calculate their
+own revenue concentration or margin impact — that math has already been done for them.
+If no annual value was provided, keep giving that calculation as a next action instead.
+Either way, always include an instruction to confirm the applicable rate and HS classification with a
+customs broker before committing — the exposure figures are a planning range, not a duty determination.`;
 
 export async function generateBrief(input: BriefInput): Promise<BriefResult> {
   const supabase = await createClient();
@@ -123,6 +136,16 @@ export async function generateBrief(input: BriefInput): Promise<BriefResult> {
 
     const homeCountry = input.country === "US" ? "United States" : "Canada";
 
+    const usRow = input.comparisonRows.find((r) => r.market === "United States");
+    const exposure =
+      input.annualValue && input.annualValue > 0 && usRow
+        ? computeExposure(input.annualValue, usRow.tariffRate)
+        : null;
+
+    const exposureText = exposure
+      ? `\nEstimated U.S. exposure (already computed, state these figures directly): ${input.currency} ${exposure.lowAmount.toFixed(0)} at ${exposure.lowRate}%, ${input.currency} ${exposure.midAmount.toFixed(0)} at ${exposure.midRate}%, ${input.currency} ${exposure.highAmount.toFixed(0)} at ${exposure.highRate}%.`
+      : "";
+
     const userPrompt = `Business profile:
 - Scenario: ${input.scenarioLabel ?? "Not specified"}
 - Home country: ${homeCountry}
@@ -130,9 +153,12 @@ export async function generateBrief(input: BriefInput): Promise<BriefResult> {
 - U.S. state: ${input.usState ?? "Not specified"}
 - Product category: ${input.category ?? "Not specified"}
 - Product name: ${input.productName || "Not specified"}
+- Annual value shipped: ${input.annualValue ? `${input.currency} ${input.annualValue}` : "Not specified"}
+- HS code: ${input.hsCode ?? "Not specified"}
 
 Comparison table:
 ${rowsText}
+${exposureText}
 
 Write the brief now.`;
 
