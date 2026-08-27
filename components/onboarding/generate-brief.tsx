@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useTransition, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
-import { generateBrief, type BriefInput, type BriefProgram } from "@/lib/ai/generate-brief";
+import type { BriefInput, BriefProgram } from "@/lib/ai/generate-brief";
 import { savePendingWizardState, type PendingWizardState } from "@/lib/pending-wizard";
+
+type StreamEvent = { type: "text"; text: string } | { type: "error"; error: string };
 
 export function GenerateBriefSection({
   input,
@@ -18,24 +20,69 @@ export function GenerateBriefSection({
   isSubscribed: boolean;
   wizardSelections: PendingWizardState;
 }) {
-  const [isPending, startTransition] = useTransition();
+  const [isStreaming, setIsStreaming] = useState(false);
   const [brief, setBrief] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [requiresUpgrade, setRequiresUpgrade] = useState(!isSubscribed);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setError(null);
     setRequiresUpgrade(false);
-    startTransition(async () => {
-      const result = await generateBrief(input);
-      if ("requiresUpgrade" in result) {
-        setRequiresUpgrade(true);
-      } else if ("error" in result) {
-        setError(result.error);
-      } else {
-        setBrief(result.brief);
+    setBrief(null);
+    setIsStreaming(true);
+    let accumulated = "";
+
+    try {
+      const response = await fetch("/api/generate-brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
+
+      if (response.status === 401) {
+        setError("Please log in to generate a brief.");
+        return;
       }
-    });
+      if (response.status === 403) {
+        setRequiresUpgrade(true);
+        return;
+      }
+      if (!response.ok || !response.body) {
+        const data = await response.json().catch(() => null);
+        setError(data?.error ?? "Something went wrong generating your brief. Please try again.");
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      setBrief("");
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          const event = JSON.parse(line) as StreamEvent;
+          if (event.type === "text") {
+            accumulated += event.text;
+            setBrief(accumulated);
+          } else {
+            setError(event.error);
+            if (!accumulated) setBrief(null);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Brief streaming failed:", err);
+      setError("Something went wrong generating your brief. Please try again.");
+      if (!accumulated) setBrief(null);
+    } finally {
+      setIsStreaming(false);
+    }
   };
 
   return (
@@ -68,15 +115,15 @@ export function GenerateBriefSection({
         </div>
       )}
 
-      {isLoggedIn && !brief && !requiresUpgrade && (
+      {isLoggedIn && brief === null && !requiresUpgrade && (
         <Button
           type="button"
           onClick={handleGenerate}
-          disabled={isPending}
+          disabled={isStreaming}
           size="lg"
           className="mt-8 h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)]"
         >
-          {isPending ? "Generating…" : "Generate Brief"}
+          {isStreaming ? "Generating…" : "Generate Brief"}
         </Button>
       )}
 
@@ -96,7 +143,7 @@ export function GenerateBriefSection({
 
       {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
 
-      {brief && (
+      {(brief || (isStreaming && brief === "")) && (
         <div className="mt-8 rounded-3xl border border-border/60 p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-10">
           <p className="mb-6 text-sm text-muted-foreground">
             Prepared for: {input.productName || input.category || "your business"}
@@ -107,7 +154,14 @@ export function GenerateBriefSection({
               day: "numeric",
             })}
           </p>
-          <BriefContent text={brief} programs={input.programs} />
+          {brief === "" && isStreaming ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="size-1.5 animate-pulse rounded-full bg-foreground/40" />
+              Writing your brief…
+            </div>
+          ) : (
+            <BriefContent text={brief} programs={input.programs} />
+          )}
           <p className="mt-8 border-t border-border/50 pt-6 text-xs text-muted-foreground">
             This brief is a starting point for a funding or client conversation. It is not a
             determination of program eligibility, and not legal, tax, or financial advice.

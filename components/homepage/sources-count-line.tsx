@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getUsedSourceRegistry } from "@/lib/data/source-registry";
+import { getUsedSourceRegistry, type SourceRegistryEntry } from "@/lib/data/source-registry";
 
 function formatDate(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-CA", {
@@ -11,7 +11,13 @@ function formatDate(iso: string): string {
 }
 
 export async function SourcesCountLine() {
-  const registry = await getUsedSourceRegistry();
+  let registry: SourceRegistryEntry[];
+  try {
+    registry = await getUsedSourceRegistry();
+  } catch (error) {
+    console.error("Failed to load source registry for homepage:", error);
+    return null;
+  }
   const lastReviewed = registry.reduce(
     (latest, entry) => (entry.lastChecked > latest ? entry.lastChecked : latest),
     registry[0]?.lastChecked ?? ""

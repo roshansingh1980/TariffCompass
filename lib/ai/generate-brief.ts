@@ -1,9 +1,5 @@
-"use server";
-
-import Anthropic from "@anthropic-ai/sdk";
 import type { Attractiveness, CostFriction, TariffConfidence } from "@/lib/data/db-market-data";
 import { computeExposure } from "@/lib/exposure";
-import { createClient } from "@/lib/supabase/server";
 
 export type BriefComparisonRow = {
   market: string;
@@ -34,9 +30,7 @@ export type BriefInput = {
   programs: BriefProgram[];
 };
 
-export type BriefResult = { brief: string } | { error: string } | { requiresUpgrade: true };
-
-const SYSTEM_PROMPT = `You are a senior Canadian trade advisor writing a short Diversification / Funding Readiness Brief.
+export const BRIEF_SYSTEM_PROMPT = `You are a senior Canadian trade advisor writing a short Diversification / Funding Readiness Brief.
 Your reader is a Canadian business owner, accountant, consultant, or lawyer.
 
 Write in clear, calm, professional English. No hype. No jargon unless necessary.
@@ -117,58 +111,33 @@ If no annual value was provided, keep giving that calculation as a next action i
 Either way, always include an instruction to confirm the applicable rate and HS classification with a
 customs broker before committing — the exposure figures are a planning range, not a duty determination.`;
 
-export async function generateBrief(input: BriefInput): Promise<BriefResult> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return { error: "Please log in to generate a brief." };
-  }
+/** Builds the user-turn prompt from the wizard's Results-screen data. Pure — no I/O, no auth. */
+export function buildBriefUserPrompt(input: BriefInput): string {
+  const rowsText = input.comparisonRows
+    .map(
+      (r) =>
+        `- ${r.market}: ${input.tariffColumnLabel} ${r.tariffRate} (confidence: ${r.tariffConfidence}), ease of business ${r.easeOfBusiness.toFixed(1)}/10, cost/friction ${r.costFriction}, overall attractiveness ${r.attractiveness}`
+    )
+    .join("\n");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("subscription_status")
-    .eq("id", user.id)
-    .maybeSingle();
+  const homeCountry = input.country === "US" ? "United States" : "Canada";
 
-  if (profile?.subscription_status !== "active") {
-    return { requiresUpgrade: true };
-  }
+  const usRow = input.comparisonRows.find((r) => r.market === "United States");
+  const exposure =
+    input.annualValue && input.annualValue > 0 && usRow
+      ? computeExposure(input.annualValue, usRow.tariffRate)
+      : null;
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return { error: "AI brief generation isn't configured yet." };
-  }
+  const exposureText = exposure
+    ? `\nEstimated U.S. exposure (already computed, state these figures directly): ${input.currency} ${exposure.lowAmount.toFixed(0)} at ${exposure.lowRate}%, ${input.currency} ${exposure.midAmount.toFixed(0)} at ${exposure.midRate}%, ${input.currency} ${exposure.highAmount.toFixed(0)} at ${exposure.highRate}%.`
+    : "";
 
-  try {
-    const client = new Anthropic({ apiKey });
+  const programsText =
+    input.programs.length > 0
+      ? input.programs.map((p) => `- ${p.name} (${p.href})`).join("\n")
+      : "(none provided — do not name any government program in this brief)";
 
-    const rowsText = input.comparisonRows
-      .map(
-        (r) =>
-          `- ${r.market}: ${input.tariffColumnLabel} ${r.tariffRate} (confidence: ${r.tariffConfidence}), ease of business ${r.easeOfBusiness.toFixed(1)}/10, cost/friction ${r.costFriction}, overall attractiveness ${r.attractiveness}`
-      )
-      .join("\n");
-
-    const homeCountry = input.country === "US" ? "United States" : "Canada";
-
-    const usRow = input.comparisonRows.find((r) => r.market === "United States");
-    const exposure =
-      input.annualValue && input.annualValue > 0 && usRow
-        ? computeExposure(input.annualValue, usRow.tariffRate)
-        : null;
-
-    const exposureText = exposure
-      ? `\nEstimated U.S. exposure (already computed, state these figures directly): ${input.currency} ${exposure.lowAmount.toFixed(0)} at ${exposure.lowRate}%, ${input.currency} ${exposure.midAmount.toFixed(0)} at ${exposure.midRate}%, ${input.currency} ${exposure.highAmount.toFixed(0)} at ${exposure.highRate}%.`
-      : "";
-
-    const programsText =
-      input.programs.length > 0
-        ? input.programs.map((p) => `- ${p.name} (${p.href})`).join("\n")
-        : "(none provided — do not name any government program in this brief)";
-
-    const userPrompt = `Business profile:
+  return `Business profile:
 - Scenario: ${input.scenarioLabel ?? "Not specified"}
 - Home country: ${homeCountry}
 - Province: ${input.province ?? "Not specified"}
@@ -186,22 +155,4 @@ Available programs (reference only these, by exact name — introduce no others)
 ${programsText}
 
 Write the brief now.`;
-
-    const response = await client.messages.create({
-      model: "claude-opus-5",
-      max_tokens: 4096,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: userPrompt }],
-    });
-
-    const textBlock = response.content.find((block) => block.type === "text");
-    if (!textBlock || textBlock.type !== "text") {
-      return { error: "The brief could not be generated. Please try again." };
-    }
-
-    return { brief: textBlock.text };
-  } catch (error) {
-    console.error("Failed to generate AI brief:", error);
-    return { error: "Something went wrong generating your brief. Please try again." };
-  }
 }
