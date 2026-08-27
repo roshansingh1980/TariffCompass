@@ -70,9 +70,15 @@ Keep it realistic.
 Government programs to review
 Mention only relevant Canadian programs such as RTRI, CanExport, BDC, or EDC if they reasonably fit.
 Do not say the user is eligible. Say they should review the official criteria.
+The reader already has a clickable link to each program's official page directly above this brief
+(in the app's own Government Support Options section) — do not tell them to search for, locate, or
+find these program pages themselves; refer to the programs as already linked above instead.
 
 Next actions
 Give 3 to 5 short action items.
+Any action item about a government program must reference it as already linked above (for example,
+"Review the CanExport and RTRI pages linked above for eligibility criteria") rather than instructing
+the reader to go find or look up the program.
 
 Style rules
 
