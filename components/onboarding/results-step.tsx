@@ -346,15 +346,6 @@ export function ResultsStep({
               verified all-in customs-duty rate; confirm classification, origin and treatment with
               a customs professional.
             </p>
-            {additionalImpact && (
-              <div className="mt-4 rounded-xl bg-amber-500/[0.08] px-4 py-3">
-                <p className="text-xs font-medium text-muted-foreground">Additional upcoming exposure</p>
-                <p className="mt-1 text-xl font-semibold tracking-tight text-foreground">{formatExposureRange(additionalImpact)}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Based on {additionalImpact.currency} {Math.round(additionalImpact.annualTradeValue).toLocaleString("en-CA")} × {formatRate(additionalImpact.rateMin)} additional counter-tariff. Incremental gross planning estimate only.
-                </p>
-              </div>
-            )}
             {tradeMeasureChange && tradeMeasureChangeStatus && (
               <TradeMeasureChangeCard
                 change={tradeMeasureChange}
