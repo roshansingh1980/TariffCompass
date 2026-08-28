@@ -8,21 +8,22 @@
 
 ## Canonical strategy
 
-Read these before making product-scope or go-to-market decisions:
+Read these before making product-scope, go-to-market or financing decisions:
 
 1. `BUSINESS_PLAN.md` — authoritative commercial/product strategy.
 2. `ROADMAP.md` — authoritative Phase 1 build sequence.
 3. `PENDING.md` — **Beta/V1 launch-critical execution items only**.
 4. `MARKETING_STRATEGY.md` — authoritative roadmap for acquiring the first **30 Business + 3 Advisor paying accounts**.
-5. `FUTURE.md` — post-launch/later-phase backlog; do not pull items forward without explicit promotion or real customer evidence.
-6. `SEO-Blueprint.md` — public authority/SEO layer.
-7. `brand/BRAND.md` — brand system.
+5. `CAPITAL_RAISING_STRATEGY.md` — authoritative financing, crowdfunding, valuation/dilution, post-raise financial plan, founder compensation and capital-allocation strategy.
+6. `FUTURE.md` — post-launch/later-phase product backlog; do not pull items forward without explicit promotion or real customer evidence.
+7. `SEO-Blueprint.md` — public authority/SEO layer.
+8. `brand/BRAND.md` — brand system.
 
 If another document or old comment conflicts with `BUSINESS_PLAN.md`, the business plan wins unless Roshan explicitly changes the strategy.
 
 When deciding where a new task belongs:
 
-> If it is necessary for a credible C$99 Business Beta/V1 launch, put it in `PENDING.md`. If it is specifically about acquiring the first 30 Business + 3 Advisor customers, put it in `MARKETING_STRATEGY.md`. Otherwise put it in `FUTURE.md`.
+> If it is necessary for a credible C$99 Business Beta/V1 launch, put it in `PENDING.md`. If it is specifically about acquiring the first 30 Business + 3 Advisor customers, put it in `MARKETING_STRATEGY.md`. If it concerns crowdfunding, financing, valuation, dilution, use of proceeds, founder compensation after financing, dividends or future capital rounds, put it in `CAPITAL_RAISING_STRATEGY.md`. Otherwise put it in `FUTURE.md`.
 
 ## North-star objective
 
@@ -39,6 +40,10 @@ Before proposing a marketing activity, ask:
 > **Will this materially increase the probability of acquiring the next paying Business or Advisor customer at acceptable economics?**
 
 If not, defer it.
+
+Before proposing a financing decision, ask:
+
+> **What specific growth constraint does new capital remove, what measurable outcome should the capital produce, and is the expected value creation greater than the dilution?**
 
 ## Phase 1 customers and pricing
 
@@ -119,6 +124,6 @@ Permissions it deliberately does NOT have — these stay manual and must not be 
 
 ## Crowdfunding
 
-Crowdfunding is strategic optionality and belongs in `FUTURE.md`, not the Beta/V1 launch queue.
+Crowdfunding is strategic optionality and is governed by `CAPITAL_RAISING_STRATEGY.md`, not the Beta/V1 product backlog.
 
-Do not spend product time on investor features or campaign mechanics before meaningful paying-customer proof. Build, launch, reach C$2,500 MRR, then build toward 30 Business customers, 3 Advisor customers and 2–3 strong customer stories before crowdfunding preparation.
+Do not spend product time on investor features or campaign mechanics before meaningful paying-customer proof. The current preferred sequence is: build, launch, reach C$2,500 MRR, build toward 30 Business customers + 3 Advisor customers + 2–3 strong customer stories, then prepare/launch crowdfunding subject to the current capital strategy.
