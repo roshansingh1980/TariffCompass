@@ -52,6 +52,7 @@ describe("HS-aware tariff selection", () => {
     );
 
     expect(selected).toEqual({ row: category, specificity: "category" });
+    expect(selected?.row.confidence).toBe("estimated");
   });
 
   it("selects import routes using origin rather than destination", () => {
@@ -64,8 +65,8 @@ describe("HS-aware tariff selection", () => {
 
   it("keeps future HS rows out of current tariff selection", () => {
     const future = tariffRow({ hs_code: "851713", effective_from: "2026-09-08" });
-    expect(isTariffRowCurrent(future, new Date("2026-08-28T12:00:00Z"))).toBe(false);
-    expect(isTariffRowCurrent(future, new Date("2026-09-08T00:00:00Z"))).toBe(true);
+    expect(isTariffRowCurrent(future, "2026-08-28")).toBe(false);
+    expect(isTariffRowCurrent(future, "2026-09-08")).toBe(true);
   });
 });
 

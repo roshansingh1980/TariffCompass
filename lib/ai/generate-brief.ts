@@ -1,5 +1,6 @@
 import type { Attractiveness, CostFriction, TariffConfidence, TariffSpecificity } from "@/lib/data/db-market-data";
 import { computeExposure } from "@/lib/exposure";
+import type { ApplicableTradeMeasure, TradeMeasureStatus } from "@/lib/data/canada-counter-tariffs-2026";
 
 export type BriefComparisonRow = {
   market: string;
@@ -30,6 +31,7 @@ export type BriefInput = {
   hsCode: string | null;
   comparisonRows: BriefComparisonRow[];
   programs: BriefProgram[];
+  tradeMeasure: (ApplicableTradeMeasure & { status: TradeMeasureStatus }) | null;
 };
 
 export const BRIEF_SYSTEM_PROMPT = `You are a senior Canadian trade advisor writing a short Diversification / Funding Readiness Brief.
@@ -46,7 +48,11 @@ product category
 product name if provided
 the comparison table
 
-Do not invent tariff rates, program eligibility, legal conclusions, or financial guarantees.
+Do not invent tariff rates, HS applicability, effective or announcement dates, sources, legal
+instruments, origin rules, authority tiers, confidence values, measure status, program eligibility,
+legal conclusions, or financial guarantees. Those facts may come only from structured data.
+Never contradict, upgrade, or fill gaps in structured provenance. If a fact is absent, say it is not
+verified or unavailable. Preserve provisional, limited, estimated, unknown, and category-fallback labels.
 
 If something is uncertain, say so briefly.
 The brief must be useful, practical, and suitable to share with a client or internal team.
@@ -142,6 +148,24 @@ export function buildBriefUserPrompt(input: BriefInput): string {
       ? input.programs.map((p) => `- ${p.name} (${p.href})`).join("\n")
       : "(none provided — do not name any government program in this brief)";
 
+  const measureText = input.tradeMeasure
+    ? JSON.stringify({
+        measureType: input.tradeMeasure.measure.measureType,
+        status: input.tradeMeasure.status,
+        announcementDate: input.tradeMeasure.measure.announcementDate,
+        effectiveFrom: input.tradeMeasure.measure.effectiveFrom,
+        effectiveTo: input.tradeMeasure.measure.effectiveTo,
+        confidence: input.tradeMeasure.measure.confidence,
+        originCountry: input.tradeMeasure.measure.originCountry,
+        destinationCountry: input.tradeMeasure.measure.destinationCountry,
+        applicabilityNote: input.tradeMeasure.measure.applicabilityNote,
+        hsCode: input.tradeMeasure.applicability.hsCode,
+        nationalTariffItem: input.tradeMeasure.applicability.nationalTariffItem,
+        additionalRate: input.tradeMeasure.applicability.additionalRate,
+        source: input.tradeMeasure.sources[0] ?? null,
+      }, null, 2)
+    : "No verified structured trade measure matched this route and HS code. Do not infer one.";
+
   return `Business profile:
 - Scenario: ${input.scenarioLabel ?? "Not specified"}
 - Home country: ${homeCountry}
@@ -158,6 +182,9 @@ ${exposureText}
 
 Available programs (reference only these, by exact name — introduce no others):
 ${programsText}
+
+Structured trade measure provenance (use only these facts; do not contradict, upgrade, or complete them):
+${measureText}
 
 Write the brief now.`;
 }

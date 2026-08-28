@@ -1,0 +1,31 @@
+import { describe, expect, it } from "vitest";
+import { BRIEF_SYSTEM_PROMPT, buildBriefUserPrompt, type BriefInput } from "@/lib/ai/generate-brief";
+import { findCanadianCounterTariff, getTradeMeasureStatus } from "@/lib/data/canada-counter-tariffs-2026";
+
+function input(): BriefInput {
+  const match = findCanadianCounterTariff({ hsCode: "851713", scenario: "import-us" })!;
+  return {
+    scenarioLabel: "Import from the United States", country: "CA", province: "Ontario",
+    usState: null, category: "Electronics", productName: "Smartphones",
+    tariffColumnLabel: "Import Duty", annualValue: 250000, currency: "CAD", hsCode: "851713",
+    comparisonRows: [{ market: "United States", tariffRate: "10–50%", tariffConfidence: "estimated", specificity: "category", hsCode: null, easeOfBusiness: 8.4, costFriction: "Medium", attractiveness: "Fair" }],
+    programs: [],
+    tradeMeasure: { ...match, status: getTradeMeasureStatus(match.measure, "2026-08-28") },
+  };
+}
+
+describe("Claude structured provenance boundary", () => {
+  it("passes structured provenance into the prompt", () => {
+    const prompt = buildBriefUserPrompt(input());
+    expect(prompt).toContain('"authorityTier": "official_announcement"');
+    expect(prompt).toContain('"confidence": "provisional"');
+    expect(prompt).toContain('"status": "upcoming"');
+    expect(prompt).toContain('"nationalTariffItem": "8517.13.00"');
+  });
+
+  it("forbids Claude from inventing or upgrading tariff facts", () => {
+    expect(BRIEF_SYSTEM_PROMPT).toContain("Never contradict, upgrade, or fill gaps");
+    expect(BRIEF_SYSTEM_PROMPT).toContain("HS applicability");
+    expect(BRIEF_SYSTEM_PROMPT).toContain("authority tiers");
+  });
+});

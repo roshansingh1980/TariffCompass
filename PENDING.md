@@ -46,6 +46,10 @@ These are the primary product requirements. Broad paid launch does not happen un
 - [ ] Show confidence explicitly using the final adopted confidence model.
 - [ ] Never fabricate a rate, date, legal instrument or confidence level.
 
+Structured provenance is now implemented for covered trade measures, including source authority,
+calendar-date status, effective/review dates and provisional confidence. Legacy category data remains
+explicitly lower-confidence fallback coverage, so Gate 2 is not yet complete globally.
+
 **Launch bar:** a paying user can see where the number came from, when it applies, and how much confidence TariffCompass has in it.
 
 ## 3. Financial impact

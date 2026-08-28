@@ -28,6 +28,7 @@ import {
   type MarketDataRow,
 } from "@/lib/data/db-market-data";
 import { getSupportPrograms, type SupportProgram } from "@/lib/data/db-support-programs";
+import { ProvenanceDetails } from "@/components/trade-measures/provenance-details";
 import {
   computeIncrementalCounterTariffExposure,
   findCanadianCounterTariff,
@@ -155,7 +156,7 @@ export function ResultsStep({
       : null;
   const upcomingCounterTariff = findCanadianCounterTariff({ hsCode, scenario });
   const counterTariffStatus = upcomingCounterTariff
-    ? getTradeMeasureStatus(upcomingCounterTariff.effectiveFrom)
+    ? getTradeMeasureStatus(upcomingCounterTariff.measure)
     : null;
   const incrementalCounterTariffExposure = computeIncrementalCounterTariffExposure(
     upcomingCounterTariff,
@@ -290,17 +291,21 @@ export function ResultsStep({
               {counterTariffStatus === "upcoming" ? "Upcoming verified change" : "Current verified measure"}
             </p>
             <h2 className="mt-2 text-base font-semibold text-foreground">
-              HS {formatHsCode(upcomingCounterTariff.hsCode)} — {upcomingCounterTariff.productDescription}
+              HS {formatHsCode(upcomingCounterTariff.applicability.hsCode)} — {upcomingCounterTariff.applicability.productDescription}
             </h2>
             <dl className="mt-3 grid gap-1 text-sm text-muted-foreground sm:grid-cols-[auto_1fr] sm:gap-x-3">
               <dt>Additional Canadian counter-tariff</dt>
-              <dd className="font-medium text-foreground">{formatRate(upcomingCounterTariff.rate)}</dd>
+              <dd className="font-medium text-foreground">{formatRate(upcomingCounterTariff.applicability.additionalRate)}</dd>
               <dt>Effective</dt>
-              <dd className="font-medium text-foreground">{formatDate(upcomingCounterTariff.effectiveFrom)}</dd>
+              <dd className="font-medium text-foreground">{upcomingCounterTariff.measure.effectiveFrom ? formatDate(upcomingCounterTariff.measure.effectiveFrom) : "Not verified"}</dd>
+              <dt>Status</dt>
+              <dd className="font-medium text-foreground capitalize">{counterTariffStatus}</dd>
+              <dt>Measure type</dt>
+              <dd className="font-medium text-foreground">Additional counter-tariff</dd>
               <dt>Canadian tariff item</dt>
-              <dd className="font-medium text-foreground">{upcomingCounterTariff.nationalTariffItem}</dd>
+              <dd className="font-medium text-foreground">{upcomingCounterTariff.applicability.nationalTariffItem}</dd>
               <dt>Confidence</dt>
-              <dd className="font-medium text-foreground">Official published list</dd>
+              <dd className="font-medium text-foreground">Provisional — official announcement verified</dd>
             </dl>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
               Applies to qualifying U.S.-origin goods. This is an additional countermeasure, not a
@@ -317,15 +322,16 @@ export function ResultsStep({
             <p className="mt-3 text-xs text-muted-foreground">
               Source:{" "}
               <a
-                href={upcomingCounterTariff.source.url}
+                href={upcomingCounterTariff.sources[0]?.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-foreground underline underline-offset-2"
               >
-                {upcomingCounterTariff.source.name}
+                {upcomingCounterTariff.sources[0]?.name ?? "Source unavailable"}
               </a>
-              {" · "}Reviewed {formatDate(upcomingCounterTariff.source.reviewedAt)}
+              {" · "}Reviewed {formatDate(upcomingCounterTariff.measure.reviewedAt)}
             </p>
+            <ProvenanceDetails source={upcomingCounterTariff.sources[0] ?? null} confidence={upcomingCounterTariff.measure.confidence} />
           </section>
         )}
 
@@ -636,6 +642,9 @@ export function ResultsStep({
               attractiveness: row.attractiveness,
             })),
             programs: (supportPrograms ?? []).map((p) => ({ name: p.name, href: p.href })),
+            tradeMeasure: upcomingCounterTariff && counterTariffStatus
+              ? { ...upcomingCounterTariff, status: counterTariffStatus }
+              : null,
           }}
         />
       )}

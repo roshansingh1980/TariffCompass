@@ -16,6 +16,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { isValidHsCode, normalizeHsCode } from "@/lib/hs-code";
 import { OTHER_CATEGORY } from "@/lib/onboarding-data";
+import { calendarDateInTimeZone } from "@/lib/data/canada-counter-tariffs-2026";
 
 function getAnonClient() {
   return createClient(
@@ -150,9 +151,10 @@ export function selectPreferredTariffRow(
   return categoryRow ? { row: categoryRow, specificity: "category" } : null;
 }
 
-export function isTariffRowCurrent(row: DbTariffRow, asOf: Date = new Date()): boolean {
+export function isTariffRowCurrent(row: DbTariffRow, asOf: Date | string = new Date()): boolean {
   if (!row.effective_from) return true;
-  return new Date(`${row.effective_from}T00:00:00Z`).getTime() <= asOf.getTime();
+  const asOfDate = typeof asOf === "string" ? asOf : calendarDateInTimeZone(asOf, "America/Toronto");
+  return row.effective_from <= asOfDate;
 }
 
 /** The 5-row comparison set for one category + scenario, as shown on the Results screen. */
