@@ -1,5 +1,5 @@
 import type { Attractiveness, CostFriction, TariffConfidence, TariffSpecificity } from "@/lib/data/db-market-data";
-import { computeExposure } from "@/lib/exposure";
+import type { FinancialImpact } from "@/lib/exposure";
 import type { ApplicableTradeMeasure, TradeMeasureStatus } from "@/lib/data/canada-counter-tariffs-2026";
 
 export type BriefComparisonRow = {
@@ -32,6 +32,7 @@ export type BriefInput = {
   comparisonRows: BriefComparisonRow[];
   programs: BriefProgram[];
   tradeMeasure: (ApplicableTradeMeasure & { status: TradeMeasureStatus }) | null;
+  financialImpacts: FinancialImpact[];
 };
 
 export const BRIEF_SYSTEM_PROMPT = `You are a senior Canadian trade advisor writing a short Diversification / Funding Readiness Brief.
@@ -53,6 +54,9 @@ instruments, origin rules, authority tiers, confidence values, measure status, p
 legal conclusions, or financial guarantees. Those facts may come only from structured data.
 Never contradict, upgrade, or fill gaps in structured provenance. If a fact is absent, say it is not
 verified or unavailable. Preserve provisional, limited, estimated, unknown, and category-fallback labels.
+Use only the supplied structured financial-impact output. Never invent a trade value or calculation,
+convert currencies, choose or emphasize a midpoint for a range, add base and additional rates into an
+all-in duty, or present a planning estimate as final duty payable or landed cost.
 
 If something is uncertain, say so briefly.
 The brief must be useful, practical, and suitable to share with a client or internal team.
@@ -133,15 +137,9 @@ export function buildBriefUserPrompt(input: BriefInput): string {
 
   const homeCountry = input.country === "US" ? "United States" : "Canada";
 
-  const usRow = input.comparisonRows.find((r) => r.market === "United States");
-  const exposure =
-    input.annualValue && input.annualValue > 0 && usRow
-      ? computeExposure(input.annualValue, usRow.tariffRate)
-      : null;
-
-  const exposureText = exposure
-    ? `\nEstimated U.S. exposure (already computed, state these figures directly): ${input.currency} ${exposure.lowAmount.toFixed(0)} at ${exposure.lowRate}%, ${input.currency} ${exposure.midAmount.toFixed(0)} at ${exposure.midRate}%, ${input.currency} ${exposure.highAmount.toFixed(0)} at ${exposure.highRate}%.`
-    : "";
+  const financialImpactText = input.financialImpacts.length > 0
+    ? JSON.stringify(input.financialImpacts, null, 2)
+    : "No structured financial impact was computed. Do not calculate or invent one.";
 
   const programsText =
     input.programs.length > 0
@@ -178,7 +176,9 @@ export function buildBriefUserPrompt(input: BriefInput): string {
 
 Comparison table:
 ${rowsText}
-${exposureText}
+
+Structured financial impacts (explain these outputs; do not recalculate, combine, or convert them):
+${financialImpactText}
 
 Available programs (reference only these, by exact name — introduce no others):
 ${programsText}

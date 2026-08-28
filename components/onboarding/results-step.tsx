@@ -30,11 +30,10 @@ import {
 import { getSupportPrograms, type SupportProgram } from "@/lib/data/db-support-programs";
 import { ProvenanceDetails } from "@/components/trade-measures/provenance-details";
 import {
-  computeIncrementalCounterTariffExposure,
   findCanadianCounterTariff,
   getTradeMeasureStatus,
 } from "@/lib/data/canada-counter-tariffs-2026";
-import { computeExposure } from "@/lib/exposure";
+import { computeFinancialImpact, formatExposureRange } from "@/lib/exposure";
 import { formatHsCode } from "@/lib/hs-code";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { savePendingWizardState } from "@/lib/pending-wizard";
@@ -51,10 +50,6 @@ function formatDate(iso: string): string {
     day: "numeric",
     timeZone: "UTC",
   });
-}
-
-function formatCurrency(amount: number, currency: string): string {
-  return `${currency} ${Math.round(amount).toLocaleString("en-CA")}`;
 }
 
 function formatRate(rate: number): string {
@@ -150,18 +145,28 @@ export function ResultsStep({
   const usRow = comparisonRows?.find((row) => row.market.key === "us");
   const hsSpecificRows = comparisonRows?.filter((row) => row.specificity === "hs") ?? [];
   const parsedAnnualValue = Number(annualValue);
-  const exposure =
-    usRow && Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0
-      ? computeExposure(parsedAnnualValue, usRow.tariffRate)
-      : null;
   const upcomingCounterTariff = findCanadianCounterTariff({ hsCode, scenario });
   const counterTariffStatus = upcomingCounterTariff
     ? getTradeMeasureStatus(upcomingCounterTariff.measure)
     : null;
-  const incrementalCounterTariffExposure = computeIncrementalCounterTariffExposure(
-    upcomingCounterTariff,
-    Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0 ? parsedAnnualValue : null
-  );
+  const currentImpact = usRow
+    ? computeFinancialImpact({
+        annualTradeValue: Number.isFinite(parsedAnnualValue) ? parsedAnnualValue : null,
+        currency, scenario, hsCode: hsCode.trim() || null,
+        specificity: usRow.specificity, rate: usRow.tariffRate,
+        basis: "current_or_base", measureType: null, measureStatus: "current",
+        confidence: usRow.tariffConfidence,
+      })
+    : null;
+  const additionalImpact = upcomingCounterTariff
+    ? computeFinancialImpact({
+        annualTradeValue: Number.isFinite(parsedAnnualValue) ? parsedAnnualValue : null,
+        currency, scenario, hsCode: upcomingCounterTariff.applicability.hsCode,
+        specificity: "hs", rate: upcomingCounterTariff.applicability.additionalRate,
+        basis: "additional_measure", measureType: upcomingCounterTariff.measure.measureType,
+        measureStatus: counterTariffStatus, confidence: upcomingCounterTariff.measure.confidence,
+      })
+    : null;
   const supportLastChecked = supportPrograms?.reduce(
     (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
     supportPrograms[0]?.lastChecked ?? ""
@@ -180,7 +185,7 @@ export function ResultsStep({
   useEffect(() => {
     // Logs one history row per meaningful change, not per keystroke —
     // debounced the same way a "save on settle" field would be.
-    if (!isLoggedIn || !usRow || !exposure || !comparisonRows) return;
+    if (!isLoggedIn || !usRow || !currentImpact || !comparisonRows) return;
     const timer = setTimeout(() => {
       recordAnalysis({
         category,
@@ -188,12 +193,12 @@ export function ResultsStep({
         annualValue: parsedAnnualValue,
         currency: currency || null,
         destinationCountry: usRow.market.key,
-        computedRateMin: exposure.lowRate,
-        computedRateMax: exposure.highRate,
-        exposureLow: exposure.lowAmount,
-        exposureMid: exposure.midAmount,
-        exposureHigh: exposure.highAmount,
-        rateSnapshot: comparisonRows,
+        computedRateMin: currentImpact.rateMin,
+        computedRateMax: currentImpact.rateMax,
+        exposureLow: currentImpact.grossExposureMin,
+        exposureMid: null,
+        exposureHigh: currentImpact.grossExposureMax,
+        rateSnapshot: { comparisonRows, currentImpact, additionalImpact, tradeMeasure: upcomingCounterTariff },
       });
     }, 800);
     return () => clearTimeout(timer);
@@ -206,13 +211,10 @@ export function ResultsStep({
     currency,
     usRow?.market.key,
     usRow?.tariffRate,
-    exposure?.lowAmount,
-    exposure?.midAmount,
-    exposure?.highAmount,
-    exposure?.lowRate,
-    exposure?.highRate,
+    currentImpact,
+    additionalImpact,
+    upcomingCounterTariff,
     usRow,
-    exposure,
   ]);
 
   return (
@@ -285,10 +287,29 @@ export function ResultsStep({
           </div>
         )}
 
+        {currentImpact && (
+          <section className="mx-auto mt-8 max-w-2xl rounded-2xl border border-border/60 bg-foreground/[0.02] px-5 py-5 text-left">
+            <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+              Estimated annual tariff exposure
+            </p>
+            <LockedValue locked={!isSubscribed}>
+              <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+                {formatExposureRange(currentImpact)}
+              </p>
+            </LockedValue>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Based on {currentImpact.currency} {Math.round(currentImpact.annualTradeValue).toLocaleString("en-CA")} annual trade value × {currentImpact.rateMin === currentImpact.rateMax ? formatRate(currentImpact.rateMin) : `${formatRate(currentImpact.rateMin)}–${formatRate(currentImpact.rateMax)}`} {currentImpact.specificity === "category" ? "category treatment" : "HS-specific treatment"}.
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {currentImpact.specificity === "category" ? "Category-level estimate" : "HS-specific estimate"} · Planning estimate — not a customs-duty determination.
+            </p>
+          </section>
+        )}
+
         {upcomingCounterTariff && (
           <section className="mx-auto mt-6 max-w-2xl rounded-2xl border border-amber-500/30 bg-amber-500/[0.06] px-5 py-5 text-left">
             <p className="text-xs font-semibold tracking-wider text-amber-700 uppercase dark:text-amber-300">
-              {counterTariffStatus === "upcoming" ? "Upcoming verified change" : "Current verified measure"}
+              {counterTariffStatus === "upcoming" ? "Upcoming announced measure" : "Current announced measure"}
             </p>
             <h2 className="mt-2 text-base font-semibold text-foreground">
               HS {formatHsCode(upcomingCounterTariff.applicability.hsCode)} — {upcomingCounterTariff.applicability.productDescription}
@@ -312,12 +333,14 @@ export function ResultsStep({
               verified all-in customs-duty rate; confirm classification, origin and treatment with
               a customs professional.
             </p>
-            {incrementalCounterTariffExposure != null && (
-              <p className="mt-3 text-sm font-medium text-foreground">
-                Potential annual incremental gross exposure: approximately{" "}
-                {formatCurrency(incrementalCounterTariffExposure, currency)}
-                <span className="font-normal text-muted-foreground"> (planning estimate)</span>
-              </p>
+            {additionalImpact && (
+              <div className="mt-4 rounded-xl bg-amber-500/[0.08] px-4 py-3">
+                <p className="text-xs font-medium text-muted-foreground">Additional upcoming exposure</p>
+                <p className="mt-1 text-xl font-semibold tracking-tight text-foreground">{formatExposureRange(additionalImpact)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Based on {additionalImpact.currency} {Math.round(additionalImpact.annualTradeValue).toLocaleString("en-CA")} × {formatRate(additionalImpact.rateMin)} additional counter-tariff. Incremental gross planning estimate only.
+                </p>
+              </div>
             )}
             <p className="mt-3 text-xs text-muted-foreground">
               Source:{" "}
@@ -333,37 +356,6 @@ export function ResultsStep({
             </p>
             <ProvenanceDetails source={upcomingCounterTariff.sources[0] ?? null} confidence={upcomingCounterTariff.measure.confidence} />
           </section>
-        )}
-
-        {exposure && (
-          <div className="mt-8 flex flex-col items-center gap-1.5">
-            <p className="text-[13px] font-medium tracking-wide text-muted-foreground">
-              Your estimated U.S. exposure
-            </p>
-            <LockedValue locked={!isSubscribed}>
-              <p className="text-lg font-medium tracking-tight text-foreground">
-                {exposure.lowRate > 0 ? (
-                  <>
-                    {formatCurrency(exposure.lowAmount, currency)} at {formatRate(exposure.lowRate)}
-                    {"  ·  "}
-                    {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
-                    {"  ·  "}
-                    {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
-                  </>
-                ) : (
-                  <>
-                    {formatCurrency(exposure.highAmount, currency)} at {formatRate(exposure.highRate)}
-                    {"  ·  "}
-                    {formatCurrency(exposure.midAmount, currency)} at {formatRate(exposure.midRate)}
-                  </>
-                )}
-              </p>
-            </LockedValue>
-            <p className="max-w-md text-center text-xs text-muted-foreground">
-              Planning range based on the estimated rate above — not a duty determination. Confirm
-              the applicable rate and HS classification with a customs broker.
-            </p>
-          </div>
         )}
 
         <SavedProfilesPanel
@@ -645,6 +637,9 @@ export function ResultsStep({
             tradeMeasure: upcomingCounterTariff && counterTariffStatus
               ? { ...upcomingCounterTariff, status: counterTariffStatus }
               : null,
+            financialImpacts: [currentImpact, additionalImpact].filter(
+              (impact): impact is NonNullable<typeof impact> => impact !== null
+            ),
           }}
         />
       )}

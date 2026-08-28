@@ -4,7 +4,6 @@ import {
   CANADA_US_COUNTER_TARIFF_MEASURE_2026,
   FINANCE_CANADA_COUNTER_TARIFF_SOURCE,
   calendarDateInTimeZone,
-  computeIncrementalCounterTariffExposure,
   findCanadianCounterTariff,
   getTradeMeasureStatus,
   isSafeHs6Mapping,
@@ -60,11 +59,6 @@ describe("canonical Canadian trade measure", () => {
     expect(findCanadianCounterTariff({ hsCode: "851713", scenario: "export-us" })).toBeNull();
     expect(findCanadianCounterTariff({ hsCode: "851713", scenario: "import-us", originCountry: "eu" })).toBeNull();
     expect(findCanadianCounterTariff({ hsCode: "870830", scenario: "import-us" })).toBeNull();
-  });
-
-  it("calculates incremental exposure without inventing missing values", () => {
-    expect(computeIncrementalCounterTariffExposure(smartphone(), 250_000)).toBe(125_000);
-    expect(computeIncrementalCounterTariffExposure(smartphone(), null)).toBeNull();
   });
 
   it("only retains unambiguous national-item mappings", () => {

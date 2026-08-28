@@ -1,135 +1,140 @@
 import { describe, expect, it } from "vitest";
-import { computeExposure, parseRateRange } from "@/lib/exposure";
+import { computeFinancialImpact, formatExposureRange, parseRateRange } from "@/lib/exposure";
 
-describe("parseRateRange", () => {
-  it("parses a simple range", () => {
-    expect(parseRateRange("10–50%")).toEqual({ low: 10, mid: 30, high: 50 });
+const baseInput = {
+  annualTradeValue: 250_000,
+  currency: "CAD",
+  scenario: "import-us",
+  hsCode: "851713",
+  specificity: "hs" as const,
+  rate: 50,
+  basis: "additional_measure" as const,
+  measureType: "counter_tariff",
+  measureStatus: "upcoming",
+  confidence: "provisional" as const,
+};
+
+describe("canonical financial impact engine", () => {
+  it("computes 250,000 × 50% as 125,000", () => {
+    const impact = computeFinancialImpact(baseInput);
+    expect(impact?.grossExposureMin).toBe(125_000);
+    expect(impact?.grossExposureMax).toBe(125_000);
+    expect(impact?.incrementalExposureMin).toBe(125_000);
   });
 
-  it("parses a single flat rate as low === mid === high", () => {
-    expect(parseRateRange("50%")).toEqual({ low: 50, mid: 50, high: 50 });
+  it("preserves a 10–50% range without selecting a midpoint", () => {
+    const impact = computeFinancialImpact({ ...baseInput, rate: "10–50%", basis: "current_or_base", specificity: "category", confidence: "estimated" });
+    expect(impact).toMatchObject({ grossExposureMin: 25_000, grossExposureMax: 125_000, incrementalExposureMin: null, calculationType: "rate_range" });
+    expect(formatExposureRange(impact!)).toBe("CAD 25,000–CAD 125,000");
   });
 
-  it("handles a zero-minimum range", () => {
-    expect(parseRateRange("0–25%")).toEqual({ low: 0, mid: 12.5, high: 25 });
+  it("uses equal bounds for a single rate", () => {
+    expect(computeFinancialImpact(baseInput)).toMatchObject({ rateMin: 50, rateMax: 50, calculationType: "single_rate" });
   });
 
-  it("handles an all-zero rate with trailing annotation text", () => {
-    expect(parseRateRange("0% (CUSMA)")).toEqual({ low: 0, mid: 0, high: 0 });
+  it("returns no exposure for missing, zero, or negative annual values", () => {
+    expect(computeFinancialImpact({ ...baseInput, annualTradeValue: null })).toBeNull();
+    expect(computeFinancialImpact({ ...baseInput, annualTradeValue: 0 })).toBeNull();
+    expect(computeFinancialImpact({ ...baseInput, annualTradeValue: -1 })).toBeNull();
   });
 
-  it("parses decimal rates", () => {
-    expect(parseRateRange("2.5–4.75%")).toEqual({ low: 2.5, mid: 3.625, high: 4.75 });
-  });
-
-  it("takes the true min/max regardless of the order the numbers appear in", () => {
-    expect(parseRateRange("50-10%")).toEqual({ low: 10, mid: 30, high: 50 });
-  });
-
-  it("uses only the global min and max when more than two numbers are present", () => {
-    // The mid value here is the midpoint of low/high, not an average of all
-    // matched numbers or a mean of the ones "in between" — a row's rationale
-    // text could easily contain other numbers (e.g. years, section numbers).
-    expect(parseRateRange("10, 20, and 50 percent")).toEqual({ low: 10, mid: 30, high: 50 });
-  });
-
-  it("strips a leading minus sign — negative-looking input reads as its positive digits", () => {
-    // \d+ never matches a sign character, so "-5%" and "5%" parse identically.
-    // This documents that behavior rather than asserting it's ideal.
-    expect(parseRateRange("-5%")).toEqual({ low: 5, mid: 5, high: 5 });
-  });
-
-  it("returns null for an unknown-confidence row's display string", () => {
+  it("strictly parses supported legacy rates and rejects malformed strings", () => {
+    expect(parseRateRange("10%")).toEqual({ min: 10, max: 10 });
+    expect(parseRateRange("10-25%")).toEqual({ min: 10, max: 25 });
+    expect(parseRateRange("0% (CUSMA)")).toEqual({ min: 0, max: 0 });
+    expect(parseRateRange("50-10%")).toBeNull();
+    expect(parseRateRange("10, 20 and 50 percent")).toBeNull();
     expect(parseRateRange("Unknown")).toBeNull();
   });
 
-  it("returns null for an empty string", () => {
-    expect(parseRateRange("")).toBeNull();
+  it("preserves CAD and USD without FX conversion", () => {
+    const cad = computeFinancialImpact(baseInput)!;
+    const usd = computeFinancialImpact({ ...baseInput, currency: "USD" })!;
+    expect(cad.currency).toBe("CAD");
+    expect(usd.currency).toBe("USD");
+    expect(usd.grossExposureMax).toBe(cad.grossExposureMax);
   });
 
-  it("returns null for a malformed range with no digits at all", () => {
+  it("keeps additional exposure separate from base/category exposure", () => {
+    const base = computeFinancialImpact({ ...baseInput, rate: "10–50%", basis: "current_or_base", specificity: "category", confidence: "estimated" })!;
+    const additional = computeFinancialImpact(baseInput)!;
+    expect(base.incrementalExposureMax).toBeNull();
+    expect(additional.incrementalExposureMax).toBe(125_000);
+    expect(additional.caveat).toContain("not an all-in landed cost");
+  });
+
+  it("does not calculate unsupported currencies", () => {
+    expect(computeFinancialImpact({ ...baseInput, currency: "EUR" })).toBeNull();
+  });
+
+  it("parses decimal ranges", () => {
+    expect(parseRateRange("2.5–4.75%")).toEqual({ min: 2.5, max: 4.75 });
+  });
+
+  it("accepts a percent sign on both range bounds", () => {
+    expect(parseRateRange("10%–25%")).toEqual({ min: 10, max: 25 });
+  });
+
+  it("accepts normalized whitespace", () => {
+    expect(parseRateRange(" 10 – 25% ")).toEqual({ min: 10, max: 25 });
+  });
+
+  it("rejects a missing percent sign", () => {
+    expect(parseRateRange("10–25")).toBeNull();
+  });
+
+  it("rejects negative display rates", () => {
+    expect(parseRateRange("-5%")).toBeNull();
+  });
+
+  it("rejects empty and N/A display values", () => {
+    expect(parseRateRange("")).toBeNull();
     expect(parseRateRange("N/A")).toBeNull();
   });
 
-  it("returns null for a bare percent sign with no number", () => {
-    expect(parseRateRange("%")).toBeNull();
+  it("rejects NaN and infinite annual values", () => {
+    expect(computeFinancialImpact({ ...baseInput, annualTradeValue: Number.NaN })).toBeNull();
+    expect(computeFinancialImpact({ ...baseInput, annualTradeValue: Number.POSITIVE_INFINITY })).toBeNull();
   });
 
-  it("handles a very large rate value without error", () => {
-    expect(parseRateRange("1000000%")).toEqual({ low: 1000000, mid: 1000000, high: 1000000 });
+  it("accepts a structured numeric rate range", () => {
+    expect(computeFinancialImpact({ ...baseInput, rate: { min: 10, max: 25 } })).toMatchObject({ rateMin: 10, rateMax: 25 });
   });
 
-  it("handles a very small nonzero decimal rate", () => {
-    expect(parseRateRange("0.001%")).toEqual({ low: 0.001, mid: 0.001, high: 0.001 });
-  });
-});
-
-describe("computeExposure", () => {
-  it("computes low/mid/high dollar amounts for a simple range", () => {
-    const result = computeExposure(100000, "10–50%");
-    expect(result).toEqual({
-      lowRate: 10,
-      midRate: 30,
-      highRate: 50,
-      lowAmount: 10000,
-      midAmount: 30000,
-      highAmount: 50000,
-    });
+  it("rejects an inverted structured rate range", () => {
+    expect(computeFinancialImpact({ ...baseInput, rate: { min: 25, max: 10 } })).toBeNull();
   });
 
-  it("produces a zero lowAmount when the rate's minimum is 0", () => {
-    const result = computeExposure(150000, "0–25%");
-    expect(result?.lowAmount).toBe(0);
-    expect(result?.midRate).toBe(12.5);
-    expect(result?.midAmount).toBe(18750);
-    expect(result?.highAmount).toBe(37500);
+  it("rejects a negative structured rate", () => {
+    expect(computeFinancialImpact({ ...baseInput, rate: -1 })).toBeNull();
   });
 
-  it("returns null when the tariff rate string carries no number (unknown confidence)", () => {
-    expect(computeExposure(150000, "Unknown")).toBeNull();
+  it("formats a single exposure amount once", () => {
+    expect(formatExposureRange(computeFinancialImpact(baseInput)!)).toBe("CAD 125,000");
   });
 
-  it("returns null for a malformed rate string even with a valid annual value", () => {
-    expect(computeExposure(150000, "N/A")).toBeNull();
+  it("marks every result as a planning estimate", () => {
+    expect(computeFinancialImpact(baseInput)?.planningEstimate).toBe(true);
   });
 
-  it("returns null for zero annual value", () => {
-    expect(computeExposure(0, "10–50%")).toBeNull();
+  it("preserves scenario and HS inputs", () => {
+    expect(computeFinancialImpact(baseInput)).toMatchObject({ scenario: "import-us", hsCode: "851713" });
   });
 
-  it("returns null for negative annual value", () => {
-    expect(computeExposure(-100, "10–50%")).toBeNull();
+  it("preserves specificity and confidence", () => {
+    expect(computeFinancialImpact({ ...baseInput, specificity: "category", confidence: "limited" })).toMatchObject({ specificity: "category", confidence: "limited" });
   });
 
-  it("returns null for NaN annual value", () => {
-    expect(computeExposure(Number.NaN, "10–50%")).toBeNull();
+  it("preserves measure type and status", () => {
+    expect(computeFinancialImpact(baseInput)).toMatchObject({ measureType: "counter_tariff", measureStatus: "upcoming" });
   });
 
-  it("returns null for infinite annual value", () => {
-    expect(computeExposure(Number.POSITIVE_INFINITY, "10–50%")).toBeNull();
+  it("keeps a USD range entirely in USD", () => {
+    const impact = computeFinancialImpact({ ...baseInput, currency: "USD", rate: "10–50%" })!;
+    expect(formatExposureRange(impact)).toBe("USD 25,000–USD 125,000");
   });
 
-  it("handles a very large annual value without losing precision", () => {
-    const result = computeExposure(1_000_000_000, "0–25%");
-    expect(result?.lowAmount).toBe(0);
-    expect(result?.midAmount).toBe(125_000_000);
-    expect(result?.highAmount).toBe(250_000_000);
-  });
-
-  it("handles a very small (sub-dollar) annual value", () => {
-    const result = computeExposure(0.01, "50%");
-    expect(result?.midAmount).toBeCloseTo(0.005, 10);
-  });
-
-  it("scales correctly for a flat single-number rate", () => {
-    const result = computeExposure(200000, "4%");
-    expect(result).toEqual({
-      lowRate: 4,
-      midRate: 4,
-      highRate: 4,
-      lowAmount: 8000,
-      midAmount: 8000,
-      highAmount: 8000,
-    });
+  it("handles very small values without rounding the calculation", () => {
+    expect(computeFinancialImpact({ ...baseInput, annualTradeValue: 0.01 })?.grossExposureMax).toBeCloseTo(0.005, 10);
   });
 });

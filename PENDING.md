@@ -54,10 +54,10 @@ explicitly lower-confidence fallback coverage, so Gate 2 is not yet complete glo
 
 ## 3. Financial impact
 
-- [ ] Convert annual import/export value into estimated dollar exposure.
-- [ ] Make dollar exposure a primary result, not a buried secondary detail.
-- [ ] Support relevant currency cleanly.
-- [ ] Clearly distinguish planning estimates from customs-duty determinations.
+- [x] Convert annual import/export value into estimated dollar exposure.
+- [x] Make dollar exposure a primary result, not a buried secondary detail.
+- [x] Support CAD and USD cleanly without implicit FX conversion.
+- [x] Clearly distinguish planning estimates from customs-duty determinations and keep additional-measure exposure separate from broader current/category treatment.
 - [ ] Add only simple margin/pricing implications that are reliable and clearly useful.
 
 **Launch bar:** the user immediately understands approximately how much money is at risk.

@@ -117,8 +117,3 @@ export function findCanadianCounterTariff({ hsCode, scenario, originCountry = "u
   if (!applicability) return null;
   return { measure: CANADA_US_COUNTER_TARIFF_MEASURE_2026, applicability, sources: CANADA_COUNTER_TARIFF_SOURCES_2026.filter((source) => CANADA_US_COUNTER_TARIFF_MEASURE_2026.sourceIds.includes(source.id)) };
 }
-
-export function computeIncrementalCounterTariffExposure(match: ApplicableTradeMeasure | null, annualImportValue: number | null | undefined): number | null {
-  if (!match || annualImportValue == null || !Number.isFinite(annualImportValue) || annualImportValue <= 0) return null;
-  return annualImportValue * (match.applicability.additionalRate / 100);
-}
