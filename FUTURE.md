@@ -38,6 +38,25 @@ Target pricing remains **C$249/month** when there is a genuinely useful multi-cl
 
 ---
 
+# French / bilingual expansion after V1
+
+V1 requires French-ready architecture and the complete core Business buying/analysis/monitoring journey in French. The following full-parity work can follow after launch:
+
+- [ ] Full `/insights` archive in French.
+- [ ] Full historical `/updates` archive in French.
+- [ ] Full `/sources` and methodology/support library parity where useful.
+- [ ] Long-form help centre/support content in French.
+- [ ] Complete edge-case/system-message translation coverage.
+- [ ] Full French transactional lifecycle beyond the V1 essential journey.
+- [ ] French Advisor workspace when Advisor is promoted.
+- [ ] Deep Quebec/French SEO program, localized keyword research and French landing pages.
+- [ ] French public research/editorial cadence if citations/traffic justify it.
+- [ ] Formal terminology/style glossary and professional translation review as usage scales.
+
+Do not let full content parity delay the V1 Business launch.
+
+---
+
 # Deeper customs / compliance functionality
 
 Do not pursue unless paying customers strongly pull TariffCompass in this direction.
@@ -74,7 +93,7 @@ TariffCompass should not automatically become a TariffTrail clone.
 - [ ] Broader country coverage beyond the markets justified for Beta/V1.
 - [ ] More extensive trade-agreement coverage.
 - [ ] More granular global trade-measure ingestion.
-- [ ] Additional language/localization support if demand emerges.
+- [ ] Additional languages/localization beyond English/French if demand emerges.
 
 Canada remains the fixed home country until this work is explicitly promoted.
 
