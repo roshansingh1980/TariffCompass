@@ -1,11 +1,60 @@
 # TariffCompass
 
-Understand your tariffs in minutes, not weeks of research.
+**Trade-impact intelligence for Canadian businesses and the advisors who serve them.**
 
-TariffCompass helps Canadian small and medium-sized businesses understand
-their tariff exposure, compare export/import markets, and find relevant
-government support programs — with an optional AI-generated diversification
-brief for subscribers.
+TariffCompass helps Canadian businesses that import, export, or do both understand what tariff and trade-policy changes affect them, estimate the financial impact, compare response options, and monitor future changes.
+
+The immediate commercial objective is **C$50,000 ARR as quickly as possible**. Phase 1 is deliberately narrow: sell to trade-exposed Canadian SMEs and to accountants/fractional CFO-advisory firms that manage multiple SME clients.
+
+See [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md) for the canonical strategy and [`ROADMAP.md`](ROADMAP.md) for the ARR-first build sequence.
+
+## Phase 1 customers
+
+### TariffCompass Business — C$99/month
+
+For Canadian SMEs that buy or sell across borders.
+
+Core value:
+
+- import and export tariff exposure;
+- HS/product-level analysis where reliable data exists;
+- estimated dollar impact;
+- trade-policy change monitoring;
+- alerts;
+- market/sourcing response options; and
+- relevant government-support information.
+
+Recommended annual option: **C$999/year**.
+
+### TariffCompass Advisor — C$249/month
+
+For accountants and fractional CFO/advisory firms.
+
+Core value:
+
+- multi-client workspace;
+- Client Exposure Radar;
+- alerts across client portfolios;
+- client-ready reports; and
+- white-label output when sufficiently robust.
+
+## Public authority layer
+
+Public information remains free by design. TariffCompass should publish concise, dated, source-backed tariff intelligence that journalists, lawyers, researchers, policymakers, consultants, businesses, and the public can cite.
+
+The operating principle is:
+
+> **Public information creates authority. Private relevance creates revenue.**
+
+The public layer should stay lightweight in Phase 1 and should not distract from the C$50K ARR objective.
+
+## Product rule
+
+Before approving a feature, ask:
+
+> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
+
+If not, defer it.
 
 ## Stack
 
@@ -14,38 +63,29 @@ brief for subscribers.
 - [shadcn/ui](https://ui.shadcn.com) on [Base UI](https://base-ui.com)
 - [Supabase](https://supabase.com) — Postgres, Auth, Row Level Security
 - [Stripe](https://stripe.com) — subscription billing
-- [Anthropic API](https://www.anthropic.com) — AI diversification brief generation
+- [Anthropic API](https://www.anthropic.com) — AI-generated decision brief
 - [Cloudflare Workers](https://workers.cloudflare.com) via [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare) — deployment
 
 ## Folder structure
 
-```
-app/          Routes, layouts, and global styles (App Router)
-components/   Reusable UI — site header/footer, dashboard shell, onboarding
-              wizard steps, billing, shadcn primitives in components/ui
-lib/          Shared utilities — Supabase clients, Stripe helpers, tariff/
-              market data access, onboarding data
-supabase/     SQL migrations for the Postgres schema
-types/        Shared TypeScript types (Supabase-generated + hand-written)
+```text
+app/          Routes, layouts, and global styles
+components/   Reusable UI, dashboard, onboarding, billing
+lib/          Supabase, Stripe, AI, tariff/market data access
+supabase/     SQL migrations for Postgres
+types/        Shared TypeScript types
+brand/        Canonical brand assets/documentation
 ```
 
-## What's here
+## Current product
 
-- **Onboarding wizard** (`/dashboard`) — scenario, location, product category,
-  and exposure steps, producing a market comparison with tariff rates,
-  cost/friction ratings, and relevant government support programs
-- **Anonymous use** — visitors complete the full wizard and see their market
-  comparison with nothing written to the database; answers are held in
-  `sessionStorage` and only persisted once they sign up. Saving a profile
-  requires a free account; the dollar exposure figures and the AI brief
-  require a subscription
+- **Onboarding wizard** (`/dashboard`) — import/export scenario, location, product category, exposure and market comparison
+- **Anonymous use** — visitors can explore without database persistence; saving requires an account
 - **Auth** — Supabase email/password
-- **Billing** — Stripe Checkout + Billing Portal, C$29/month subscription
-  gating estimated dollar exposure, full program details, and the AI brief
-- **AI diversification brief** — streamed, personalized brief generated from
-  a user's wizard inputs via the Anthropic API
-- **Public content** — `/insights` (articles), `/updates` (a dated change
-  log for tariff data), `/sources` (citation registry), `/about`
+- **Billing** — Stripe subscription infrastructure; pricing/product gating must now be aligned to the C$99 Business and C$249 Advisor strategy
+- **AI brief** — personalized explanation generated only from supplied structured data
+- **Public content** — `/insights`, `/updates`, `/sources`, `/about`
+- **Tariff data layer** — Postgres-backed rate/source data with planned HS-level and effective-date expansion
 
 ## Getting started
 
@@ -54,29 +94,25 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view it. You'll need
-a `.env.local` with Supabase, Stripe, and Anthropic credentials — see
-`lib/supabase/`, `lib/stripe/`, and `lib/ai/` for the environment variables
-each expects.
+Open `http://localhost:3000`.
+
+Environment variables are required for Supabase, Stripe, Anthropic, and Cloudflare deployment.
 
 ## Scripts
 
-- `npm run dev` — start the development server
-- `npm run build` — create a production build
-- `npm run start` — run the production build
-- `npm run lint` — run ESLint
-- `npm run test` — run the test suite once
-- `npm run test:watch` — run the test suite in watch mode
-- `npm run cf:build` — build for Cloudflare Workers
-- `npm run cf:preview` — build and preview locally against the Workers runtime
-- `npm run cf:deploy` — build and deploy to Cloudflare Workers
-- `npm run cf:typegen` — generate Cloudflare environment types
+- `npm run dev` — development server
+- `npm run build` — production build
+- `npm run start` — run production build
+- `npm run lint` — ESLint
+- `npm run test` — test suite
+- `npm run test:watch` — watch tests
+- `npm run cf:build` — Cloudflare build
+- `npm run cf:preview` — Cloudflare preview
+- `npm run cf:deploy` — deploy to Cloudflare Workers
+- `npm run cf:typegen` — Cloudflare environment types
 
 ## Deployment
 
-Deployed to Cloudflare Workers at `tariffcompass.ca` via
-[`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare):
+Production domain: `tariffcompass.ca`.
 
-```bash
-npm run cf:deploy
-```
+The site remains behind Cloudflare Access while pre-launch work is completed. Do not broaden scope merely because the public site is not yet launched.
