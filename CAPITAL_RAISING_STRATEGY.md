@@ -217,8 +217,8 @@ Until sustainable positive cash flow is achieved:
 
 - no founder bonus;
 - no founder dividend;
-- no founder secondary sale from the initial financing unless explicitly approved as part of a later financing strategy; and
-- founder salary increases should be documented against the agreed milestone policy.
+- founder salary increases should be documented against the agreed milestone policy; and
+- founder secondary liquidity should follow the separate adopted secondary policy below rather than being treated as compensation.
 
 Once the business is sustainably profitable, compensation should be reviewed against the role actually being performed, company scale, market data, retained ownership and cash needs.
 
@@ -273,7 +273,58 @@ However, dividends should begin only when:
 - at least 12 months of forward operating liquidity remains after the proposed distribution; and
 - the distribution does not materially impair an attractive growth opportunity.
 
-Any founder secondary sale should be treated separately from dividends and evaluated in the context of a financing round, investor signaling, ownership concentration and governance.
+## Adopted founder-secondary policy
+
+Founder secondary sales are separate from salary and dividends. They should be used sparingly and structured so they do not weaken investor confidence or deprive the company of needed growth capital.
+
+### First crowdfunding round
+
+Preferred position:
+
+- **No planned founder secondary** in the first C$300K crowdfunding/angel financing.
+- Market the round as **100% primary capital** for the company.
+
+Earliest defensible exception:
+
+- If investor demand materially exceeds the company's actual capital requirement and the round is clearly strong/oversubscribed, allow up to approximately **C$25K–C$40K** of founder secondary liquidity.
+- This should be explicitly approved and transparently disclosed.
+- It should not cause the company to receive less than the primary capital it actually needs.
+
+### First planned secondary eligibility
+
+A meaningful planned founder secondary becomes eligible when TariffCompass reaches approximately:
+
+- **C$250K ARR**;
+- good/credible retention;
+- and at least **18 months projected post-transaction runway**.
+
+At that point, approximately **C$50K–C$100K** of founder liquidity can be considered, subject to investor demand, ownership/dilution, tax and governance.
+
+### Meaningful founder-liquidity stage
+
+At approximately:
+
+- **C$500K ARR**;
+- positive EBITDA or clearly sustainable economics; and
+- adequate post-transaction liquidity,
+
+approximately **C$100K–C$200K** of founder secondary may be reasonable if supported by a financing transaction and investor demand.
+
+At **C$1M+ ARR** with profitability or a larger institutional financing, a more substantial structured secondary can be evaluated based on cap-table economics, retained founder ownership and the company's capital needs.
+
+### Secondary decision rules
+
+Before any founder secondary, confirm:
+
+1. the company receives the primary capital it genuinely needs;
+2. post-transaction runway remains appropriate;
+3. the founder retains strong long-term economic alignment and control;
+4. the secondary amount is reasonable relative to the size/stage of the financing;
+5. investor demand genuinely supports the transaction;
+6. required securities, shareholder and board approvals are obtained; and
+7. legal and tax consequences are reviewed.
+
+The objective is **measured founder de-risking after value creation**, not early cash-out.
 
 ---
 
@@ -300,6 +351,7 @@ If that answer is weak, do not raise.
 - [ ] Determine security/instrument and investor rights with securities counsel.
 - [ ] Reassess valuation from current traction.
 - [ ] Finalize exact raise target and minimum/maximum funding thresholds.
+- [ ] Decide whether the first round is 100% primary or whether an oversubscription-only C$25K–C$40K founder-secondary option should be permitted.
 - [ ] Prepare use-of-proceeds schedule.
 - [ ] Prepare 3–5 year financial model with base/downside/upside cases.
 - [ ] Prepare customer traction and retention evidence.
@@ -317,6 +369,7 @@ If that answer is weak, do not raise.
 - Customer traction should precede meaningful dilution.
 - Keep the first raise modest and capital-efficient.
 - Founder compensation should be below market early, but should normalize as the company earns the ability to pay it.
+- Founder liquidity should follow value creation and preserve strong alignment with investors.
 - Protect founder control unless dilution has a compelling economic justification.
 - Crowdfunding should function as both financing and distribution, but never substitute for product-market fit.
 - Build a company capable of surviving without another round.
