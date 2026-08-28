@@ -152,7 +152,8 @@ Complete only the review needed to safely launch the Business product.
 ## Entity and billing party
 
 - [ ] Incorporate a dedicated TariffCompass operating company and transfer/assign the relevant TariffCompass ownership, IP, contracts, billing relationships and operating assets into that operating company, with **Adithana Capital Ltd. as the holding company/shareholder**, subject to legal and tax advice on the exact implementation.
-- [ ] Form/register the TariffCompass operating company as a **software/SaaS business**, with **NAICS 513211 — Software publishers (except video game publishers)** as the intended operating classification, subject to lawyer/accountant confirmation that this is the correct classification for the final business activities and registrations.
+- [ ] Form/register the operating company as a **software/SaaS business**, with **NAICS 513211 — Software publishers (except video game publishers)** as the intended classification, subject to lawyer/accountant confirmation.
+- [ ] **Preferred operating-company name: Adithana Software Inc.** Keep this as the current naming choice for legal/incorporation planning, subject to corporate-name and trademark clearance before filing.
 - [ ] Confirm the operating entity on Stripe before taking material live payments.
 
 ## Product liability / decision-support boundary
