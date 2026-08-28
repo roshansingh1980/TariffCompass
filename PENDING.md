@@ -1,6 +1,6 @@
 # TariffCompass — Pending
 
-_Last updated: 27 August 2026_
+_Last updated: 28 August 2026_
 
 This file contains **only work required for a successful TariffCompass Business Beta/V1 launch**.
 
@@ -174,6 +174,43 @@ White-label/Advisor-specific liability work belongs in `FUTURE.md`.
 
 ---
 
+# Sources & Methodology trust page — Beta/V1
+
+Build a lightweight but high-signal public page that demonstrates **where TariffCompass gets its information, how authoritative each source is, how often it is monitored, and how source material becomes customer-facing intelligence**. This is a trust/conversion feature, not a decorative publishing project.
+
+## Source hierarchy
+
+- [ ] Define and publish **Tier 1 — legal/operative sources** used to establish or confirm the measure itself. Examples may include Canada Gazette/orders/regulations, Canada Customs Tariff, U.S. legal instruments and official tariff schedules.
+- [ ] Define and publish **Tier 2 — administrative/implementation sources** used to understand how measures are administered in practice. Examples may include CBSA Customs Notices, USITC HTS revisions and relevant U.S. customs/implementation material.
+- [ ] Define and publish **Tier 3 — official announcement/context sources** such as Department of Finance Canada, Global Affairs Canada, USTR, White House and similar government announcements where they are useful for detecting or explaining a development.
+- [ ] Treat news/media as **supplemental discovery/context only**. A media report may trigger investigation, but TariffCompass should not publish a tariff determination solely because a news article says a change occurred.
+
+## Monitoring map
+
+- [ ] Inventory the critical Canadian and U.S. source families needed for launch coverage.
+- [ ] For each source family, record: jurisdiction, authority tier, what TariffCompass extracts from it, monitoring method, monitoring frequency, last checked/retrieved time, and where the resulting information appears in the product.
+- [ ] Adopt an honest cadence label such as **intraday / daily / weekly / event-driven manual review** rather than implying real-time monitoring where it does not exist.
+- [ ] Highlight the most critical source families visually rather than presenting every URL with equal importance.
+
+## Visual provenance flow
+
+- [ ] Create a simple visual/process map showing the core pipeline:
+
+  **Official source detected → trade measure identified → affected HS codes/products mapped → origin/destination/applicability logic checked → effective date recorded → confidence assigned → customer exposure matched → displayed as analysis/alert/citation**
+
+- [ ] Prefer a source-network/process visualization over a purely geographic map. Geography may support the design, but the main purpose is to explain provenance and decision logic.
+- [ ] Show Canada and U.S. source families feeding a central **TariffCompass intelligence layer**, then customer outputs such as exposure analysis, before/after changes, alerts, source citations and public updates/insights.
+
+## Customer-facing provenance
+
+- [ ] Wherever a material tariff fact appears in the paid product, expose the relevant source, effective date, retrieval/review date and confidence level without forcing the user to visit the methodology page.
+- [ ] The methodology page should explain the system; each result should still carry its own provenance.
+- [ ] Make the page suitable for use during founder-led demos and prospect outreach as evidence that TariffCompass is a sourced trade-intelligence system, not simply an AI interface.
+
+**Launch bar:** a prospect can look at the page and understand within roughly one minute **which official sources TariffCompass relies on, how frequently they are checked, how changes are validated, and how those changes become the specific results and alerts they receive.**
+
+---
+
 # Beta/V1 UX and production readiness
 
 - [ ] Finalize free-vs-paid gating so free proves value and C$99 clearly buys private relevance, financial exposure and monitoring.
@@ -209,6 +246,7 @@ Initial operating objective after launch: **drive to C$2,500 MRR as quickly as p
 - Never invent a tariff rate, effective date, legal instrument or program deadline.
 - NULL/unknown is preferable to false precision.
 - Public tariff history can be free; company-specific relevance, financial impact and monitoring are the paid value.
+- **Official sources drive tariff determinations; media is supplemental discovery/context only.**
 - AI explains structured intelligence; it does not create tariff facts.
 - Canada remains the fixed home country for Beta/V1.
 - V1 includes French-ready architecture and the complete core Business buying/analysis/monitoring journey in French; full content parity is future work.
