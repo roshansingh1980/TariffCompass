@@ -30,10 +30,11 @@ These are the primary product requirements. Broad paid launch does not happen un
 ## 1. HS/product-specific analysis
 
 - [ ] Move the paid experience beyond broad category ranges such as “Steel & Metals: 10–50%.”
-- [ ] Make HS code/product applicability first-class wherever reliable data exists.
-- [ ] Add product-description search or another practical way for SMEs to find likely HS headings/codes.
-- [ ] Preserve category-level fallback only where HS-level coverage is unavailable and label it clearly.
-- [ ] Do not present AI classification as authoritative; users must confirm classification with a customs professional where needed.
+- [x] Make HS code/product applicability first-class in product input, route-aware tariff querying, saved profiles, analysis snapshots and AI brief inputs.
+- [x] Add lightweight product-description search against the official USITC HTS endpoint, returning possible matches without blocking the wizard when that service is unavailable.
+- [x] Prefer verified matching HS rows where present; preserve category-level fallback where coverage is unavailable and label every result’s specificity clearly.
+- [x] Do not present TariffCompass or AI classification as authoritative; require confirmation with a customs professional.
+- [ ] Populate and verify enough sourced HS-specific tariff rows for a real launch demonstration. The application path is ready, but current category seed data does not satisfy the launch bar by itself.
 
 **Launch bar:** a user can enter a real product/HS code and receive a materially more specific answer than a category-level range.
 

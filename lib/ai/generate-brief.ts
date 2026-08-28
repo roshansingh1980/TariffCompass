@@ -1,10 +1,12 @@
-import type { Attractiveness, CostFriction, TariffConfidence } from "@/lib/data/db-market-data";
+import type { Attractiveness, CostFriction, TariffConfidence, TariffSpecificity } from "@/lib/data/db-market-data";
 import { computeExposure } from "@/lib/exposure";
 
 export type BriefComparisonRow = {
   market: string;
   tariffRate: string;
   tariffConfidence: TariffConfidence;
+  specificity: TariffSpecificity;
+  hsCode: string | null;
   easeOfBusiness: number;
   costFriction: CostFriction;
   attractiveness: Attractiveness;
@@ -101,6 +103,9 @@ Every tariff figure in the comparison table carries a confidence label: official
 If a rate is estimated, say so plainly when you cite it (for example, "an estimated 25%").
 If a rate is unknown or unavailable, say so plainly and do not guess a number.
 Do not present an estimated or unknown figure as an official determination.
+If specificity is category, describe the rate as a broader category estimate and never imply that it
+is the tariff for the user's exact product or HS code. Only describe a row as HS-specific when its
+specificity is hs.
 
 Exposure figures
 
@@ -116,7 +121,7 @@ export function buildBriefUserPrompt(input: BriefInput): string {
   const rowsText = input.comparisonRows
     .map(
       (r) =>
-        `- ${r.market}: ${input.tariffColumnLabel} ${r.tariffRate} (confidence: ${r.tariffConfidence}), ease of business ${r.easeOfBusiness.toFixed(1)}/10, cost/friction ${r.costFriction}, overall attractiveness ${r.attractiveness}`
+        `- ${r.market}: ${input.tariffColumnLabel} ${r.tariffRate} (confidence: ${r.tariffConfidence}; specificity: ${r.specificity}${r.hsCode ? `; matched HS code: ${r.hsCode}` : ""}), ease of business ${r.easeOfBusiness.toFixed(1)}/10, cost/friction ${r.costFriction}, overall attractiveness ${r.attractiveness}`
     )
     .join("\n");
 

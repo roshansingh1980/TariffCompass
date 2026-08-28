@@ -29,6 +29,7 @@ import {
 } from "@/lib/data/db-market-data";
 import { getSupportPrograms, type SupportProgram } from "@/lib/data/db-support-programs";
 import { computeExposure } from "@/lib/exposure";
+import { formatHsCode } from "@/lib/hs-code";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { savePendingWizardState } from "@/lib/pending-wizard";
 import { recordAnalysis } from "@/lib/supabase/analyses";
@@ -111,7 +112,7 @@ export function ResultsStep({
     let cancelled = false;
     setComparisonRows(null);
     setRowsError(null);
-    getMarketDataRows(category, scenario)
+    getMarketDataRows(category, scenario, hsCode)
       .then((rows) => {
         if (!cancelled) setComparisonRows(rows);
       })
@@ -122,7 +123,7 @@ export function ResultsStep({
     return () => {
       cancelled = true;
     };
-  }, [category, scenario]);
+  }, [category, scenario, hsCode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -141,6 +142,7 @@ export function ResultsStep({
 
   const dataLastUpdated = comparisonRows?.[0]?.lastUpdated;
   const usRow = comparisonRows?.find((row) => row.market.key === "us");
+  const hsSpecificRows = comparisonRows?.filter((row) => row.specificity === "hs") ?? [];
   const parsedAnnualValue = Number(annualValue);
   const exposure =
     usRow && Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0
@@ -244,14 +246,30 @@ export function ResultsStep({
           {hsCode && (
             <button
               type="button"
-              onClick={() => onEditStep("exposure")}
+              onClick={() => onEditStep("product")}
               className="group inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.02] px-4 py-2 text-sm text-muted-foreground transition-all duration-200 hover:border-foreground/30 hover:bg-foreground/[0.05] hover:text-foreground active:scale-[0.97]"
             >
-              HS {hsCode}
+              HS {formatHsCode(hsCode)}
               <Pencil className="size-3 text-muted-foreground transition-colors duration-200 group-hover:text-foreground" />
             </button>
           )}
         </div>
+
+        {comparisonRows && (
+          <div className="mx-auto mt-7 max-w-2xl rounded-2xl border border-border/60 bg-foreground/[0.015] px-5 py-4 text-left">
+            <p className="text-sm font-medium text-foreground">
+              {hsCode && hsSpecificRows.length > 0 ? "HS-specific analysis" : "Category-level estimate"}
+              {hsCode && <span className="ml-2 text-muted-foreground">HS {formatHsCode(hsCode)}</span>}
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {hsCode && hsSpecificRows.length > 0
+                ? `${hsSpecificRows.length} of ${comparisonRows.length} routes use verified HS-specific coverage. Routes without a matching HS row remain clearly labelled category estimates.`
+                : hsCode
+                  ? "TariffCompass does not yet have verified HS-specific coverage for this product and route set, so these results use broader category data."
+                  : "No HS code was provided, so these results use broader category data. Add a confirmed HS code for product-specific matching where coverage exists."}
+            </p>
+          </div>
+        )}
 
         {exposure && (
           <div className="mt-8 flex flex-col items-center gap-1.5">
@@ -553,6 +571,8 @@ export function ResultsStep({
               market: row.market.name,
               tariffRate: row.tariffRate,
               tariffConfidence: row.tariffConfidence,
+              specificity: row.specificity,
+              hsCode: row.hsCode,
               easeOfBusiness: row.market.easeOfBusiness,
               costFriction: row.costFriction,
               attractiveness: row.attractiveness,
@@ -752,7 +772,10 @@ function TariffValue({ row }: { row: MarketDataRow }) {
 function DataStatusLine({ row, className }: { row: MarketDataRow; className?: string }) {
   return (
     <p className={cn("text-[11px] leading-snug text-muted-foreground", className)}>
-      {getDataStatus(row)} ·{" "}
+      {row.specificity === "hs" && row.hsCode
+        ? `HS-specific · HS ${formatHsCode(row.hsCode)}`
+        : "Category estimate"}{" "}
+      · {getDataStatus(row)} ·{" "}
       <a
         href={row.sourceUrl}
         target="_blank"

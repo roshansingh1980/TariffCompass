@@ -14,6 +14,7 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
+import { isValidHsCode, normalizeHsCode } from "@/lib/hs-code";
 import { OTHER_CATEGORY } from "@/lib/onboarding-data";
 
 function getAnonClient() {
@@ -27,6 +28,7 @@ export type TariffConfidence = "official" | "estimated" | "unknown";
 export type CostFriction = "Low" | "Medium" | "High";
 export type Attractiveness = "Excellent" | "Good" | "Fair" | "Challenging";
 export type TradeDirection = "export" | "import";
+export type TariffSpecificity = "hs" | "category";
 
 export type Market = {
   key: string;
@@ -38,6 +40,8 @@ export type MarketDataRow = {
   market: Market;
   direction: TradeDirection;
   category: string;
+  hsCode: string | null;
+  specificity: TariffSpecificity;
   tariffRate: string;
   tariffConfidence: TariffConfidence;
   costFriction: CostFriction;
@@ -93,7 +97,9 @@ function formatRateDisplay(min: number | null, max: number | null): string {
   return `${min}–${max}%`;
 }
 
-type DbTariffRow = {
+export type DbTariffRow = {
+  category: string;
+  hs_code: string | null;
   origin_country: string;
   destination_country: string;
   rate_min: number | null;
@@ -106,11 +112,19 @@ type DbTariffRow = {
   sources: { name: string; url: string } | null;
 };
 
-function rowFromDb(dbRow: DbTariffRow, targetMarket: Market, direction: TradeDirection, category: string): MarketDataRow {
+function rowFromDb(
+  dbRow: DbTariffRow,
+  targetMarket: Market,
+  direction: TradeDirection,
+  category: string,
+  specificity: TariffSpecificity
+): MarketDataRow {
   return {
     market: targetMarket,
     direction,
     category,
+    hsCode: specificity === "hs" ? dbRow.hs_code : null,
+    specificity,
     tariffRate: formatRateDisplay(dbRow.rate_min, dbRow.rate_max),
     tariffConfidence: dbRow.confidence,
     costFriction: dbRow.cost_friction,
@@ -122,10 +136,24 @@ function rowFromDb(dbRow: DbTariffRow, targetMarket: Market, direction: TradeDir
   };
 }
 
+export function selectPreferredTariffRow(
+  categoryRows: DbTariffRow[],
+  hsRows: DbTariffRow[],
+  marketKey: string,
+  varyingColumn: "origin_country" | "destination_country"
+): { row: DbTariffRow; specificity: TariffSpecificity } | null {
+  const hsRow = hsRows.find((row) => row[varyingColumn] === marketKey);
+  if (hsRow) return { row: hsRow, specificity: "hs" };
+
+  const categoryRow = categoryRows.find((row) => row[varyingColumn] === marketKey);
+  return categoryRow ? { row: categoryRow, specificity: "category" } : null;
+}
+
 /** The 5-row comparison set for one category + scenario, as shown on the Results screen. */
 export async function getMarketDataRows(
   category: string | null,
-  scenario: string | null
+  scenario: string | null,
+  hsCode?: string | null
 ): Promise<MarketDataRow[]> {
   const cat = category ?? OTHER_CATEGORY;
   const direction = resolveScenarioDirection(scenario);
@@ -134,25 +162,44 @@ export async function getMarketDataRows(
   const marketKeys = markets.map((m) => m.key);
   const varyingColumn = direction === "export" ? "destination_country" : "origin_country";
   const fixedColumn = direction === "export" ? "origin_country" : "destination_country";
+  const normalizedHsCode = isValidHsCode(hsCode ?? "") ? normalizeHsCode(hsCode ?? "") : "";
 
   const supabase = getAnonClient();
-  const { data, error } = await supabase
+  const categoryRequest = supabase
     .from("tariff_rates")
     .select(
-      "origin_country, destination_country, rate_min, rate_max, confidence, cost_friction, attractiveness, rationale, reviewed_at, sources(name, url)"
+      "category, hs_code, origin_country, destination_country, rate_min, rate_max, confidence, cost_friction, attractiveness, rationale, reviewed_at, sources(name, url)"
     )
     .eq("category", cat)
+    .is("hs_code", null)
     .eq(fixedColumn, "CA")
     .in(varyingColumn, marketKeys);
 
-  if (error) throw error;
+  const hsRequest = normalizedHsCode
+    ? supabase
+        .from("tariff_rates")
+        .select(
+          "category, hs_code, origin_country, destination_country, rate_min, rate_max, confidence, cost_friction, attractiveness, rationale, reviewed_at, sources(name, url)"
+        )
+        .eq("hs_code", normalizedHsCode)
+        .eq(fixedColumn, "CA")
+        .in(varyingColumn, marketKeys)
+    : Promise.resolve({ data: [], error: null });
+
+  const [categoryResult, hsResult] = await Promise.all([categoryRequest, hsRequest]);
+
+  if (categoryResult.error) throw categoryResult.error;
+  if (hsResult.error) throw hsResult.error;
+
+  const categoryRows = categoryResult.data as unknown as DbTariffRow[];
+  const hsRows = hsResult.data as unknown as DbTariffRow[];
 
   return markets.map((m) => {
-    const dbRow = (data as unknown as DbTariffRow[]).find((d) => d[varyingColumn] === m.key);
-    if (!dbRow) {
+    const preferred = selectPreferredTariffRow(categoryRows, hsRows, m.key, varyingColumn);
+    if (!preferred) {
       throw new Error(`Missing rate data for ${cat} / ${direction} / ${m.key}`);
     }
-    return rowFromDb(dbRow, m, direction, cat);
+    return rowFromDb(preferred.row, m, direction, cat, preferred.specificity);
   });
 }
 

@@ -159,8 +159,10 @@ export function DashboardWizard({
         <ProductStep
           category={category}
           productName={productName}
+          hsCode={hsCode}
           onCategoryChange={setCategory}
           onProductNameChange={setProductName}
+          onHsCodeChange={setHsCode}
           onBack={() => setStep("location")}
           onContinue={() => goNext(category === OTHER_CATEGORY ? "results" : "exposure")}
         />
@@ -169,10 +171,8 @@ export function DashboardWizard({
         <ExposureStep
           annualValue={annualValue}
           currency={currency}
-          hsCode={hsCode}
           onAnnualValueChange={setAnnualValue}
           onCurrencyChange={setCurrency}
-          onHsCodeChange={setHsCode}
           onBack={() => setStep("product")}
           onContinue={() => goNext("results")}
         />

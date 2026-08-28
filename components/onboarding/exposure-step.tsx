@@ -9,29 +9,21 @@ const CURRENCIES: { code: Currency; label: string }[] = [
   { code: "USD", label: "USD" },
 ];
 
-const HS_CODE_PATTERN = /^\d{6}$/;
-
 export function ExposureStep({
   annualValue,
   currency,
-  hsCode,
   onAnnualValueChange,
   onCurrencyChange,
-  onHsCodeChange,
   onBack,
   onContinue,
 }: {
   annualValue: string;
   currency: Currency;
-  hsCode: string;
   onAnnualValueChange: (value: string) => void;
   onCurrencyChange: (value: Currency) => void;
-  onHsCodeChange: (value: string) => void;
   onBack: () => void;
   onContinue: () => void;
 }) {
-  const hsCodeInvalid = hsCode.trim().length > 0 && !HS_CODE_PATTERN.test(hsCode.trim());
-
   return (
     <>
       <div className="w-full max-w-3xl text-center">
@@ -43,7 +35,7 @@ export function ExposureStep({
         </p>
       </div>
 
-      <div className="mt-20 grid w-full max-w-3xl grid-cols-1 gap-10 sm:grid-cols-2">
+      <div className="mt-20 w-full max-w-sm">
         <div className="flex flex-col gap-3 text-left">
           <label
             htmlFor="annual-value"
@@ -90,27 +82,6 @@ export function ExposureStep({
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 text-left">
-          <label htmlFor="hs-code" className="text-[13px] font-medium tracking-wide text-foreground">
-            HS code (optional)
-          </label>
-          <Input
-            id="hs-code"
-            value={hsCode}
-            onChange={(e) => onHsCodeChange(e.target.value)}
-            placeholder="e.g. 870830"
-            aria-invalid={hsCodeInvalid}
-            className={cn(
-              "h-11 rounded-lg border-border/50 px-3.5 text-[15px] shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
-              hsCodeInvalid && "border-destructive"
-            )}
-          />
-          <p className={cn("text-xs", hsCodeInvalid ? "text-destructive" : "text-muted-foreground")}>
-            {hsCodeInvalid
-              ? "Enter a 6-digit HS code, or leave it blank."
-              : "If you know it. Leave blank and we'll use your category."}
-          </p>
-        </div>
       </div>
 
       <div className="mt-20 flex items-center gap-5">
@@ -125,7 +96,6 @@ export function ExposureStep({
         </Button>
         <Button
           size="lg"
-          disabled={hsCodeInvalid}
           onClick={onContinue}
           className="h-12 rounded-full px-9 text-[15px] font-medium tracking-tight shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.25)] active:scale-[0.98]"
         >
