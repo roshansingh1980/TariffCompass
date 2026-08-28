@@ -1,126 +1,193 @@
 # TariffCompass — Pending
 
-Last updated: 27 August 2026. Repo at `42842f7` (plus whatever has landed since). Build work now lives in [ROADMAP.md](ROADMAP.md); this file covers strategy, outreach, legal, and everything that isn't code.
+_Last updated: 27 August 2026_
+
+Canonical strategy: [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md)  
+Canonical build sequence: [`ROADMAP.md`](ROADMAP.md)
+
+## Adopted strategy
+
+The Phase 1 objective is **C$50,000 ARR as quickly as possible**.
+
+Paid segments:
+
+1. **Canadian trade-exposed SMEs** — importers, exporters, or both — at **C$99/month**, with a recommended **C$999/year** option.
+2. **Accountants and fractional CFO/advisory firms** at **C$249/month**, once a useful multi-client experience and Client Exposure Radar are live.
+
+Everyone else — journalists, lawyers, consultants, policymakers, politicians, associations, researchers and the general public — is a free audience in Phase 1 unless an opportunistic sale is unusually easy.
+
+Public information is intended to be strong enough to cite, but the public authority layer is capped at roughly 10–15% of Phase 1 effort.
+
+Standing principle:
+
+> **Public information creates authority. Private relevance creates revenue.**
+
+Standing product rule:
+
+> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
+
+If not, defer it.
 
 ---
 
-## Strategy in one paragraph
+## Immediate commercial decisions to implement
 
-Two objectives. **Monetisation** comes from two buyers: affected businesses (exporters/importers) who pay for change alerts on their codes, a dated exposure record they can hand to a bank or broker, and program deadline warnings; and professionals (accountants, bankers, consultants) who pay more for white-label PDF export, a multi-client portfolio view, and a defensible paper trail. **Brand** comes from being the free, citable public source for Canadian tariff data — used by agencies, journalists, politicians and the public, monetised not at all. Public data, private monitoring. That boundary must hold: if change history ever becomes public, the alert product dies.
-
-Current pricing: Free / C$29 per month. The professional tier (~C$199) is not built and must not be sold until white-label export and multi-client view exist.
-
----
-
-## Next week — outreach
-
-The whole point of everything below. Nobody outside this project has used the tool.
-
-- [ ] Book the lawyer. All blocking decisions are made ($29, gating split, Adithana Capital Ltd.)
-- [ ] Ask the lawyer: does the AI brief's specific business guidance cross into regulated advice, and do current disclaimers cover it? Bring `/updates`, a generated brief, and `/notices`
-- [ ] Ask the lawyer whether TariffCompass belongs under Adithana Capital Ltd. or a separate operating company — mixing a capital/advisory vehicle with a product publishing tariff figures may be the wrong liability shape, and it affects grant eligibility
-- [ ] Meeting with the lawyer — the other two are different now: per ROADMAP.md, the accountant/banker/consultant meetings are held until its Week 6 is done ("those are the conversations that need the wow version")
-- [ ] Five exporters, five accountants — the validation round
-- [ ] One call with PacifiCan, one with an NRC IRAP advisor (free, informal, tells you whether you're fundable)
-
-**Meeting materials to write:**
-- [ ] One-page PDF leave-behind
-- [ ] Three email drafts (accountant / banker / lawyer — the banker's ask is different: portfolio exposure across their borrower book, not the single-client tool)
-- [ ] Follow-up text, short
-- [ ] Demo script — Steel & Metals / BC / export to US is the strongest path
-
-**Sequence:** short email asking for 20 minutes → they agree → send PDF as pre-read with the invite → text if no reply in three days → demo live → grant Cloudflare Access afterward with a specific ask ("run it for one client this week, tell me what broke"). Do not give early access before the first meeting — you lose the reaction, which is the whole point.
+- [ ] Replace legacy C$29 product pricing/gating with Business C$99/month.
+- [ ] Add C$999/year Business option.
+- [ ] Define Advisor C$249/month billing/product entitlement but do not sell it before the multi-client value is credible.
+- [ ] Update homepage/about/pricing copy from exporter-led positioning to “Canadian businesses that buy or sell across borders.”
+- [ ] Ensure import and export use cases appear as one product, not separate product lines.
+- [ ] Build an internal ARR dashboard or at minimum a reliable weekly tracking sheet around C$4,167 MRR.
 
 ---
 
-## Questions for the lawyer
+## Immediate product priorities
 
-**Entity structure**
-- [ ] Should TariffCompass sit under Adithana Capital Ltd. (BC + federally incorporated, 100% owned by Roshan), or under a separate operating company? Adithana is a capital/advisory vehicle; a product publishing tariff figures that businesses may act on is a different liability profile. This also affects eligibility for tech-development grants (NRC IRAP, PacifiCan), which look at the entity's activity.
-- [ ] The Stripe account has now been activated in live mode. Confirm which entity it should be registered under before taking any payment — changing it afterward is painful.
+Follow ROADMAP.md. Highest priorities are:
 
-**Where the entity is named** — every place in the app "Adithana Capital Ltd." appears (or, in one case, doesn't):
-- `app/terms/page.tsx` — "TariffCompass is a product of Adithana Capital Ltd. In these terms, 'we,' 'us,' and 'our' mean Adithana Capital Ltd."
-- `app/privacy/page.tsx` — "TariffCompass is a product of Adithana Capital Ltd., the data controller for the information described below."
-- `app/notices/page.tsx` (page body) — "TariffCompass is a software product independently built and operated by Adithana Capital Ltd. It is not a government service."
-- `app/notices/page.tsx` (page metadata description) — "TariffCompass, a product of Adithana Capital Ltd., is an independent software tool not affiliated with any government agency."
-- `components/site-footer.tsx` — "© [year] Adithana Capital Ltd. All rights reserved."
-- `app/about/page.tsx` — carries the near-identical sentence "TariffCompass is independently built and operated. It is not affiliated with, endorsed by, or acting on behalf of the Government of Canada..." but does **not** name Adithana Capital Ltd. here, unlike the matching sentence on /notices. Inconsistency, not yet resolved.
+- [ ] HS/product-level specificity where reliable.
+- [ ] Source/effective-date confidence on every material tariff fact.
+- [ ] Estimated dollar exposure as a primary result.
+- [ ] Saved-product change monitoring and alerts.
+- [ ] Simple response intelligence: alternative markets/sourcing, FTA implications, government programs, next actions.
+- [ ] Multi-client Client Exposure Radar for accountants/fractional CFOs.
 
-**Liability on published figures**
-- [ ] If a business relies on a rate shown in the app, gets it wrong, and loses money — what is the exposure, and does the current disclaimer language actually protect against it? This is the question that determines whether we launch.
-- [ ] All 90 tariff_rates rows are marked "estimated" or "unknown". Not one is "official". Does that labelling help or hurt from a liability standpoint?
-- [ ] Bring and walk through: /notices, /updates (including the correction entry), and a generated AI brief.
-
-**The AI brief specifically**
-- [ ] The brief gives specific, actionable business guidance — CUSMA/CKFTA origin eligibility, margin modelling at specific duty rates, which government programs to apply for. Does that cross into regulated advice (customs, tax, or financial)?
-- [ ] It is generated by an LLM from our data. What disclosure is required, and does current wording suffice?
-- [ ] It instructs users to confirm with a licensed customs broker. Is that sufficient as a limitation?
-
-**Terms, privacy, subscription**
-- [ ] Review Terms, Privacy and Notices as drafted (not written by a lawyer). Party is currently named as Adithana Capital Ltd.
-- [ ] C$29/month auto-renewing subscription via Stripe — do the cancellation and renewal terms meet BC and federal consumer protection requirements?
-- [ ] Refund policy: none currently stated. Is one required?
-- [ ] PIPEDA obligations. We store business profiles, saved analyses, and email addresses captured via the Other/Custom request queue.
-
-**Data sourcing and attribution**
-- [ ] open.canada.ca content is licensed under OGL-Canada, which requires a specific attribution statement. US federal sources (USITC, Federal Register) are public domain and require none. Are we attributing correctly?
-- [ ] We cite third-party trade-compliance publishers (EDC, CFIB, Thomson Reuters, GHY, Dutiable) as sources for rates. Any issue with naming and linking them?
-- [ ] Planned: automated ingestion from USITC and the Federal Register API. Any terms-of-use concern with programmatic access at scale?
-
-**Positioning and claims**
-- [ ] /notices states we are not affiliated with or endorsed by the Government of Canada, CBSA, EDC, or BDC. If we later partner with or receive funding from any agency, what changes?
-- [ ] Planned professional tier includes white-label PDF export — accountants putting their own firm's branding on our output. What does that do to liability, and do we need terms governing it?
+Do not broaden into full customs-compliance workflow unless paying customers pull us there.
 
 ---
 
-## Build queue
+## Public authority layer — Beta 1
 
-Superseded by [ROADMAP.md](ROADMAP.md) — the six-week feature build (HS-code-level rates → Section 232/338 → CUSMA/CKFTA qualification → alerts → professional tier). Update ROADMAP.md directly for anything build-related; this file no longer carries a parallel task list for it, to avoid the two drifting apart the way `key_dates` did.
+Keep lightweight and source-driven.
 
-Everything previously tracked here that ROADMAP.md now actively schedules (official data ingestion, white-label PDF export, multi-client view, `/for-advisors`, change detection, program deadline warnings) has moved there. Sidebar shell consistency, the one item that was in flight, shipped and is no longer tracked anywhere.
+- [ ] Retain `/insights`, `/updates`, and `/sources`.
+- [ ] Publish short, quantitative pieces based on the same structured data used by the product.
+- [ ] Every public data claim should be dated, sourced and explicit about confidence/methodology.
+- [ ] Prefer reusable charts/tables only when maintenance cost is low.
+- [ ] Track citations/backlinks as a secondary metric, not a Phase 1 KPI.
+
+Good examples:
+
+- which sectors are most exposed to a new U.S. tariff action;
+- what changed in a specific Section 232 measure;
+- which Canadian import categories are most affected by a countermeasure;
+- a representative SME impact example using sourced assumptions.
+
+Do not build dedicated journalist, lawyer, politician or policy dashboards in Phase 1.
 
 ---
 
-## V2 — deliberately cut
+## Founder-led sales
 
-ROADMAP.md's own "Deferred to V2" list is authoritative — this just mirrors it so it's visible from here without duplicating the reasoning. The heatmap grid, market summary pages, and asymmetric layout that used to be listed here moved the other way: into ROADMAP.md's new Week 0 (they're the free tier and public SEO surface, built now against the data layer so the Week 1-2 HS migration improves them instead of invalidating them).
+### SME motion
 
-- [ ] Wizard collapse to a single page
-- [ ] SEO-Blueprint execution
+- [ ] Build a first prospect list of Canadian manufacturers, distributors/wholesalers, import-dependent retailers and U.S.-exposed exporters.
+- [ ] Demo with one real product/HS code and approximate annual trade value.
+- [ ] Track demo-to-paid conversion and time-to-payment.
+- [ ] Ask specifically whether C$99/month feels trivial, acceptable or too high relative to the exposure shown.
+
+### Advisor motion
+
+- [ ] Identify accounting firms and fractional CFO firms with commercial SME client books.
+- [ ] Recruit design partners once Client Exposure Radar is demonstrable.
+- [ ] Measure how many clients per firm are genuinely trade exposed.
+- [ ] Convert to C$249/month when portfolio monitoring has recurring value.
+
+Working ARR mix:
+
+- 25 Business × C$99 = C$2,475 MRR
+- 8 Advisor × C$249 = C$1,992 MRR
+- Total = **C$4,467 MRR / C$53,604 ARR**
+
+---
+
+## Legal review
+
+Still required before broad public launch and live paid acquisition.
+
+### Entity structure
+
+- [ ] Should TariffCompass sit under Adithana Capital Ltd. or a separate operating company?
+- [ ] Confirm the entity on Stripe before taking material live payments.
+- [ ] Consider liability separation and grant/funding eligibility.
+
+### Published figures and decision support
+
+- [ ] Exposure if a user relies on a displayed rate and loses money.
+- [ ] Whether confidence labels, source citations and “planning estimate” language sufficiently limit risk.
+- [ ] Whether AI-generated recommended actions cross into regulated customs, legal, tax or financial advice.
+- [ ] Appropriate broker/lawyer/accountant verification language.
+
+### Terms/privacy/subscription
+
+- [ ] Review Terms, Privacy and Notices.
+- [ ] Review auto-renewal, cancellation and refund requirements.
+- [ ] Review PIPEDA obligations for stored business/client profiles.
+- [ ] Review white-label Advisor output and resulting liability allocation.
+
+### Data sourcing
+
+- [ ] Confirm OGL-Canada attribution.
+- [ ] Confirm programmatic-access terms for planned official data sources.
+- [ ] Prefer official sources wherever practical.
 
 ---
 
 ## Data debt
 
-- [ ] **Scheduled — ROADMAP.md Week 1–2.** CUSMA annotation lost in migration — "0% (CUSMA)" now renders "0%". That parenthetical was the highest-value fact on screen for a Canadian exporter. Needs a column and a restore
-- [ ] **Scheduled — ROADMAP.md Prerequisites.** `key_dates` seeded in Postgres but the homepage still reads `lib/data/key-dates.ts`. Two sources of truth
-- [ ] **Scheduled — ROADMAP.md Prerequisites.** `companies` / `products` not dropped (3 and 6 rows). `saveOnboardingSelections` still writes there. Removal plan proposed, not approved
-- [ ] **Scheduled — ROADMAP.md Prerequisites.** `lib/stripe/actions.ts` has no try/catch and no inline error UI. Root error boundary catches it, but a proper fix needs the billing forms rebuilt around `useActionState`
-- [ ] **Scheduled — ROADMAP.md Week 3.** `effective_from` NULL on all 90 rows — by design until the Federal Register connector lands
-- [ ] **Scheduled — ROADMAP.md Prerequisites.** `measure_type` NULL on 12 of 90 rows
-- [ ] **Scheduled — ROADMAP.md Week 1–2** (three-tier confidence model). Not one row is marked "official". All 90 are estimated or unknown
-- [ ] "Other / Custom" produces nothing — 10 rows, all null. Interstitial shipped, but the category still has no data
-- [ ] Agri-food imports read 0–298% identically from all five origins. Behind the paywall and worth nothing
-- [ ] Four of nine categories return 0–0% on every import row
+- [ ] CUSMA annotation lost in migration; restore as structured data.
+- [ ] `key_dates` homepage still needs complete Postgres cutover.
+- [ ] Vestigial `companies` / `products` writes should be cleaned before tariff-schema expansion.
+- [ ] Stripe checkout error handling needs robust inline UI.
+- [ ] `effective_from` remains missing on many rows until official-instrument ingestion is complete.
+- [ ] `measure_type` remains incomplete.
+- [ ] Current category-level rows are largely estimated/unknown; this must improve before strong tariff-determination claims.
+- [ ] “Other / Custom” still lacks meaningful tariff data.
+- [ ] Some import-category ranges are too broad or uninformative to support paid value.
 
 ---
 
 ## Open decisions
 
-- [ ] Entity structure — Adithana Capital Ltd. or a separate operating company (lawyer)
-- [ ] Whether to rebuild the AI freshness-review pipeline against Postgres (deleted as migration collateral; it was a differentiator)
-- [ ] Which brand doc is authoritative — `claude/brand-identity.md` or `brand/BRAND.md`. Two will drift
-- [ ] When to lift Cloudflare Access — after legal review, deliberately, not by accident
-- [ ] Submit sitemap to Google Search Console (can verify by DNS now; indexing starts the moment Access lifts)
+- [ ] Entity structure — lawyer.
+- [ ] Exact free-vs-paid gating after C$99 repricing.
+- [ ] Exact Business saved-profile/HS-code limits.
+- [ ] Exact Advisor client-profile limit at C$249.
+- [ ] Whether white-label output is required for the first Advisor sale or can follow Client Exposure Radar.
+- [ ] Timing for lifting Cloudflare Access after legal/commercial readiness.
+
+---
+
+## Explicitly deferred until after C$50K ARR unless customer pull changes the decision
+
+- full customs-entry/audit workflow;
+- supplier certificate repositories;
+- comprehensive origin-document management;
+- dedicated lawyer workflows;
+- bank portfolio analytics;
+- association/government dashboards;
+- institutional API product;
+- non-Canadian home countries;
+- large content/editorial operation;
+- broad paid marketing;
+- crowdfunding execution.
+
+---
+
+## Crowdfunding
+
+TariffCompass has strong future crowdfunding characteristics: a visible Canadian problem, a product that can be explained on one page, an intuitive live demo and potential national relevance.
+
+Do not execute a crowdfunding campaign during the first ARR push. Revisit after meaningful paying-customer proof, ideally at or near C$50K ARR. At that point crowdfunding may serve both financing and distribution.
 
 ---
 
 ## Standing rules
 
-- Never invent a tariff rate, effective date, or key-date entry. Every figure traces to a source in the codebase or the database
-- No placeholder dates in the database. NULL is honest; a placeholder is indistinguishable from real data in three months
-- Never force push
-- Push after every commit — six commits once sat locally and cost a full review cycle
-- Cloudflare token is scoped: Workers Scripts Edit, Workers Observability Read, Zone Read. DNS, Access policies, env vars and email routing stay manual. `wrangler whoami` reporting "not authenticated" is expected; use `wrangler deployments list`
-- When something specified looks wrong on screen, trust the screen over the spec
+- Never invent a tariff rate, effective date, legal instrument or program deadline.
+- NULL/unknown is preferable to false precision.
+- Public history can be free; company/client-specific relevance and monitoring are the paid value.
+- AI explains structured intelligence; it does not create tariff facts.
+- Canada remains the fixed home country in Phase 1.
+- Never force push.
+- Strategy changes belong in BUSINESS_PLAN.md first, then ROADMAP/PENDING should be reconciled to it.
