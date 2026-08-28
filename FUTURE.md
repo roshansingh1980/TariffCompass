@@ -4,7 +4,7 @@ _Last updated: 27 August 2026_
 
 This file holds work that is **not required for a successful Business Beta/V1 launch**. If an item is needed before launch, it belongs in [`PENDING.md`](PENDING.md), not here.
 
-Canonical strategy remains [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md). Canonical build sequence remains [`ROADMAP.md`](ROADMAP.md).
+Canonical strategy remains [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md). Canonical build sequence remains [`ROADMAP.md`](ROADMAP.md). Capital raising, crowdfunding, dilution, founder compensation after financing and financing governance live in [`CAPITAL_RAISING_STRATEGY.md`](CAPITAL_RAISING_STRATEGY.md).
 
 ## Promotion rule
 
@@ -142,27 +142,21 @@ Early rule remains: scale paid acquisition only when CAC, conversion and retenti
 
 ---
 
-# Crowdfunding and financing
+# Financing / crowdfunding
 
-Current strategic sequence:
+Financing strategy is intentionally kept out of this general backlog. Use [`CAPITAL_RAISING_STRATEGY.md`](CAPITAL_RAISING_STRATEGY.md) as the authoritative document for:
 
-**successful Business Beta/V1 → C$2,500 MRR → build toward 30 Business + 3 Advisor customers + 2–3 strong customer stories → crowdfunding preparation.**
+- crowdfunding readiness and sequencing;
+- target raise and valuation;
+- dilution assumptions;
+- use of proceeds;
+- founder compensation after financing;
+- 5-year financial planning;
+- dividends / founder liquidity;
+- future financing decisions; and
+- campaign preparation.
 
-Future work:
-
-- [ ] Select crowdfunding platform.
-- [ ] Prepare campaign financials and cap table.
-- [ ] Prepare customer traction evidence.
-- [ ] Build the one-screen demo/case study used in the campaign.
-- [ ] Record customer testimonials where permission is granted.
-- [ ] Prepare campaign video and one-page narrative.
-- [ ] Review securities/legal requirements.
-- [ ] Finalize use of proceeds.
-- [ ] Reassess valuation immediately before launch.
-
-Current planning assumption: possible **C$300,000 raise at approximately a C$3 million valuation**, subject to later review.
-
-Do not build investor-facing application functionality for this.
+Do not duplicate financing assumptions here.
 
 ---
 
@@ -170,12 +164,13 @@ Do not build investor-facing application functionality for this.
 
 TariffCompass does not need to become a venture-scale company to be successful. A strong outcome can be a lean, profitable Canadian trade-intelligence SaaS supporting founder salaries, reinvestment and eventually dividends.
 
-Future strategic decisions may include:
+Non-financing strategic decisions may include:
 
-- [ ] Founder compensation after meaningful recurring revenue.
-- [ ] Dividend policy after growth/reinvestment requirements are satisfied.
 - [ ] Whether to remain a focused owner-operated SaaS or pursue larger institutional expansion.
-- [ ] Whether additional financing is economically justified after the initial raise.
+- [ ] Whether customer pull justifies broader product scope.
+- [ ] Whether the company should add permanent functional leadership as scale increases.
+
+Capital structure, founder compensation, dividends and financing decisions belong in `CAPITAL_RAISING_STRATEGY.md`.
 
 ---
 
