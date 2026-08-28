@@ -8,20 +8,21 @@
 
 ## Canonical strategy
 
-Read these before making product-scope decisions:
+Read these before making product-scope or go-to-market decisions:
 
 1. `BUSINESS_PLAN.md` — authoritative commercial/product strategy.
 2. `ROADMAP.md` — authoritative Phase 1 build sequence.
 3. `PENDING.md` — **Beta/V1 launch-critical execution items only**.
-4. `FUTURE.md` — post-launch/later-phase backlog; do not pull items forward without explicit promotion or real customer evidence.
-5. `SEO-Blueprint.md` — public authority/SEO layer.
-6. `brand/BRAND.md` — brand system.
+4. `MARKETING_STRATEGY.md` — authoritative roadmap for acquiring the first **30 Business + 3 Advisor paying accounts**.
+5. `FUTURE.md` — post-launch/later-phase backlog; do not pull items forward without explicit promotion or real customer evidence.
+6. `SEO-Blueprint.md` — public authority/SEO layer.
+7. `brand/BRAND.md` — brand system.
 
 If another document or old comment conflicts with `BUSINESS_PLAN.md`, the business plan wins unless Roshan explicitly changes the strategy.
 
 When deciding where a new task belongs:
 
-> If it is necessary for a credible C$99 Business Beta/V1 launch, put it in `PENDING.md`. Otherwise put it in `FUTURE.md`.
+> If it is necessary for a credible C$99 Business Beta/V1 launch, put it in `PENDING.md`. If it is specifically about acquiring the first 30 Business + 3 Advisor customers, put it in `MARKETING_STRATEGY.md`. Otherwise put it in `FUTURE.md`.
 
 ## North-star objective
 
@@ -32,6 +33,12 @@ Before proposing or building a feature, ask:
 > **Does this materially improve conversion, retention, willingness to pay, or the data reliability required to reach C$2,500 MRR quickly?**
 
 If not, defer it unless Roshan explicitly asks otherwise.
+
+Before proposing a marketing activity, ask:
+
+> **Will this materially increase the probability of acquiring the next paying Business or Advisor customer at acceptable economics?**
+
+If not, defer it.
 
 ## Phase 1 customers and pricing
 
