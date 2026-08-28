@@ -2,21 +2,22 @@
 
 _Last updated: 28 August 2026_
 
-This file contains **only work required for a successful TariffCompass Business Beta/V1 launch**.
+This file contains **only work required for a successful TariffCompass Beta/V1 launch and the immediate Advisor validation needed to accelerate the C$2,500 MRR objective**.
 
 - Canonical strategy: [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md)
 - Canonical build sequence: [`ROADMAP.md`](ROADMAP.md)
 - Canonical acquisition roadmap: [`MARKETING_STRATEGY.md`](MARKETING_STRATEGY.md)
-- Canonical story-driven demo: [`DEMO_STORYBOARD.md`](DEMO_STORYBOARD.md)
+- Canonical Business story-driven demo: [`DEMO_STORYBOARD.md`](DEMO_STORYBOARD.md)
+- Canonical Advisor story-driven demo: [`ADVISOR_DEMO_STORYBOARD.md`](ADVISOR_DEMO_STORYBOARD.md)
 - Post-launch / later-phase backlog: [`FUTURE.md`](FUTURE.md)
 
 ## Beta/V1 objective
 
-Launch a product that is clearly defensible at **C$99/month** for Canadian businesses that import, export, or do both, then drive toward **C$2,500 MRR / C$30,000 ARR** as quickly as possible.
+Launch a product that is clearly defensible at **C$99/month** for Canadian businesses that import, export, or do both, then drive toward **C$2,500 MRR / C$30,000 ARR** as quickly as possible. Validate the **C$249–250/month Advisor plan** with a very small founding cohort only where it accelerates that objective.
 
 Before adding anything to this file, ask:
 
-> **Is this necessary for a credible C$99 Business launch?**
+> **Is this necessary to make the C$99 Business product clearly worth paying for, or to prove the C$249 Advisor channel with the first 3 accountants?**
 
 If not, put it in `FUTURE.md`.
 
@@ -104,7 +105,9 @@ Do not rebuild unrelated data systems before launch.
 
 ---
 
-# Billing and subscription — Business launch only
+# Billing and subscription
+
+## Business launch
 
 Completed:
 
@@ -121,7 +124,12 @@ Still required:
 - [ ] Verify the founding cohort cannot accidentally exceed 10 customers.
 - [ ] Run a real end-to-end live checkout and billing-portal test; confirm the amount before payment.
 
-Advisor Stripe pricing and the first-3 Advisor offer are in `FUTURE.md` and must not delay Business launch.
+## Advisor founding validation
+
+- [ ] Create/select the recurring **TariffCompass Advisor C$249–250/month CAD** Stripe Price only when the first Advisor workflow is credible enough to sell.
+- [ ] Configure the first-3 Advisor founding offer: **50% off for 12 months, then standard pricing**.
+- [ ] Verify the founding Advisor cohort cannot accidentally exceed 3 customers.
+- [ ] Do not let Advisor billing implementation delay the Business C$99 launch.
 
 ---
 
@@ -142,13 +150,13 @@ TariffCompass should launch as a credible Canadian product with a French-capable
 
 **Launch bar:** a French-speaking Canadian SME can discover TariffCompass, understand the offer, complete the core Business workflow, interpret the result, subscribe and receive the essential monitoring experience without being forced back into English.
 
-Full bilingual content parity — historical Insights/Updates, long-form support, full methodology library, future Advisor UI and deep French SEO — belongs in `FUTURE.md`.
+Full bilingual content parity — historical Insights/Updates, long-form support, full methodology library, full Advisor UI and deep French SEO — belongs in `FUTURE.md` unless required by an early paying Advisor.
 
 ---
 
 # Legal/commercial launch review
 
-Complete only the review needed to safely launch the Business product.
+Complete only the review needed to safely launch the Business product and support a small Advisor founding cohort.
 
 ## Entity and billing party
 
@@ -163,15 +171,16 @@ Complete only the review needed to safely launch the Business product.
 - [ ] Confirm whether source citations, confidence labels and “planning estimate” language are adequate.
 - [ ] Review whether AI-generated response suggestions cross into regulated customs, legal, tax or financial advice.
 - [ ] Confirm appropriate customs-broker/lawyer/accountant verification language.
+- [ ] Confirm the Advisor product can provide sourced intelligence to accountants without implying the accountant or TariffCompass is providing customs/legal advice beyond their professional scope.
 
 ## Terms/privacy/subscription
 
 - [ ] Review Terms, Privacy and Notices for launch in both English and the French core launch experience where required.
 - [ ] Review auto-renewal, cancellation and refund requirements.
-- [ ] Review PIPEDA obligations for stored Business profiles.
+- [ ] Review PIPEDA obligations for stored Business profiles and Advisor client-profile data.
 - [ ] Confirm OGL-Canada attribution and launch-critical official-source usage terms.
 
-White-label/Advisor-specific liability work belongs in `FUTURE.md`.
+Deep white-label/institutional liability work belongs in `FUTURE.md` unless required for the first 3 Advisor customers.
 
 ---
 
@@ -212,11 +221,11 @@ Build a lightweight but high-signal public page that demonstrates **where Tariff
 
 ---
 
-# Story-driven flagship demo — Beta/V1
+# Story-driven Business flagship demo — Beta/V1
 
 Use [`DEMO_STORYBOARD.md`](DEMO_STORYBOARD.md) as the canonical narrative and product-demo specification.
 
-The flagship Phase 1 persona is **Bob**, an illustrative Ontario auto-parts manufacturer with most of his exports going to the U.S. and smaller exposure to Europe and Japan. The purpose is not to create a fictional marketing character for its own sake; the story must make the C$99/month value proposition understandable in roughly two minutes.
+The flagship Business persona is **Bob**, an illustrative Ontario auto-parts manufacturer with most of his exports going to the U.S. and smaller exposure to Europe and Japan. The story must make the C$99/month value proposition understandable in roughly two minutes.
 
 ## Build the first delivery format
 
@@ -259,6 +268,51 @@ The flagship Phase 1 persona is **Bob**, an illustrative Ontario auto-parts manu
 
 ---
 
+# Story-driven Advisor flagship demo — founding validation
+
+Use [`ADVISOR_DEMO_STORYBOARD.md`](ADVISOR_DEMO_STORYBOARD.md) as the canonical Advisor narrative and product-demo specification.
+
+The flagship Advisor persona is **Sarah**, an illustrative partner at a regional Ontario accounting/advisory firm serving roughly 40 SMEs, of which approximately 12–15 have meaningful cross-border trade exposure.
+
+The core Advisor question is:
+
+> **Which of my clients need attention, and why?**
+
+The Advisor story must make the C$249–250/month value proposition understandable in roughly two minutes without turning TariffCompass into accounting practice-management software.
+
+## Advisor workflow requirements
+
+- [ ] Build a lightweight **multi-client workspace** for the first Advisor validation cohort.
+- [ ] Allow Sarah to maintain saved trade exposures for relevant clients: client, product/HS code, direction, origin/destination, annual value and currency.
+- [ ] Build a **Client Exposure Radar** showing which monitored clients require attention, what changed, estimated impact, next relevant date and priority.
+- [ ] Allow drill-down from portfolio → client → saved exposure → before/after change → source/effective date/confidence.
+- [ ] Add an Advisor action queue focused on client conversations and professional follow-up, not CRM tasks.
+- [ ] Provide a concise client-ready share/export output containing the sourced change, estimated financial exposure and practical questions/next steps.
+- [ ] White-labeling is optional for the first 3 Advisors unless they explicitly require it to pay; portfolio relevance is the primary C$249 value.
+
+## Advisor story requirements
+
+- [ ] Scene 1 — establish Sarah's firm, client count and trade-exposed client subset.
+- [ ] Scene 2 — show the pain: tariff headlines do not tell Sarah which clients need a call.
+- [ ] Scene 3 — show Sarah's monitored client portfolio and saved exposures.
+- [ ] Scene 4 — show the **Client Exposure Radar** with 2–3 clients requiring attention and one clearly prioritized issue.
+- [ ] Scene 5 — drill into one client and show what changed, effective date, approximate exposure and official source.
+- [ ] Scene 6 — show a client-ready advisory output that supports a proactive conversation without claiming customs/legal advice.
+- [ ] Scene 7 — show Sources & Methodology / provenance for professional trust.
+- [ ] Scene 8 — close the commercial story: **C$249–250/month buys portfolio-wide relevance and prioritization across Sarah's trade-exposed clients.**
+
+## Advisor demo integrity
+
+- [ ] Sarah and her client portfolio are illustrative unless explicitly stated otherwise.
+- [ ] Do not fabricate tariff rates, legal instruments, effective dates or official-source claims.
+- [ ] Clearly label illustrative client financial values unless derived from real sourced TariffCompass data.
+- [ ] Do not imply TariffCompass or Sarah is providing regulated customs/legal advice outside professional scope.
+- [ ] Keep the Advisor demo focused on trade intelligence, financial exposure and client prioritization.
+
+**Advisor validation bar:** an accountant/fractional CFO should finish the walkthrough understanding **“TariffCompass tells me which clients need attention, what may have changed financially, and gives me sourced intelligence to start the right conversation — that is why I would pay C$249/month.”**
+
+---
+
 # Beta/V1 UX and production readiness
 
 - [ ] Finalize free-vs-paid gating so free proves value and C$99 clearly buys private relevance, financial exposure and monitoring.
@@ -279,11 +333,16 @@ Run this in parallel with final launch work. The detailed acquisition roadmap li
 
 - [ ] Build the first prospect list of Canadian manufacturers, distributors/wholesalers, import-dependent retailers and U.S.-exposed exporters.
 - [ ] Include a deliberate Quebec/French-speaking prospect subset so the V1 French journey is tested by real users.
-- [ ] Use the flagship Bob walkthrough as the default narrative for early demos, adapting the live product/HS example when a prospect's own situation is stronger.
-- [ ] Prepare one strong live demo using a real product/HS code and approximate annual trade value.
-- [ ] Start founder-led demos as soon as the six gates are credible.
-- [ ] Track demo → paid conversion and time-to-payment.
-- [ ] Ask every early customer what specific output made C$99 feel trivial, acceptable or too high.
+- [ ] Use the flagship Bob walkthrough as the default narrative for Business demos, adapting the live product/HS example when a prospect's own situation is stronger.
+- [ ] Build a focused list of accountants/fractional CFOs with meaningful SME client books for the first **3 Advisor founding customers**.
+- [ ] Use the flagship Sarah walkthrough as the default Advisor narrative.
+- [ ] Prepare one strong live Business demo using a real product/HS code and approximate annual trade value.
+- [ ] Prepare one strong Advisor demo showing portfolio → affected client → sourced financial exposure.
+- [ ] Start founder-led Business demos as soon as the six gates are credible.
+- [ ] Start Advisor founding-customer demos only when the portfolio radar and client drill-down are credible enough to justify C$249–250/month.
+- [ ] Track demo → paid conversion and time-to-payment separately for Business and Advisor.
+- [ ] Ask every early Business customer what specific output made C$99 feel trivial, acceptable or too high.
+- [ ] Ask every early Advisor what specific portfolio insight made C$249 feel trivial, acceptable or too high.
 - [ ] Personally interview early paying customers and capture product, pricing, retention and testimonial insights.
 
 Initial operating objective after launch: **drive to C$2,500 MRR as quickly as possible.**
@@ -294,10 +353,11 @@ Initial operating objective after launch: **drive to C$2,500 MRR as quickly as p
 
 - Never invent a tariff rate, effective date, legal instrument or program deadline.
 - NULL/unknown is preferable to false precision.
-- Public tariff history can be free; company-specific relevance, financial impact and monitoring are the paid value.
+- Public tariff history can be free; company/client-specific relevance, financial impact and monitoring are the paid value.
 - **Official sources drive tariff determinations; media is supplemental discovery/context only.**
 - AI explains structured intelligence; it does not create tariff facts.
 - Canada remains the fixed home country for Beta/V1.
 - V1 includes French-ready architecture and the complete core Business buying/analysis/monitoring journey in French; full content parity is future work.
-- Do not add Advisor, institutional, crowdfunding, broad publishing or deep customs-compliance work to `PENDING.md` unless Roshan explicitly promotes it from `FUTURE.md`.
+- Advisor V1 is limited to what is necessary to prove the first 3 paying Advisor customers: multi-client workspace, Client Exposure Radar, client drill-down, alerts/provenance and client-ready output.
+- Do not add institutional, crowdfunding, broad publishing, accounting CRM/practice-management, or deep customs-compliance work to `PENDING.md` unless explicitly promoted from `FUTURE.md`.
 - Never force push.
