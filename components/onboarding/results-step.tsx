@@ -28,6 +28,11 @@ import {
   type MarketDataRow,
 } from "@/lib/data/db-market-data";
 import { getSupportPrograms, type SupportProgram } from "@/lib/data/db-support-programs";
+import {
+  computeIncrementalCounterTariffExposure,
+  findCanadianCounterTariff,
+  getTradeMeasureStatus,
+} from "@/lib/data/canada-counter-tariffs-2026";
 import { computeExposure } from "@/lib/exposure";
 import { formatHsCode } from "@/lib/hs-code";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
@@ -148,6 +153,14 @@ export function ResultsStep({
     usRow && Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0
       ? computeExposure(parsedAnnualValue, usRow.tariffRate)
       : null;
+  const upcomingCounterTariff = findCanadianCounterTariff({ hsCode, scenario });
+  const counterTariffStatus = upcomingCounterTariff
+    ? getTradeMeasureStatus(upcomingCounterTariff.effectiveFrom)
+    : null;
+  const incrementalCounterTariffExposure = computeIncrementalCounterTariffExposure(
+    upcomingCounterTariff,
+    Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0 ? parsedAnnualValue : null
+  );
   const supportLastChecked = supportPrograms?.reduce(
     (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
     supportPrograms[0]?.lastChecked ?? ""
@@ -269,6 +282,51 @@ export function ResultsStep({
                   : "No HS code was provided, so these results use broader category data. Add a confirmed HS code for product-specific matching where coverage exists."}
             </p>
           </div>
+        )}
+
+        {upcomingCounterTariff && (
+          <section className="mx-auto mt-6 max-w-2xl rounded-2xl border border-amber-500/30 bg-amber-500/[0.06] px-5 py-5 text-left">
+            <p className="text-xs font-semibold tracking-wider text-amber-700 uppercase dark:text-amber-300">
+              {counterTariffStatus === "upcoming" ? "Upcoming verified change" : "Current verified measure"}
+            </p>
+            <h2 className="mt-2 text-base font-semibold text-foreground">
+              HS {formatHsCode(upcomingCounterTariff.hsCode)} — {upcomingCounterTariff.productDescription}
+            </h2>
+            <dl className="mt-3 grid gap-1 text-sm text-muted-foreground sm:grid-cols-[auto_1fr] sm:gap-x-3">
+              <dt>Additional Canadian counter-tariff</dt>
+              <dd className="font-medium text-foreground">{formatRate(upcomingCounterTariff.rate)}</dd>
+              <dt>Effective</dt>
+              <dd className="font-medium text-foreground">{formatDate(upcomingCounterTariff.effectiveFrom)}</dd>
+              <dt>Canadian tariff item</dt>
+              <dd className="font-medium text-foreground">{upcomingCounterTariff.nationalTariffItem}</dd>
+              <dt>Confidence</dt>
+              <dd className="font-medium text-foreground">Official published list</dd>
+            </dl>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              Applies to qualifying U.S.-origin goods. This is an additional countermeasure, not a
+              verified all-in customs-duty rate; confirm classification, origin and treatment with
+              a customs professional.
+            </p>
+            {incrementalCounterTariffExposure != null && (
+              <p className="mt-3 text-sm font-medium text-foreground">
+                Potential annual incremental gross exposure: approximately{" "}
+                {formatCurrency(incrementalCounterTariffExposure, currency)}
+                <span className="font-normal text-muted-foreground"> (planning estimate)</span>
+              </p>
+            )}
+            <p className="mt-3 text-xs text-muted-foreground">
+              Source:{" "}
+              <a
+                href={upcomingCounterTariff.source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-foreground underline underline-offset-2"
+              >
+                {upcomingCounterTariff.source.name}
+              </a>
+              {" · "}Reviewed {formatDate(upcomingCounterTariff.source.reviewedAt)}
+            </p>
+          </section>
         )}
 
         {exposure && (

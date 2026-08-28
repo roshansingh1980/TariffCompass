@@ -109,6 +109,7 @@ export type DbTariffRow = {
   attractiveness: Attractiveness;
   rationale: string;
   reviewed_at: string;
+  effective_from?: string | null;
   sources: { name: string; url: string } | null;
 };
 
@@ -149,6 +150,11 @@ export function selectPreferredTariffRow(
   return categoryRow ? { row: categoryRow, specificity: "category" } : null;
 }
 
+export function isTariffRowCurrent(row: DbTariffRow, asOf: Date = new Date()): boolean {
+  if (!row.effective_from) return true;
+  return new Date(`${row.effective_from}T00:00:00Z`).getTime() <= asOf.getTime();
+}
+
 /** The 5-row comparison set for one category + scenario, as shown on the Results screen. */
 export async function getMarketDataRows(
   category: string | null,
@@ -179,7 +185,7 @@ export async function getMarketDataRows(
     ? supabase
         .from("tariff_rates")
         .select(
-          "category, hs_code, origin_country, destination_country, rate_min, rate_max, confidence, cost_friction, attractiveness, rationale, reviewed_at, sources(name, url)"
+          "category, hs_code, origin_country, destination_country, rate_min, rate_max, confidence, cost_friction, attractiveness, rationale, reviewed_at, effective_from, sources(name, url)"
         )
         .eq("hs_code", normalizedHsCode)
         .eq(fixedColumn, "CA")
@@ -192,7 +198,9 @@ export async function getMarketDataRows(
   if (hsResult.error) throw hsResult.error;
 
   const categoryRows = categoryResult.data as unknown as DbTariffRow[];
-  const hsRows = hsResult.data as unknown as DbTariffRow[];
+  const hsRows = (hsResult.data as unknown as DbTariffRow[]).filter((row) =>
+    isTariffRowCurrent(row)
+  );
 
   return markets.map((m) => {
     const preferred = selectPreferredTariffRow(categoryRows, hsRows, m.key, varyingColumn);

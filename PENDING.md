@@ -34,7 +34,7 @@ These are the primary product requirements. Broad paid launch does not happen un
 - [x] Add lightweight product-description search against the official USITC HTS endpoint, returning possible matches without blocking the wizard when that service is unavailable.
 - [x] Prefer verified matching HS rows where present; preserve category-level fallback where coverage is unavailable and label every result’s specificity clearly.
 - [x] Do not present TariffCompass or AI classification as authoritative; require confirmation with a customs professional.
-- [ ] Populate and verify enough sourced HS-specific tariff rows for a real launch demonstration. The application path is ready, but current category seed data does not satisfy the launch bar by itself.
+- [x] Populate and verify enough sourced HS-specific tariff rows for a real launch demonstration. The first production-capable slice covers 12 unambiguous Canadian tariff items for qualifying U.S.-origin imports, with an upcoming September 8, 2026 counter-tariff panel and smartphone demo path. Coverage remains intentionally narrow; other HS codes still use labelled category fallback.
 
 **Launch bar:** a user can enter a real product/HS code and receive a materially more specific answer than a category-level range.
 

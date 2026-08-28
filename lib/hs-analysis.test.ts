@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  isTariffRowCurrent,
   resolveScenarioDirection,
   selectPreferredTariffRow,
   type DbTariffRow,
@@ -59,6 +60,12 @@ describe("HS-aware tariff selection", () => {
     expect(resolveScenarioDirection("import-us")).toBe("import");
     expect(resolveScenarioDirection("export-us")).toBe("export");
     expect(selectPreferredTariffRow([category], [], "us", "origin_country")?.row).toBe(category);
+  });
+
+  it("keeps future HS rows out of current tariff selection", () => {
+    const future = tariffRow({ hs_code: "851713", effective_from: "2026-09-08" });
+    expect(isTariffRowCurrent(future, new Date("2026-08-28T12:00:00Z"))).toBe(false);
+    expect(isTariffRowCurrent(future, new Date("2026-09-08T00:00:00Z"))).toBe(true);
   });
 });
 
