@@ -1,130 +1,291 @@
-# TariffCompass — Product Feature Roadmap
+# TariffCompass — Phase 1 ARR Roadmap
 
-Six-week build to take the product from a category-level comparison tool to an HS-code-level exposure and monitoring platform. Replaces the previous "ship fast, meet people, iterate" sequencing — the things below are obviously needed by a Canadian exporter, so there is no hypothesis to validate before building them.
+_Last updated: 27 August 2026_
 
-**The bar:** an exporter asks "I make aluminium extrusions, I ship $2M to Ohio, what do I actually pay and what changed?" Today the answer is "Steel & Metals, 10–50%, Challenging." The target answer is "HS 7604.29, Canadian origin, 50% under Section 232 as amended by Proclamation 11047 effective 22 August. On $2M that's $1M. It was 25% until 22 August. Here's the proclamation."
+This roadmap is subordinate to [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md).
 
-Everything else — the brief, the comparison, the exposure math — is already good and improves automatically once the number underneath is specific.
+## North-star objective
 
----
+Reach **C$4,167 MRR / C$50,000 ARR as quickly as possible**.
 
-## Week 0 — Free tier and public surface
+The target customer set is deliberately narrow:
 
-This is the top of the funnel and the SEO surface. It's free by design — the rate ranges, friction ratings, attractiveness and risk badges are all public. It doesn't justify C$29; it's what makes someone believe the product is worth signing up to.
+1. Canadian SMEs that import, export, or do both.
+2. Accountants and fractional CFO/advisory firms serving trade-exposed SMEs.
 
-Built now rather than deferred, with one hard constraint: **render from the data layer, not from the current shape of the data.** Week 1-2 moves rates to HS-code level. The grid's columns don't change — only the granularity underneath. Built against a data function, it survives that migration and gets better rows for free. Built against hardcoded category rows, it gets rebuilt.
+Everything else is free audience, opportunistic use, or later-phase expansion.
 
-- [ ] Homepage heatmap as a real grid. Rows: the 8 product categories (exclude Other/Custom, no data). Columns: Export Tariff, Ease of Business, Cost/Friction, Overall Attractiveness, Current Risk. Two dropdowns above: direction (Export to / Import from, default Export to) and market (default United States)
-- [ ] Resolve before building: market coverage varies by category (8 distinct markets across the dataset, only 5 per category). Either restrict the dropdown or show honest "not covered" cells. Do not fabricate rows
-- [ ] Colour scale mapping the existing rating values (Excellent / Good / Fair / Challenging, Stable / Watch / Elevated / Uncertain). Every cell must carry its text label — colour alone fails WCAG and we are at zero axe violations
-- [ ] Cell hover detail; cell links through to a summary page
-- [ ] Cost/Friction rating is free on the grid; its reasoning stays paid, matching how Current Risk already works
-- [ ] Direction × market summary pages (~16, e.g. /trade/export/united-states), each showing the full category grid for that market with real prose, sources and dates. NOT one page per category × market — 144 thin pages hurt SEO. Sitemap derived, not hardcoded
-- [ ] Asymmetric landing layout: heatmap ~2/3 left, "What's coming" timeline ~1/3 right at lg and above, stacked below. Timeline descriptions truncated to first sentence, category chips kept
+## Commercial target
 
----
+Working mix:
 
-## Prerequisites — do before Week 3
+- 25 Business accounts × C$99/month = C$2,475 MRR
+- 8 Advisor accounts × C$249/month = C$1,992 MRR
+- Total = **C$4,467 MRR / C$53,604 ARR**
 
-These are not optional polish. Each one blocks or corrupts later roadmap work if deferred.
-
-- [ ] `key_dates` cutover from `lib/data/key-dates.ts` to Postgres. Week 3 writes effective dates via the Federal Register connector. If the homepage still reads a static file, live data and stale data diverge on screen
-- [ ] `measure_type` backfill on the 12 NULL rows. Week 3 builds stacking logic that needs to know whether a row is MFN, 232, or counter-tariff. NULLs break it
-- [ ] `companies` / `products` cleanup. Week 1-2 restructures `tariff_rates` around HS codes; doing schema work with two vestigial tables still being written to invites confusion
-- [ ] Stripe checkout error UI (`useActionState` rebuild). Live payments are now enabled. A checkout failure with no inline message is a lost customer who never tells you
-- [ ] Rebuild the AI freshness-review pipeline against Postgres. It was a real differentiator, deleted as migration collateral. The whole roadmap is about data currency — this fits Week 3 naturally
+Do not optimize for registrations, feature count, traffic, or breadth ahead of paid conversion and retention.
 
 ---
 
-## Week 1–2 — HS-code-level rates
+## Phase 0 — Align the existing product to the commercial proposition
 
-The foundation. Every other improvement multiplies off this.
+### Pricing and packaging
 
-- [ ] USITC HTS ingestion via `hts.usitc.gov/reststop/search` (verified 200 from the Worker runtime). Note: undocumented/internal endpoint — monitor for silent breakage
-- [ ] `tariff_rates` extended to key on HS code, not category
-- [ ] HS code lookup on intake, with **search by product description** — most SMEs don't know their code. This is the difference between usable and not
-- [ ] Category chips demoted to fallback when no code is entered
-- [ ] Confidence model becomes three-tier: *official* (HTS base rates), *official source, human-read* (232/338, counter-tariffs), *estimated* (everything else)
-- [ ] Every rate row carries its source, retrieval date, and HTS revision
-- [ ] Restore the CUSMA annotation lost in the Postgres migration — needs its own column this time, not free text
+- [ ] Replace legacy C$29 positioning/gating with **Business C$99/month**.
+- [ ] Add annual Business option at **C$999/year**.
+- [ ] Define **Advisor C$249/month**; do not sell until a useful multi-client experience exists.
+- [ ] Keep Free useful enough to demonstrate real value and build trust.
+- [ ] Ensure Stripe checkout, billing portal, cancellation, and error UI are reliable.
 
-**Explicitly not building:** AI HS classification. Highest liability, lowest margin, brokers own it, and one wrong code costs credibility permanently. Take the code as an input; help the user find it by description.
+### Positioning
 
----
+- [ ] Homepage and metadata must speak to **Canadian businesses that buy or sell across borders**, not exporters only.
+- [ ] Core message: what changed → does it affect me → what does it cost → what can I do.
+- [ ] Preserve Canada as the fixed home country in Phase 1.
+- [ ] Do not create separate importer/exporter products; trade direction remains an input to one product.
 
-## Week 3 — Section 232 / 338 layer
+### Existing data debt that blocks selling
 
-The piece nobody does for SMEs. This is the moat, and it's manual.
-
-- [ ] Federal Register API connector — finds proclamations and amendments, gives structured effective dates (fills the `effective_from` column that alerts depend on)
-- [ ] Canada Gazette Part II RSS — counter-tariff and remission orders
-- [ ] Hand-extraction of rates from proclamation prose into structured rows. **No API returns "steel derivatives, 50%, effective this date."** A person reads the annex
-- [ ] Stacking logic — one market row carries MFN + 232 + counter-tariff simultaneously, summed rather than replaced
-- [ ] Lifecycle tracking — proclamations get amended, delayed, exclusion-processed, terminated. Link related documents into one evolving current-rate fact
-- [ ] Exclusion and de minimis handling (e.g. the sub-15% metal content carve-out)
-
-**Scope discipline:** this is where six weeks becomes ten. Cover only the categories you'll sell into — steel, machinery, furniture, apparel, electronics. Leave the rest at category level and label them as such.
+- [ ] Move `key_dates` homepage consumption fully to Postgres.
+- [ ] Backfill `measure_type` where confidently known.
+- [ ] Remove/clean vestigial `companies` / `products` writes before tariff-schema expansion.
+- [ ] Restore CUSMA annotation as structured data rather than prose.
+- [ ] Rebuild AI freshness review against Postgres if it can materially improve confidence without delaying launch.
 
 ---
 
-## Week 4 — CUSMA / CKFTA qualification
+## Phase 1A — Product-specific tariff exposure
 
-The single highest-value question for a Canadian exporter, currently unanswered.
+This is the foundation for paid value.
 
-- [ ] Rules of origin by HS chapter
-- [ ] Qualification questionnaire — where inputs are sourced, degree of transformation, regional value content
-- [ ] Documentation requirements: certification of origin, what records to keep, how long
-- [ ] Clear output: qualifies / doesn't / needs a broker's opinion — never a false certainty
-- [ ] Same treatment for CKFTA (Korea), CETA (EU), CPTPP
+### HS-level specificity
 
-This is where an SME is most underserved and where a broker charges the most.
+- [ ] Extend `tariff_rates` so HS code/product applicability is first-class rather than category-only.
+- [ ] Add product-description search to help users find likely HS headings/codes.
+- [ ] Do **not** present AI classification as authoritative; the user must confirm classification with a customs professional when needed.
+- [ ] Preserve category fallback where HS-level coverage is unavailable and label it clearly.
+- [ ] Every rate must carry source, retrieval/review date, effective date where known, and confidence.
 
----
+### Canada–U.S. first
 
-## Week 5 — Alerts
+Prioritize the trade routes most likely to produce immediate Canadian SME pain and sales conversations.
 
-Only possible once `effective_from` exists and rates are per-code. This is the subscription.
+- [ ] Canadian export exposure into the United States.
+- [ ] Canadian import exposure from the United States.
+- [ ] High-impact Canadian counter-tariff/surtax exposure on imports from relevant origins.
+- [ ] Alternative destination/source comparisons only where supporting data is good enough to be useful.
 
-- [ ] Scheduled diff job against each saved profile's HS codes
-- [ ] `rate_changes` table with before/after and the triggering document
-- [ ] Weekly digest email: "Your HS 7604.29 rate moved from 25% to 50% on 22 August. At your volume that's $500,000. Here's the proclamation."
-- [ ] Program deadline warnings — CanExport and RTRI intake windows. Schema exists, all NULL, needs research
-- [ ] In-app change history per saved profile
-- [ ] Public/private boundary holds: public data, private monitoring. If change history ever becomes public, the alert product dies
+### Financial impact
 
----
+- [ ] Make estimated annual dollar exposure a primary result, not a secondary paywall detail.
+- [ ] Show before/after exposure when a rate changed and historical data is available.
+- [ ] Support simple margin/pricing scenarios where reliable.
+- [ ] Clearly distinguish planning estimates from customs-duty determinations.
 
-## Week 6 — Professional tier
-
-- [ ] White-label PDF export — firm logo and name on the brief. Unlocks the tier; an accountant will not send a client something branded TariffCompass
-- [ ] Multi-client workspace — client list, per-client profiles and history, which moved this week
-- [ ] Seat billing (Stripe quantity-based)
-- [ ] Brief rewritten to use specific figures instead of ranges
-- [ ] Defensible paper trail on every export: sources as of, HTS revision, retrieval dates
-- [ ] `/for-advisors` page
+**Beta-1 demo bar:** a user can provide a product/HS code, direction, route and annual value and receive a sourced, dated, financially meaningful answer in minutes.
 
 ---
 
-## Deferred to V2
+## Phase 1B — Trade-policy change engine and alerts
 
-Cut deliberately, not forgotten.
+Recurring monitoring is the core subscription mechanism.
 
-- Wizard collapse to a single page (Week 1 changes the intake with HS code lookup and description search — collapsing it now means redoing it then)
-- SEO-Blueprint execution (nothing to index until Cloudflare Access lifts)
+### Trade measure model
+
+Evolve the data model toward:
+
+- legal instrument/source;
+- jurisdiction;
+- measure type;
+- announcement/effective/review dates;
+- HS applicability;
+- origin/destination applicability;
+- exclusions/thresholds where material;
+- base/preferential/additional rates; and
+- change history.
+
+Conceptual model:
+
+**Trade Measure × Company Exposure = Impact**
+
+### Sources/connectors
+
+- [ ] USITC HTS data for base tariff structure.
+- [ ] Federal Register / official U.S. instruments for Section 232 and similar actions.
+- [ ] Canada Gazette / Finance Canada / CBSA / Global Affairs Canada sources for Canadian countermeasures, remission and trade-agreement information.
+- [ ] Use official sources wherever practical; never fabricate a rate or date.
+
+### Alerts
+
+- [ ] Scheduled diff against saved profiles/products.
+- [ ] `rate_changes` / measure-change history with before/after and source.
+- [ ] Email/in-app alert: what changed, which saved product is affected, effective date, estimated dollar impact, source.
+- [ ] Program deadline warnings only where dates are verified and relevant.
+
+**Paid value principle:** the public can see that a tariff changed; a paying customer is told that it affects **their** products and approximately **how much**.
 
 ---
 
-## Run in parallel — costs nothing, blocks nothing
+## Phase 1C — Response intelligence
 
-- [ ] Book the lawyer. All blocking decisions are made
-- [ ] Three exporter and three retail conversations during weeks 1–3. Not to validate the plan — to watch someone use it. Surfaces things building never does
-- [ ] NRC IRAP advisor call, PacifiCan call
-- [ ] Manual end-to-end credit card test once Access lifts
+Do not build a full trade-consulting platform. Give enough decision support to make the exposure actionable.
 
-Hold the three accountants, two bankers and two consultants until week 6 is done. Those are the conversations that need the wow version.
+- [ ] Alternative sourcing/destination comparisons.
+- [ ] FTA treatment indicators where reliable (CUSMA first, then CETA/CPTPP as justified by customer demand).
+- [ ] Government programs worth reviewing; never assert eligibility unless a deterministic rule truly supports it.
+- [ ] Suggested next questions/actions for broker/accountant/lawyer/management.
+- [ ] AI brief should explain structured data rather than supply unsourced trade facts.
+
+Defer deep customs-compliance workflow, supplier-document repositories and full origin-management systems unless paying customers specifically pull us there.
 
 ---
 
-## What "wow" means here, concretely
+## Phase 1D — Advisor product
 
-Not polish. Specificity. The current product tells you a range for your category. The target tells you a number for your product, cites the legal instrument behind it, and emails you when it moves. That gap is entirely data, not design — which is why six weeks of ingestion work beats six weeks of interface work.
+Build only after the single-business exposure/monitoring experience is convincing.
+
+### Minimum Advisor product
+
+- [ ] Multi-client workspace.
+- [ ] Client profiles with saved trade exposures.
+- [ ] **Client Exposure Radar** showing recent material changes across the book.
+- [ ] Sort/filter by risk, change, estimated exposure and client.
+- [ ] Client-ready PDF/report output.
+- [ ] White-label/firm branding once report quality is dependable.
+- [ ] Stripe Advisor billing at C$249/month.
+
+### Advisor demo bar
+
+An accountant should be able to see:
+
+> “4 of my 37 monitored clients were affected by trade-policy changes this week; these two appear financially material.”
+
+That is the professional “wow,” not merely white-label PDFs.
+
+---
+
+## Lightweight public authority layer — Beta 1
+
+Keep this in Beta 1, but cap it at approximately **10–15% of build/content effort**.
+
+### Keep/build
+
+- [ ] `/insights` — short, quantitative, sourced analysis.
+- [ ] `/updates` — dated change log with source and correction discipline.
+- [ ] `/sources` — transparent source registry/methodology.
+- [ ] Public tariff/trade summaries that render from the same data layer as paid analysis.
+- [ ] Reusable tables/charts when inexpensive and genuinely citable.
+
+### Content standard
+
+Every substantive public piece should be:
+
+- dated;
+- source-linked;
+- quantitative where possible;
+- explicit about confidence/methodology;
+- short enough to maintain; and
+- useful to journalists, lawyers, researchers, policymakers and businesses.
+
+### Do not build in Phase 1
+
+- journalist dashboard;
+- politician/policy dashboard;
+- bespoke research workflow;
+- publication CMS complexity;
+- broad editorial calendar that competes with selling.
+
+---
+
+## Customer development and founder-led sales — run in parallel
+
+Do not wait for a perfect platform.
+
+### SME motion
+
+- [ ] Build a list of Canadian manufacturers, wholesalers/distributors, import-dependent retailers and U.S.-exposed exporters.
+- [ ] Run live exposure demos using one real product and approximate annual trade value.
+- [ ] Track demo → trial → paid conversion and time-to-close.
+- [ ] Ask what information made them willing/unwilling to pay C$99.
+
+### Advisor motion
+
+- [ ] Recruit initial accounting/fractional-CFO design partners once Client Exposure Radar is demonstrable.
+- [ ] Ask advisors to run the tool across real client exposures.
+- [ ] Track number of relevant clients per firm and portfolio-alert usefulness.
+- [ ] Convert to C$249 when the multi-client experience creates clear recurring value.
+
+### Legal/commercial readiness
+
+- [ ] Complete legal review of tariff-figure liability, AI-generated decision support, terms/privacy, subscription/cancellation terms, sourcing/attribution and entity structure.
+- [ ] Keep customs/legal/tax determinations outside the product unless properly supported.
+
+---
+
+## ARR operating dashboard
+
+Track weekly:
+
+- Business paying accounts;
+- Advisor paying accounts;
+- MRR;
+- ARR;
+- ARPA;
+- founder demos completed;
+- demo-to-paid conversion;
+- days from first demo to payment;
+- churn/cancellation;
+- monitored products/profiles;
+- material alerts delivered; and
+- repeat usage following a tariff change.
+
+Secondary public metrics until C$50K ARR:
+
+- organic traffic;
+- citations/backlinks;
+- media/newsletter references; and
+- source/insight-page usage.
+
+---
+
+## Explicitly deferred until after C$50K ARR unless customer pull is overwhelming
+
+- full CBSA/customs audit workflow;
+- supplier certificate repository;
+- comprehensive rules-of-origin document management;
+- dedicated lawyer workflows;
+- bank portfolio analytics;
+- association/government dashboards;
+- institutional/API product;
+- non-Canadian home-country support;
+- complex enterprise permissions;
+- large content operation;
+- broad paid marketing; and
+- fundraising/crowdfunding work that distracts from paying customers.
+
+---
+
+## Crowdfunding checkpoint
+
+TariffCompass should preserve crowdfunding optionality because the product can be demonstrated simply to retail investors.
+
+Do **not** optimize Phase 1 around fundraising. Revisit crowdfunding after meaningful customer proof, ideally at or around the C$50K ARR milestone.
+
+A future campaign should be able to show:
+
+- a real Canadian trade problem;
+- a live product;
+- paying customers;
+- recurring revenue;
+- credible source-backed public intelligence; and
+- a one-screen demonstration of a tariff change and its financial effect.
+
+---
+
+## Standing decision rule
+
+Before building anything, ask:
+
+> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if TariffCompass succeeds?**
+
+If not, defer it.
