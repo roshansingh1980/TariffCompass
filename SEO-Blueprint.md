@@ -1,146 +1,270 @@
-# TariffCompass — SEO Blueprint
+# TariffCompass — Public Authority & SEO Blueprint
 
-> Note: this blueprint was drafted fresh for this request. No prior SEO
-> planning session exists in this project's history, so nothing here should
-> be read as "content we already agreed on" — it's a first draft based on
-> the product as built (onboarding flow, market comparison, real government
-> programs, AI diversification brief) and is meant to be reviewed and
-> revised before use.
+_Last updated: 27 August 2026_
+
+This document is subordinate to [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md). SEO and public publishing exist to support trust, citations, discovery and paid conversion. They are not a separate Phase 1 business and should consume no more than approximately **10–15% of Phase 1 effort**.
+
+## 1. Objective
+
+Make TariffCompass useful enough that Canadian businesses, journalists, lawyers, researchers, consultants, associations, policymakers and politicians can cite or link to its public tariff intelligence.
+
+The commercial boundary is:
+
+> **Public information creates authority. Private relevance creates revenue.**
+
+It is acceptable to publish that a tariff changed, which categories/HS codes are affected at an aggregate level, and the official source. Paid value comes from telling a business or advisor that the change affects **their products or clients** and estimating the financial impact.
 
 ---
 
-## 1. Target Keywords (26)
+## 2. Priority search themes
 
-**Core problem / commercial intent**
+### Core commercial/problem intent
+
 1. Canada tariff calculator
-2. tariff impact assessment tool
+2. Canadian tariff impact tool
 3. US tariffs on Canadian goods
-4. Canada US trade war impact
-5. import tariff Canada calculator
+4. import tariffs Canada
+5. export tariffs Canada
 6. HS code tariff lookup Canada
+7. Canada US tariff changes
+8. Canadian business tariff exposure
+9. tariff impact on Canadian small business
+10. tariff change alerts Canada
 
-**Diversification / strategy**
-7. export market diversification Canada
-8. how to diversify export markets
-9. alternative export markets for Canadian exporters
-10. trade diversification strategy small business
-11. export to Europe from Canada
-12. export to Japan from Canada
-13. ease of doing business by country
+### Import/export decision support
 
-**Audience**
-14. Canadian small business tariffs
-15. Canadian businesses affected by tariffs
-16. Canadian SME funding readiness
+11. Canadian importer tariff exposure
+12. Canadian exporter tariff exposure
+13. landed cost tariff Canada
+14. alternative sourcing countries Canada tariff
+15. alternative export markets Canada
+16. tariff cost impact calculator business
 
-**Sector-specific**
-17. steel tariff Canada exporters
-18. agri-food export tariffs Canada
-19. auto parts tariff Canada
+### Trade measures and agreements
 
-**Trade agreements**
+17. Section 232 Canada tariffs
+18. Canada counter tariffs
+19. Canada surtax imports
 20. CUSMA tariff rates
-21. Canadian export markets 2026
+21. CETA tariffs Canada
+22. CPTPP tariff Canada
+23. tariff remission Canada
 
-**Government funding programs**
-22. tariff relief programs Canada
-23. government funding for exporters Canada
-24. CanExport SMEs
-25. Regional Tariff Response Initiative
-26. EDC Trade Impact Program
+### Professional/advisor intent
+
+24. tariff analysis for accountants
+25. tariff exposure clients accounting firm
+26. trade risk monitoring clients
+
+### Public research/citation intent
+
+27. Canadian sectors affected by tariffs
+28. Canada tariff data 2026
+29. latest Canada US tariff changes
+30. tariff impact by industry Canada
+
+Do not create thin pages merely to capture every keyword variant.
 
 ---
 
-## 2. Page Titles & Meta Descriptions
+## 3. Public page positioning
 
 ### Homepage (`/`)
-- **Title:** TariffCompass | Canadian Export Tariff & Market Diversification Tool
-- **Meta description:** Compare markets, understand tariff exposure, and find Canadian government support in minutes. TariffCompass helps Canadian businesses navigate tariffs with confidence.
+
+- **Title:** TariffCompass | Canadian Tariff & Trade Impact Intelligence
+- **Meta description:** Understand how tariff and trade-policy changes affect Canadian businesses. Analyze import/export exposure, estimate financial impact, and monitor what changes.
 
 ### Dashboard (`/dashboard`)
-- **Title:** Your Dashboard — TariffCompass
-- **Meta description:** Review your market comparison, tariff exposure, and personalized diversification brief.
-- **Indexation note:** this route is behind authentication and shows personalized data — set `robots: noindex, nofollow` rather than optimizing it for search.
+
+- **Title:** Your Trade Exposure — TariffCompass
+- **Meta description:** Review your import/export exposure, estimated financial impact, market options and monitored tariff changes.
+- **Indexation:** `noindex, nofollow` because this is personalized/private.
 
 ### Login (`/login`)
+
 - **Title:** Log In — TariffCompass
-- **Meta description:** Log in to your TariffCompass account to access your market comparison and diversification brief.
+- **Indexation:** `noindex, nofollow`.
 
 ### Sign Up (`/signup`)
-- **Title:** Sign Up — TariffCompass | Navigate Tariffs with Confidence
-- **Meta description:** Create a free TariffCompass account to compare export and import markets, assess tariff exposure, and find funding support for your Canadian business.
 
-### About (`/about` — built)
-- **Title:** About TariffCompass — Helping Canadian Businesses Navigate Tariffs
-- **Meta description:** Learn how TariffCompass helps Canadian small and medium-sized businesses assess tariff exposure, diversify markets, and access government support.
+- **Title:** Sign Up — TariffCompass
+- **Indexation:** `noindex, nofollow`.
 
----
+### About (`/about`)
 
-## 3. First 5 Insights Posts
+- **Title:** About TariffCompass | Canadian Trade-Impact Intelligence
+- **Meta description:** TariffCompass turns tariffs and trade-policy changes into practical, source-backed intelligence for Canadian businesses and advisors.
 
-### Post 1
-- **Title:** How U.S. Tariffs Are Affecting Canadian Small Businesses in 2026
-- **Meta description:** A clear breakdown of how current U.S. tariffs are impacting Canadian exporters by sector, and what small businesses can do to respond.
-- **H1:** How U.S. Tariffs Are Affecting Canadian Small Businesses in 2026
-- **H2s:**
-  - Which Sectors Are Most Exposed
-  - Steel, Aluminum, and Auto Parts Under Pressure
-  - What This Means for Small and Medium-Sized Exporters
-  - Practical Steps to Reduce Your Exposure
+### Insights (`/insights`)
 
-### Post 2
-- **Title:** 5 Alternative Export Markets for Canadian Businesses Beyond the U.S.
-- **Meta description:** Explore five promising export markets — from the EU to Japan — for Canadian businesses looking to reduce reliance on the U.S. market.
-- **H1:** 5 Alternative Export Markets for Canadian Businesses Beyond the U.S.
-- **H2s:**
-  - Why Market Diversification Matters Now
-  - European Union: Tariff-Free Access Under CETA
-  - United Kingdom: A Familiar Regulatory Environment
-  - Japan and CPTPP: Low Tariffs, High Standards
-  - Australia: An Underrated Opportunity
+- **Title:** Canadian Tariff & Trade Insights — TariffCompass
+- **Meta description:** Short, data-driven analysis of Canadian tariff exposure, trade-policy changes, import/export risk and market responses.
 
-### Post 3
-- **Title:** A Complete Guide to Canadian Government Tariff Relief Programs
-- **Meta description:** Everything Canadian businesses need to know about RTRI, CanExport, BDC Pivot to Grow, and the EDC Trade Impact Program.
-- **H1:** A Complete Guide to Canadian Government Tariff Relief Programs
-- **H2s:**
-  - Regional Tariff Response Initiative (RTRI)
-  - CanExport SMEs: Funding for Market Expansion
-  - BDC Pivot to Grow Loan
-  - EDC Trade Impact Program
-  - How to Know Which Program Fits Your Business
+### Updates (`/updates`)
 
-### Post 4
-- **Title:** How to Calculate Your Business's Tariff Exposure (Step-by-Step)
-- **Meta description:** Learn how to assess your tariff exposure by product category, market, and trade direction — and why it matters for your bottom line.
-- **H1:** How to Calculate Your Business's Tariff Exposure (Step-by-Step)
-- **H2s:**
-  - Start With Your HS Code and Product Category
-  - Understand Export vs. Import Tariff Exposure
-  - Factor in Ease of Doing Business and Friction Costs
-  - Using Data to Make a Diversification Decision
+- **Title:** Tariff & Trade Policy Updates — TariffCompass
+- **Meta description:** Dated, source-backed updates to tariff and trade-policy information relevant to Canadian businesses.
 
-### Post 5
-- **Title:** Export vs. Import: Understanding Your Business's Tariff Risk Profile
-- **Meta description:** Whether you export to the U.S. or import from abroad, tariffs affect your business differently. Here's how to think about your risk profile.
-- **H1:** Export vs. Import: Understanding Your Business's Tariff Risk Profile
-- **H2s:**
-  - Why Direction of Trade Changes Your Risk
-  - Export Risk: Losing Access to Your Biggest Market
-  - Import Risk: Rising Costs on Sourced Goods
-  - Building a Resilient Trade Strategy for Either Direction
+### Sources (`/sources`)
+
+- **Title:** TariffCompass Data Sources & Methodology
+- **Meta description:** Review the official and supporting sources, update dates and methodology used by TariffCompass.
 
 ---
 
-## 4. Indexation Setup Steps
+## 4. Public content standard
 
-1. **Per-page metadata** — use Next.js App Router's `metadata` export (or `generateMetadata`) on every public route (`/`, `/about`, `/insights`, `/insights/[slug]`) with the titles/descriptions above.
-2. **Noindex authenticated routes** — set `robots: { index: false, follow: false }` on `/dashboard`, `/login`, and `/signup` metadata so personalized or transactional pages don't compete for search rankings.
-3. **`robots.txt`** — allow crawling of `/`, `/about`, `/insights/*`; disallow `/dashboard` and any future API routes.
-4. **`sitemap.xml`** — add `app/sitemap.ts` listing all public marketing and insights URLs (exclude authenticated routes); regenerate automatically as insights posts are added.
-5. **Canonical URLs** — set a canonical `<link>` on every public page to avoid duplicate-content issues from query params or trailing slashes.
-6. **Open Graph & Twitter meta tags** — add `og:title`, `og:description`, `og:image`, and `twitter:card` to the homepage, About page, and each insights post for clean social-share previews.
-7. **Structured data** — add `Organization` schema on the homepage and `Article` schema on each insights post for richer search results.
-8. **Search Console verification** — verify the domain in Google Search Console (DNS TXT record) and Bing Webmaster Tools once the production domain is live.
-9. **Submit the sitemap** — submit `sitemap.xml` in both Search Console and Bing Webmaster Tools after verification.
-10. **Monitor post-launch** — check Search Console weekly for crawl errors, indexation coverage, and any pages flagged as "discovered but not indexed."
+Every substantive public article/update should be:
+
+- short enough to maintain;
+- dated;
+- source-linked;
+- quantitative where possible;
+- explicit about methodology;
+- explicit about estimated/unknown values;
+- corrected transparently when necessary; and
+- written so a journalist, lawyer, policymaker or business owner can cite the underlying fact without relying on marketing language.
+
+Where possible include a compact **Data / Methodology** box:
+
+- source(s);
+- data as-of date;
+- affected HS codes/categories;
+- assumptions;
+- confidence/limitations; and
+- suggested citation format.
+
+Avoid unsourced opinion pieces, generic AI-written explainers and claims of exact aggregate economic impact unless the methodology supports them.
+
+---
+
+## 5. Beta-1 public content set
+
+Build/publish only enough to establish usefulness and credibility.
+
+### Insight 1 — current U.S. tariff action
+
+**Working title:** What the Latest U.S. Tariff Change Means for Canadian Businesses
+
+Include:
+
+- what changed;
+- effective date;
+- affected product groups/HS codes where known;
+- before/after treatment;
+- representative financial-impact example; and
+- official source.
+
+### Insight 2 — importer impact
+
+**Working title:** Which Canadian Imports Are Most Exposed to Current Counter-Tariffs?
+
+Include:
+
+- affected groups;
+- applicable rates/measures;
+- source and effective date;
+- representative landed-cost effect; and
+- limitations.
+
+### Insight 3 — exporter impact
+
+**Working title:** Which Canadian Export Sectors Face the Highest Current U.S. Tariff Risk?
+
+Only rank sectors if the data supports a defensible methodology. Otherwise frame as “selected high-exposure sectors” rather than false precision.
+
+### Insight 4 — practical calculation
+
+**Working title:** How to Estimate Your Business’s Tariff Exposure
+
+Use the same logic as the product and link into the free analysis workflow.
+
+### Insight 5 — trade-policy timeline
+
+**Working title:** Canada–U.S. Tariff Timeline: What Changed and When
+
+Make this primarily structured/date-driven rather than editorial.
+
+After these, publish only when there is a material new trade development or a strong search/citation opportunity.
+
+---
+
+## 6. Public data surfaces
+
+Prefer reusable pages/components generated from the structured data layer rather than manually maintained prose.
+
+Useful Phase 1 public surfaces may include:
+
+- direction × market tariff summaries;
+- selected category/HS exposure tables;
+- tariff change timeline;
+- key effective dates;
+- source registry; and
+- methodology/explanation pages.
+
+Do not create hundreds of thin category × market pages solely for SEO.
+
+---
+
+## 7. Citation design
+
+Where feasible, public research pages should show:
+
+- article/data title;
+- publication/update date;
+- data-as-of date;
+- official source links;
+- author/publisher: TariffCompass;
+- stable canonical URL; and
+- a small suggested citation string.
+
+Example:
+
+> TariffCompass, “Canada–U.S. Tariff Timeline,” data as of 27 August 2026, tariffcompass.ca/…
+
+The goal is to make citation friction low without pretending TariffCompass is the legal authority. Official instruments remain the primary legal sources.
+
+---
+
+## 8. Technical indexation requirements
+
+1. Use Next.js metadata or `generateMetadata` on all public routes.
+2. `noindex, nofollow` authenticated/transactional routes where appropriate.
+3. `robots.txt` should allow public research/content and disallow private/API surfaces.
+4. `sitemap.xml` should derive public URLs from the actual content/data layer.
+5. Add canonical URLs to public pages.
+6. Add Open Graph/Twitter metadata for public research pages.
+7. Add `Organization` schema and `Article`/`Dataset` schema only where the page genuinely qualifies.
+8. Verify Google Search Console and Bing Webmaster Tools when Cloudflare Access is lifted.
+9. Submit sitemap after public launch.
+10. Track crawl/indexation errors, but do not spend meaningful engineering time chasing low-value SEO warnings before revenue.
+
+---
+
+## 9. Metrics
+
+Secondary until C$50K ARR:
+
+- organic qualified visits;
+- citations/backlinks;
+- media/newsletter mentions;
+- clicks from public insight → analysis/signup;
+- branded search growth; and
+- source/methodology page engagement.
+
+Do not optimize for raw page views if they do not create trust, citations or commercial discovery.
+
+---
+
+## 10. Explicitly deferred
+
+Until after C$50K ARR unless a clear opportunity appears:
+
+- newsroom workflow;
+- journalist dashboard;
+- politician/policy dashboard;
+- large editorial calendar;
+- daily publishing operation;
+- broad-topic trade-news coverage;
+- custom public research portal; and
+- expensive proprietary datasets purchased solely for content marketing.
