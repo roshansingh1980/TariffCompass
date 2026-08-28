@@ -151,7 +151,7 @@ Complete only the review needed to safely launch the Business product.
 
 ## Entity and billing party
 
-- [ ] Decide whether TariffCompass launches under Adithana Capital Ltd. or a separate operating company.
+- [ ] Incorporate a dedicated TariffCompass operating company and transfer/assign the relevant TariffCompass ownership, IP, contracts, billing relationships and operating assets into that operating company, with **Adithana Capital Ltd. as the holding company/shareholder**, subject to legal and tax advice on the exact implementation.
 - [ ] Confirm the operating entity on Stripe before taking material live payments.
 
 ## Product liability / decision-support boundary
