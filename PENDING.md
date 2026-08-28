@@ -6,6 +6,7 @@ This file contains **only work required for a successful TariffCompass Business 
 
 - Canonical strategy: [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md)
 - Canonical build sequence: [`ROADMAP.md`](ROADMAP.md)
+- Canonical acquisition roadmap: [`MARKETING_STRATEGY.md`](MARKETING_STRATEGY.md)
 - Post-launch / later-phase backlog: [`FUTURE.md`](FUTURE.md)
 
 ## Beta/V1 objective
@@ -123,6 +124,27 @@ Advisor Stripe pricing and the first-3 Advisor offer are in `FUTURE.md` and must
 
 ---
 
+# French / bilingual core journey — V1 required
+
+TariffCompass should launch as a credible Canadian product with a French-capable core experience, but V1 does **not** require full bilingual parity across every historical/public page.
+
+- [ ] Implement locale/i18n architecture cleanly enough that French is not a future retrofit.
+- [ ] Provide an obvious **EN / FR** language switcher.
+- [ ] Translate the homepage and primary value proposition.
+- [ ] Translate Business pricing, founding-offer and subscription copy.
+- [ ] Translate signup/login and core transactional account messages.
+- [ ] Translate the core Business analysis journey: scenario/intake → product/HS input → exposure/results → response intelligence.
+- [ ] Translate core monitoring/alert copy and customer-facing alert emails used at launch.
+- [ ] Translate launch-critical disclaimers, Notices and essential legal/billing copy.
+- [ ] Use proper Canadian French trade/customs terminology; do not rely on unreviewed literal machine translation for tariff/legal concepts.
+- [ ] Ensure core French metadata and primary public-page SEO basics are correct.
+
+**Launch bar:** a French-speaking Canadian SME can discover TariffCompass, understand the offer, complete the core Business workflow, interpret the result, subscribe and receive the essential monitoring experience without being forced back into English.
+
+Full bilingual content parity — historical Insights/Updates, long-form support, full methodology library, future Advisor UI and deep French SEO — belongs in `FUTURE.md`.
+
+---
+
 # Legal/commercial launch review
 
 Complete only the review needed to safely launch the Business product.
@@ -141,7 +163,7 @@ Complete only the review needed to safely launch the Business product.
 
 ## Terms/privacy/subscription
 
-- [ ] Review Terms, Privacy and Notices for launch.
+- [ ] Review Terms, Privacy and Notices for launch in both English and the French core launch experience where required.
 - [ ] Review auto-renewal, cancellation and refund requirements.
 - [ ] Review PIPEDA obligations for stored Business profiles.
 - [ ] Confirm OGL-Canada attribution and launch-critical official-source usage terms.
@@ -155,8 +177,9 @@ White-label/Advisor-specific liability work belongs in `FUTURE.md`.
 - [ ] Finalize free-vs-paid gating so free proves value and C$99 clearly buys private relevance, financial exposure and monitoring.
 - [ ] Finalize the Business saved-profile / HS-code limit.
 - [ ] Confirm homepage/product copy reflects Canadian businesses that import, export, or do both.
+- [ ] Confirm the EN/FR switch and core bilingual journey work on desktop and mobile.
 - [ ] Confirm `/insights`, `/updates`, and `/sources` are credible and not stale; no large publishing build is required.
-- [ ] Run end-to-end QA across anonymous analysis → signup/login → paid checkout → saved profile → monitoring/alert → billing portal/cancellation.
+- [ ] Run end-to-end QA across anonymous analysis → signup/login → paid checkout → saved profile → monitoring/alert → billing portal/cancellation in English and the French core journey.
 - [ ] Run TypeScript, lint, tests and production build.
 - [ ] Smoke-test production after deployment.
 - [ ] Lift Cloudflare Access only after product, billing and legal launch checks are complete.
@@ -165,9 +188,10 @@ White-label/Advisor-specific liability work belongs in `FUTURE.md`.
 
 # Founder-led launch / first customers
 
-Run this in parallel with final launch work.
+Run this in parallel with final launch work. The detailed acquisition roadmap lives in `MARKETING_STRATEGY.md`.
 
 - [ ] Build the first prospect list of Canadian manufacturers, distributors/wholesalers, import-dependent retailers and U.S.-exposed exporters.
+- [ ] Include a deliberate Quebec/French-speaking prospect subset so the V1 French journey is tested by real users.
 - [ ] Prepare one strong live demo using a real product/HS code and approximate annual trade value.
 - [ ] Start founder-led demos as soon as the six gates are credible.
 - [ ] Track demo → paid conversion and time-to-payment.
@@ -185,5 +209,6 @@ Initial operating objective after launch: **drive to C$2,500 MRR as quickly as p
 - Public tariff history can be free; company-specific relevance, financial impact and monitoring are the paid value.
 - AI explains structured intelligence; it does not create tariff facts.
 - Canada remains the fixed home country for Beta/V1.
+- V1 includes French-ready architecture and the complete core Business buying/analysis/monitoring journey in French; full content parity is future work.
 - Do not add Advisor, institutional, crowdfunding, broad publishing or deep customs-compliance work to `PENDING.md` unless Roshan explicitly promotes it from `FUTURE.md`.
 - Never force push.
