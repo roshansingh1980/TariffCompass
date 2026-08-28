@@ -1,9 +1,10 @@
 import { createCheckoutSession } from "@/lib/stripe/actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { PRICING } from "@/lib/pricing";
 
 export function SubscribeButton({
-  label = "Subscribe — C$29/month",
+  label = `Subscribe to Business — C$${PRICING.business.monthlyCad}/month`,
   className,
 }: {
   label?: string;

@@ -15,7 +15,7 @@ The product answers four practical questions:
 
 TariffCompass is not intended to become a full customs-compliance workflow suite in Phase 1. The product should remain narrowly focused on converting current, sourced tariff and trade-policy information into company-specific decision intelligence.
 
-The immediate commercial objective is **C$50,000 ARR as quickly as possible**. Every Phase 1 product, pricing, sales, and content decision should be evaluated against whether it materially improves the probability of reaching approximately **C$4,167 MRR**.
+The immediate commercial objective is **C$2,500 MRR / C$30,000 ARR as quickly as possible**. Every Phase 1 product, pricing, sales, and content decision should be evaluated against whether it materially improves conversion, retention, willingness to pay, or the data reliability required for the paid product.
 
 ## 2. Phase 1 customer strategy
 
@@ -98,7 +98,7 @@ A strong demonstration should be understandable in under a minute:
 
 ## 4. Phase 1 product scope
 
-Build only the capabilities needed to sell the first C$50K ARR.
+Build only the capabilities needed to reach the first C$2,500 MRR.
 
 ### Must have
 
@@ -139,7 +139,7 @@ Build only the capabilities needed to sell the first C$50K ARR.
 - bank-wide portfolio analytics;
 - institutional APIs;
 - broad international home-country support; and
-- features that do not materially improve the probability of C$4,167 MRR.
+- features that do not materially improve the probability of C$2,500 MRR.
 
 ## 5. Pricing
 
@@ -152,8 +152,6 @@ Public tariff intelligence, selected market/risk information, insights, updates,
 Purpose: discovery, trust, SEO, citations, referrals, and conversion.
 
 ### TariffCompass Business — C$99/month
-
-Recommended annual option: **C$999/year**.
 
 Target customer: Canadian importer/exporter SME.
 
@@ -180,24 +178,44 @@ Expected Phase 1 value:
 - higher profile limits; and
 - white-label capability when sufficiently robust.
 
-Pricing should remain simple during the first C$50K ARR push. Do not create excessive tiers before real sales data requires them.
+Do not add more subscription tiers during Phase 1.
+
+### Founding-customer offers
+
+**Founding Customer Offer:** the first 10 paying TariffCompass Business customers receive 50% off their first 12 months: approximately **C$49.50/month for 12 months**, then the standard **C$99/month** applies automatically. This is not a lifetime discount.
+
+**Founding Advisor Offer:** the first 3 paying TariffCompass Advisor customers receive 50% off their first 12 months: approximately **C$124.50/month for 12 months**, then the standard **C$249/month** applies automatically. This is not a lifetime discount.
+
+These offers must not be represented as active in the product until the corresponding Stripe billing configuration exists. Stripe remains the billing authority.
 
 ## 6. ARR target and customer math
 
-The primary milestone is:
+The immediate milestone is:
 
-- **C$4,167 MRR**
-- approximately **C$50,000 ARR**
+- **C$2,500 MRR**
+- **C$30,000 ARR run-rate**
 
-A preferred working mix is:
+The next commercial/crowdfunding-readiness milestone is 30 paying Business customers, 3 paying Advisor accounts, and approximately 2–3 strong customer stories or testimonials.
 
-- 25 Business accounts × C$99 = C$2,475 MRR
-- 8 Advisor accounts × C$249 = C$1,992 MRR
-- **Total = C$4,467 MRR / C$53,604 ARR**
+At full standard pricing, that mix is:
 
-This is a planning target, not a quota allocation. The objective is to reach C$50K ARR with the fewest reasonable sales cycles while preserving product-market learning.
+- 30 Business accounts × C$99 = C$2,970 MRR;
+- 3 Advisor accounts × C$249 = C$747 MRR; and
+- **C$3,717 normalized MRR / C$44,604 normalized ARR**.
 
-## 7. Go-to-market
+Actual billed MRR and contracted ARR will be lower while founding discounts apply. Reporting must distinguish actual billed recurring revenue from standard-price or normalized MRR and must never present discounted subscriptions as full-price revenue.
+
+## 7. Early reinvestment policy
+
+Until the initial C$2,500 MRR milestone is reached:
+
+- pay no founder dividends;
+- keep operating costs lean;
+- recycle available operating cash and gross profit into customer acquisition and product/data reliability;
+- use advertising and acquisition channels only when results are measurable; and
+- track CAC and conversion rather than spending blindly.
+
+## 8. Go-to-market
 
 ### Business sales motion
 
@@ -228,7 +246,7 @@ Target conversations:
 - accounting firms with SME commercial clients; and
 - fractional CFO firms.
 
-## 8. Public intelligence and brand strategy
+## 9. Public intelligence and brand strategy
 
 TariffCompass should become a credible, citable Canadian source of tariff and trade-impact information without becoming a media company.
 
@@ -250,7 +268,7 @@ Examples:
 
 The public history of a tariff change can remain free. The paid value is identifying that the change affects **your products or your clients** and quantifying that impact.
 
-## 9. Competitive positioning
+## 10. Competitive positioning
 
 TariffTrail validates willingness to pay for Canadian tariff software and has a strong importer/compliance orientation.
 
@@ -264,7 +282,7 @@ TariffCompass should not attempt to win by cloning a full import-compliance suit
 
 The competitive test is not “do we have every compliance feature?” It is “can TariffCompass tell a business or advisor something commercially important faster and more clearly?”
 
-## 10. Data and technology strategy
+## 11. Data and technology strategy
 
 The durable asset is the structured trade-intelligence layer, not the LLM-generated prose.
 
@@ -282,7 +300,7 @@ Conceptually:
 
 AI may summarize and explain that structured intelligence, but it must not invent tariff rates, effective dates, program eligibility, or legal conclusions.
 
-## 11. Success metrics
+## 12. Success metrics
 
 Primary:
 
@@ -302,14 +320,14 @@ Product-value metrics:
 - number of clients affected per Advisor account; and
 - repeated use after a tariff change.
 
-Public-authority metrics are secondary until C$50K ARR:
+Public-authority metrics are secondary until the initial C$2,500 MRR milestone:
 
 - citations/backlinks;
 - organic traffic;
 - newsletter/media references; and
 - source-page usage.
 
-## 12. Crowdfunding optionality
+## 13. Crowdfunding optionality
 
 TariffCompass is a strong potential crowdfunding candidate because the problem and product can be understood visually and quickly by retail investors.
 
@@ -317,17 +335,18 @@ Crowdfunding is **not** a Phase 1 objective. The preferred sequence is:
 
 1. build the focused product;
 2. obtain paying Business and Advisor customers;
-3. reach meaningful recurring revenue, ideally the C$50K ARR milestone;
-4. then evaluate equity crowdfunding, potentially alongside angels.
+3. reach C$2,500 MRR;
+4. build toward 30 Business customers, 3 Advisor customers, and 2–3 credible customer stories; and
+5. then prepare and evaluate an equity crowdfunding launch, potentially alongside angels.
 
 A future campaign can use the same demo that sells the product: a Canadian business, a real tariff change, a sourced financial impact, and a clear response.
 
-Crowdfunding should be treated as strategic financing/distribution optionality, not as a reason to broaden the first build.
+The current planning assumption is a potential raise of approximately **C$300,000 at approximately a C$3 million valuation**, subject to later review. Crowdfunding remains strategic financing/distribution optionality, not a reason to broaden the first build or add investor functionality.
 
-## 13. Phase 1 decision rule
+## 14. Phase 1 decision rule
 
 Before approving a feature, campaign, integration, or customer segment, ask:
 
-> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
+> **Does this materially improve our probability of reaching C$2,500 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
 
 If not, defer it.

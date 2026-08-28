@@ -60,9 +60,17 @@ export default function SupportPage() {
             How billing works
           </h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
-            The paid plan is C$29/month, billed monthly through Stripe. Stripe handles all payment
-            details directly — TariffCompass never sees or stores your card number. Your
-            subscription renews automatically each month until you cancel.
+            TariffCompass Business is C$99/month, billed monthly through Stripe. The future
+            TariffCompass Advisor plan is C$249/month and will be offered when its multi-client
+            workspace is ready. Stripe handles all payment details directly — TariffCompass never
+            sees or stores your card number. Subscriptions renew automatically each month until
+            you cancel.
+          </p>
+          <p className="text-[15.5px] leading-[1.75] text-foreground/90">
+            The first 10 paying Business customers are intended to receive 50% off their first 12
+            months, with standard C$99/month pricing applying automatically thereafter. This offer
+            will only be available once the corresponding Stripe billing setup is active; checkout
+            is the authority for the price actually charged.
           </p>
         </section>
 

@@ -6,7 +6,7 @@ This roadmap is subordinate to [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md).
 
 ## North-star objective
 
-Reach **C$4,167 MRR / C$50,000 ARR as quickly as possible**.
+Reach **C$2,500 MRR / C$30,000 ARR as quickly as possible**.
 
 The target customer set is deliberately narrow:
 
@@ -17,11 +17,7 @@ Everything else is free audience, opportunistic use, or later-phase expansion.
 
 ## Commercial target
 
-Working mix:
-
-- 25 Business accounts × C$99/month = C$2,475 MRR
-- 8 Advisor accounts × C$249/month = C$1,992 MRR
-- Total = **C$4,467 MRR / C$53,604 ARR**
+Launch Business at C$99/month and acquire paying customers aggressively. The next crowdfunding-readiness mix is 30 Business accounts and 3 Advisor accounts: **C$3,717 normalized MRR / C$44,604 normalized ARR** at standard pricing, before founding discounts.
 
 Do not optimize for registrations, feature count, traffic, or breadth ahead of paid conversion and retention.
 
@@ -31,8 +27,9 @@ Do not optimize for registrations, feature count, traffic, or breadth ahead of p
 
 ### Pricing and packaging
 
-- [ ] Replace legacy C$29 positioning/gating with **Business C$99/month**.
-- [ ] Add annual Business option at **C$999/year**.
+- [x] Replace legacy C$29 positioning/gating with **Business C$99/month**.
+- [x] Represent Business/Advisor tiers and founding-pricing dates in the account model.
+- [ ] Activate the founding offers in Stripe only after the external billing setup and cohort controls are ready.
 - [ ] Define **Advisor C$249/month**; do not sell until a useful multi-client experience exists.
 - [ ] Keep Free useful enough to demonstrate real value and build trust.
 - [ ] Ensure Stripe checkout, billing portal, cancellation, and error UI are reliable.
@@ -239,7 +236,7 @@ Track weekly:
 - material alerts delivered; and
 - repeat usage following a tariff change.
 
-Secondary public metrics until C$50K ARR:
+Secondary public metrics until the initial C$2,500 MRR milestone:
 
 - organic traffic;
 - citations/backlinks;
@@ -248,7 +245,7 @@ Secondary public metrics until C$50K ARR:
 
 ---
 
-## Explicitly deferred until after C$50K ARR unless customer pull is overwhelming
+## Explicitly deferred until after the initial C$2,500 MRR milestone unless customer pull is overwhelming
 
 - full CBSA/customs audit workflow;
 - supplier certificate repository;
@@ -269,7 +266,7 @@ Secondary public metrics until C$50K ARR:
 
 TariffCompass should preserve crowdfunding optionality because the product can be demonstrated simply to retail investors.
 
-Do **not** optimize Phase 1 around fundraising. Revisit crowdfunding after meaningful customer proof, ideally at or around the C$50K ARR milestone.
+Do **not** optimize Phase 1 around fundraising. Sequence: build → launch → C$2,500 MRR → 30 Business customers + 3 Advisor customers + 2–3 strong customer stories → crowdfunding preparation. A potential C$300,000 raise at approximately a C$3 million valuation is a later planning assumption, not a product requirement.
 
 A future campaign should be able to show:
 
@@ -286,6 +283,6 @@ A future campaign should be able to show:
 
 Before building anything, ask:
 
-> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if TariffCompass succeeds?**
+> **Does this materially improve our probability of reaching C$2,500 MRR quickly, while preserving the data foundation we will need if TariffCompass succeeds?**
 
 If not, defer it.

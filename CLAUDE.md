@@ -20,11 +20,11 @@ If another document or old comment conflicts with `BUSINESS_PLAN.md`, the busine
 
 ## North-star objective
 
-Phase 1 exists to reach **C$50,000 ARR / approximately C$4,167 MRR as quickly as possible**.
+Phase 1 exists to reach **C$2,500 MRR / C$30,000 ARR as quickly as possible**.
 
 Before proposing or building a feature, ask:
 
-> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if TariffCompass succeeds?**
+> **Does this materially improve conversion, retention, willingness to pay, or the data reliability required to reach C$2,500 MRR quickly?**
 
 If not, defer it unless Roshan explicitly asks otherwise.
 
@@ -34,12 +34,14 @@ Paid customer segment A:
 
 - Canadian SMEs that import, export, or do both.
 - One product, not separate importer/exporter product lines.
-- Target pricing: **TariffCompass Business C$99/month**, recommended annual option **C$999/year**.
+- Standard pricing: **TariffCompass Business C$99/month**.
+- Founding offer: first 10 paying Business customers receive 50% off their first 12 months, then C$99/month automatically.
 
 Paid customer segment B:
 
 - Accountants and fractional CFO/advisory firms serving trade-exposed SMEs.
 - Target pricing: **TariffCompass Advisor C$249/month** once the multi-client product creates credible recurring value.
+- Founding offer: first 3 paying Advisor customers receive 50% off their first 12 months, then C$249/month automatically.
 
 Do not broaden Phase 1 product work around journalists, politicians, lawyers, banks, associations or general consultants. They may use the public product for free and may become later/opportunistic customers.
 
@@ -64,7 +66,7 @@ The paid value is company/client-specific relevance, financial impact and monito
 - AI explains structured data; it must not invent tariff rates, effective dates, legal instruments, program eligibility or legal conclusions.
 - Unknown/NULL is preferable to false precision.
 - Do not build AI HS classification as authoritative. Help users find likely codes/descriptions and require confirmation where classification matters.
-- Do not drift into full customs-entry/audit workflow, supplier-certificate repositories or comprehensive origin-document management before C$50K ARR unless paying-customer demand strongly justifies it.
+- Do not drift into full customs-entry/audit workflow, supplier-certificate repositories or comprehensive origin-document management before the initial C$2,500 MRR milestone unless paying-customer demand strongly justifies it.
 - The first professional “wow” is **Client Exposure Radar** across multiple clients, not merely a white-label PDF.
 
 ## Public authority layer
@@ -105,4 +107,4 @@ Permissions it deliberately does NOT have — these stay manual and must not be 
 
 Crowdfunding is strategic optionality, not a Phase 1 build objective.
 
-Do not spend product time on investor features or campaign mechanics before meaningful paying-customer proof. Revisit fundraising/crowdfunding after commercial traction, ideally around the C$50K ARR milestone.
+Do not spend product time on investor features or campaign mechanics before meaningful paying-customer proof. Build, launch, reach C$2,500 MRR, then build toward 30 Business customers, 3 Advisor customers and 2–3 strong customer stories before crowdfunding preparation.

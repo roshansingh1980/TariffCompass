@@ -4,7 +4,7 @@
 
 TariffCompass helps Canadian businesses that import, export, or do both understand what tariff and trade-policy changes affect them, estimate the financial impact, compare response options, and monitor future changes.
 
-The immediate commercial objective is **C$50,000 ARR as quickly as possible**. Phase 1 is deliberately narrow: sell to trade-exposed Canadian SMEs and to accountants/fractional CFO-advisory firms that manage multiple SME clients.
+The immediate commercial objective is **C$2,500 MRR / C$30,000 ARR as quickly as possible**. Phase 1 is deliberately narrow: sell to trade-exposed Canadian SMEs and to accountants/fractional CFO-advisory firms that manage multiple SME clients.
 
 See [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md) for the canonical strategy and [`ROADMAP.md`](ROADMAP.md) for the ARR-first build sequence.
 
@@ -24,7 +24,7 @@ Core value:
 - market/sourcing response options; and
 - relevant government-support information.
 
-Recommended annual option: **C$999/year**.
+Founding offer: the first 10 paying Business customers receive 50% off their first 12 months (approximately C$49.50/month), then standard C$99/month pricing applies automatically.
 
 ### TariffCompass Advisor — C$249/month
 
@@ -38,6 +38,8 @@ Core value:
 - client-ready reports; and
 - white-label output when sufficiently robust.
 
+Founding offer: the first 3 paying Advisor customers receive 50% off their first 12 months (approximately C$124.50/month), then standard C$249/month pricing applies automatically.
+
 ## Public authority layer
 
 Public information remains free by design. TariffCompass should publish concise, dated, source-backed tariff intelligence that journalists, lawyers, researchers, policymakers, consultants, businesses, and the public can cite.
@@ -46,13 +48,13 @@ The operating principle is:
 
 > **Public information creates authority. Private relevance creates revenue.**
 
-The public layer should stay lightweight in Phase 1 and should not distract from the C$50K ARR objective.
+The public layer should stay lightweight in Phase 1 and should not distract from the C$2,500 MRR objective.
 
 ## Product rule
 
 Before approving a feature, ask:
 
-> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
+> **Does this materially improve our probability of reaching C$2,500 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
 
 If not, defer it.
 

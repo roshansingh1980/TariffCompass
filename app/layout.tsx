@@ -39,11 +39,11 @@ function resolveSiteUrl(): URL {
 
 export const metadata: Metadata = {
   metadataBase: resolveSiteUrl(),
-  title: "TariffCompass — Trade intelligence",
-  description: "Navigate tariffs. Find your path.",
+  title: "TariffCompass — Canadian trade-impact intelligence",
+  description: "Understand what changed, whether it affects your business, the financial impact, and what to do next.",
   openGraph: {
-    title: "TariffCompass — Trade intelligence",
-    description: "Navigate tariffs. Find your path.",
+    title: "TariffCompass — Canadian trade-impact intelligence",
+    description: "Understand what changed, whether it affects your business, the financial impact, and what to do next.",
     images: ["/mark.svg"],
   },
 };

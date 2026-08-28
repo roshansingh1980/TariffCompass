@@ -243,7 +243,7 @@ The goal is to make citation friction low without pretending TariffCompass is th
 
 ## 9. Metrics
 
-Secondary until C$50K ARR:
+Secondary until the initial C$2,500 MRR milestone:
 
 - organic qualified visits;
 - citations/backlinks;
@@ -258,7 +258,7 @@ Do not optimize for raw page views if they do not create trust, citations or com
 
 ## 10. Explicitly deferred
 
-Until after C$50K ARR unless a clear opportunity appears:
+Until after the initial C$2,500 MRR milestone unless a clear opportunity appears:
 
 - newsroom workflow;
 - journalist dashboard;

@@ -449,7 +449,7 @@ export function ResultsStep({
         <div className="mt-8 flex flex-col items-center gap-4 rounded-3xl border border-border/60 bg-foreground/[0.02] p-7 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:flex-row sm:justify-between sm:text-left">
           <p className="text-[15px] font-medium tracking-tight text-foreground">
             Unlock dollar exposure, the reasoning behind each rating, and full program details —
-            C$29/month
+            C$99/month
           </p>
           <SubscribeButton label="Upgrade" className="h-11 shrink-0 px-7" />
         </div>

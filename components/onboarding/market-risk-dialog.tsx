@@ -227,7 +227,7 @@ export function MarketRiskDialog({
                   <MaskedSection
                     heading="Why this market is rated this way"
                     preview={firstSentence(row.rationale)}
-                    ctaLabel="Unlock the full risk breakdown — C$29/month"
+                    ctaLabel="Unlock the full risk breakdown — C$99/month"
                   />
                 )}
 

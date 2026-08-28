@@ -7,11 +7,11 @@ Canonical build sequence: [`ROADMAP.md`](ROADMAP.md)
 
 ## Adopted strategy
 
-The Phase 1 objective is **C$50,000 ARR as quickly as possible**.
+The Phase 1 objective is **C$2,500 MRR / C$30,000 ARR as quickly as possible**.
 
 Paid segments:
 
-1. **Canadian trade-exposed SMEs** — importers, exporters, or both — at **C$99/month**, with a recommended **C$999/year** option.
+1. **Canadian trade-exposed SMEs** — importers, exporters, or both — at **C$99/month**.
 2. **Accountants and fractional CFO/advisory firms** at **C$249/month**, once a useful multi-client experience and Client Exposure Radar are live.
 
 Everyone else — journalists, lawyers, consultants, policymakers, politicians, associations, researchers and the general public — is a free audience in Phase 1 unless an opportunistic sale is unusually easy.
@@ -24,7 +24,7 @@ Standing principle:
 
 Standing product rule:
 
-> **Does this materially improve our probability of reaching C$4,167 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
+> **Does this materially improve our probability of reaching C$2,500 MRR quickly, while preserving the data foundation we will need if the product succeeds?**
 
 If not, defer it.
 
@@ -32,12 +32,20 @@ If not, defer it.
 
 ## Immediate commercial decisions to implement
 
-- [ ] Replace legacy C$29 product pricing/gating with Business C$99/month.
-- [ ] Add C$999/year Business option.
-- [ ] Define Advisor C$249/month billing/product entitlement but do not sell it before the multi-client value is credible.
-- [ ] Update homepage/about/pricing copy from exporter-led positioning to “Canadian businesses that buy or sell across borders.”
-- [ ] Ensure import and export use cases appear as one product, not separate product lines.
-- [ ] Build an internal ARR dashboard or at minimum a reliable weekly tracking sheet around C$4,167 MRR.
+- [x] Replace legacy C$29 product pricing/gating with Business C$99/month in repository code and copy.
+- [x] Define Business/Advisor account tiers and founding-pricing state without building the Advisor workspace.
+- [x] Update homepage metadata and primary copy from exporter-led positioning to Canadian import/export trade-impact intelligence.
+- [x] Ensure import and export use cases remain one product, not separate product lines.
+- [ ] Build a reliable weekly revenue tracker around actual billed C$2,500 MRR; show normalized MRR separately if useful.
+
+### Manual external billing actions for Roshan
+
+- [ ] In Stripe, create or select the recurring **TariffCompass Business C$99/month CAD** Price. Do not guess its Price ID.
+- [ ] Update the existing production Worker environment variable **`STRIPE_PRICE_ID`** to that Price ID. This is the exact reference used by `lib/stripe/actions.ts`.
+- [ ] Configure a Stripe discount for the first 10 paying Business customers: 50% off for 12 months, then automatic renewal at C$99/month. Decide and test the cohort-allocation procedure before advertising it as active.
+- [ ] Before Advisor checkout is launched, configure C$249/month CAD billing plus a first-3-customer discount of 50% for 12 months, then automatic renewal at C$249/month. No Advisor Price ID is assumed in the repository yet.
+- [ ] Apply `supabase/migrations/20260828052639_add_subscription_tier_and_founding_pricing.sql` through the normal migration deployment workflow before deploying code that writes the new profile fields.
+- [ ] Run a live end-to-end checkout and billing-portal test after the Stripe and Worker environment changes. Confirm the amount in Stripe Checkout before payment.
 
 ---
 
@@ -93,11 +101,19 @@ Do not build dedicated journalist, lawyer, politician or policy dashboards in Ph
 - [ ] Measure how many clients per firm are genuinely trade exposed.
 - [ ] Convert to C$249/month when portfolio monitoring has recurring value.
 
-Working ARR mix:
+Crowdfunding-readiness mix at standard pricing:
 
-- 25 Business × C$99 = C$2,475 MRR
-- 8 Advisor × C$249 = C$1,992 MRR
-- Total = **C$4,467 MRR / C$53,604 ARR**
+- 30 Business × C$99 = C$2,970 normalized MRR
+- 3 Advisor × C$249 = C$747 normalized MRR
+- Total = **C$3,717 normalized MRR / C$44,604 normalized ARR**, plus approximately 2–3 strong customer stories
+
+Actual billed MRR will be lower while founding discounts apply and must be reported separately.
+
+---
+
+## Early operating rule
+
+Until C$2,500 MRR is reached: no founder dividends; keep costs lean; recycle available operating cash and gross profit into measurable customer acquisition and product/data reliability; and track CAC and conversion rather than spending blindly.
 
 ---
 
@@ -158,7 +174,7 @@ Still required before broad public launch and live paid acquisition.
 
 ---
 
-## Explicitly deferred until after C$50K ARR unless customer pull changes the decision
+## Explicitly deferred until after the initial C$2,500 MRR milestone unless customer pull changes the decision
 
 - full customs-entry/audit workflow;
 - supplier certificate repositories;
@@ -178,7 +194,7 @@ Still required before broad public launch and live paid acquisition.
 
 TariffCompass has strong future crowdfunding characteristics: a visible Canadian problem, a product that can be explained on one page, an intuitive live demo and potential national relevance.
 
-Do not execute a crowdfunding campaign during the first ARR push. Revisit after meaningful paying-customer proof, ideally at or near C$50K ARR. At that point crowdfunding may serve both financing and distribution.
+Do not execute a crowdfunding campaign during the first ARR push. Sequence: build → launch → C$2,500 MRR → 30 Business + 3 Advisor customers + 2–3 credible customer stories → crowdfunding preparation. The current planning assumption is a possible C$300,000 raise at approximately a C$3 million valuation, subject to later review.
 
 ---
 

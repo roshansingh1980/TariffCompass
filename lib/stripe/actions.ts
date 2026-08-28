@@ -4,6 +4,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getStripeClient } from "@/lib/stripe/client";
 import { createClient } from "@/lib/supabase/server";
+import { PRICING } from "@/lib/pricing";
+
+const BUSINESS_PRICE_ENV = "STRIPE_PRICE_ID";
 
 async function getOrigin(): Promise<string> {
   const headersList = await headers();
@@ -27,6 +30,11 @@ export async function createCheckoutSession(): Promise<void> {
 
   let customerId = profile?.stripe_customer_id ?? undefined;
   const stripe = getStripeClient();
+  const businessPriceId = process.env[BUSINESS_PRICE_ENV];
+
+  if (!businessPriceId) {
+    throw new Error(`${BUSINESS_PRICE_ENV} is not configured.`);
+  }
 
   if (!customerId) {
     const customer = await stripe.customers.create({
@@ -44,7 +52,17 @@ export async function createCheckoutSession(): Promise<void> {
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
-    line_items: [{ price: process.env.STRIPE_PRICE_ID!, quantity: 1 }],
+    line_items: [{ price: businessPriceId, quantity: 1 }],
+    metadata: {
+      subscription_tier: "business",
+      standard_monthly_price_cad: String(PRICING.business.monthlyCad),
+    },
+    subscription_data: {
+      metadata: {
+        subscription_tier: "business",
+        standard_monthly_price_cad: String(PRICING.business.monthlyCad),
+      },
+    },
     success_url: `${origin}/subscribe/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/dashboard`,
   });

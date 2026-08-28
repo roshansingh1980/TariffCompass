@@ -20,7 +20,7 @@ export function firstSentence(text: string): string {
 export function MaskedSection({
   heading,
   preview,
-  ctaLabel = "Unlock with TariffCompass — C$29/month",
+  ctaLabel = "Unlock with TariffCompass Business — C$99/month",
   className,
 }: {
   heading: string;

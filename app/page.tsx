@@ -9,9 +9,9 @@ import { createClient } from "@/lib/supabase/server";
 import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
 
 export const metadata: Metadata = {
-  title: "TariffCompass | Canadian Export Tariff & Market Diversification Tool",
+  title: "TariffCompass | Canadian Tariff & Trade Impact Intelligence",
   description:
-    "See your U.S. tariff exposure, compare alternative markets, and generate a funding-ready diversification brief. Built for Canadian exporters and their advisors.",
+    "Understand how tariff and trade-policy changes affect your Canadian business. Analyze import and export exposure, estimate financial impact, and monitor what changes.",
   alternates: { canonical: "/" },
 };
 
@@ -37,7 +37,7 @@ export default async function Home() {
       <div className="flex flex-col items-center justify-center px-6 pt-24 pb-14 text-center sm:pt-32 sm:pb-16">
         <TcLockup size="hero" orientation="horizontal" showDescriptor />
         <h1 className="mt-10 max-w-xs text-xl font-normal text-foreground sm:max-w-sm sm:text-2xl">
-          Understand your tariffs in minutes, not weeks of research.
+          Turn tariff and trade-policy changes into actionable intelligence for your business.
         </h1>
       </div>
       <Suspense fallback={<HeatmapSkeleton />}>

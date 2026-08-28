@@ -3,7 +3,7 @@ import { BackLink } from "@/components/back-link";
 
 export const metadata: Metadata = {
   title: "Terms of Service | TariffCompass",
-  description: "The terms that govern your use of TariffCompass and the C$29/month subscription.",
+  description: "The terms that govern your use of TariffCompass and its paid subscriptions.",
   alternates: { canonical: "/terms" },
 };
 
@@ -44,13 +44,14 @@ export default function TermsPage() {
 
         <section className="flex flex-col gap-3">
           <h2 className="text-xl font-medium tracking-tight text-foreground">
-            The C$29/month subscription
+            Paid subscriptions
           </h2>
           <p className="text-[15.5px] leading-[1.75] text-foreground/90">
             Estimated dollar exposure, the reasoning behind cost/friction and risk ratings, full
             government program detail, and AI brief generation require a paid subscription at
-            C$29/month, billed through Stripe and renewing automatically each
-            month. You can cancel at any time through the billing portal linked from your account;
+            C$99/month for TariffCompass Business, billed through Stripe and renewing
+            automatically each month. TariffCompass Advisor is C$249/month when offered. You can
+            cancel at any time through the billing portal linked from your account;
             access continues until the end of the period you&apos;ve already paid for. We don&apos;t
             offer partial-month refunds.
           </p>

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { getStripeClient } from "@/lib/stripe/client";
 import { createClient } from "@/lib/supabase/server";
+import { PRICING } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -44,6 +45,8 @@ export default async function SubscribeSuccessPage({
         stripe_customer_id: customerId ?? null,
         stripe_subscription_id: subscription.id,
         subscription_status: subscription.status,
+        subscription_tier: "business",
+        standard_monthly_price_cad: PRICING.business.monthlyCad,
       },
       { onConflict: "id" }
     );
@@ -56,7 +59,7 @@ export default async function SubscribeSuccessPage({
       </h1>
       <p className="mt-4 max-w-sm text-lg text-muted-foreground">
         {isComplete
-          ? "Your C$29/month plan is active. You can now generate AI diversification briefs."
+          ? `Your ${PRICING.business.name} plan is active at C$${PRICING.business.monthlyCad}/month. You can now access your paid analysis.`
           : "We couldn't confirm your payment. If you were charged, contact support — otherwise you can try again from your dashboard."}
       </p>
       <Button
