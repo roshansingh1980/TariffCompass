@@ -7,6 +7,7 @@ This file contains **only work required for a successful TariffCompass Business 
 - Canonical strategy: [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md)
 - Canonical build sequence: [`ROADMAP.md`](ROADMAP.md)
 - Canonical acquisition roadmap: [`MARKETING_STRATEGY.md`](MARKETING_STRATEGY.md)
+- Canonical story-driven demo: [`DEMO_STORYBOARD.md`](DEMO_STORYBOARD.md)
 - Post-launch / later-phase backlog: [`FUTURE.md`](FUTURE.md)
 
 ## Beta/V1 objective
@@ -211,6 +212,53 @@ Build a lightweight but high-signal public page that demonstrates **where Tariff
 
 ---
 
+# Story-driven flagship demo — Beta/V1
+
+Use [`DEMO_STORYBOARD.md`](DEMO_STORYBOARD.md) as the canonical narrative and product-demo specification.
+
+The flagship Phase 1 persona is **Bob**, an illustrative Ontario auto-parts manufacturer with most of his exports going to the U.S. and smaller exposure to Europe and Japan. The purpose is not to create a fictional marketing character for its own sake; the story must make the C$99/month value proposition understandable in roughly two minutes.
+
+## Build the first delivery format
+
+- [ ] Build a **scrollable web story / guided product walkthrough** before investing in a polished video.
+- [ ] Keep the experience simple enough to update as Beta product screens and data change.
+- [ ] Reuse accurate live product surfaces where practical; do not build a separate complex demo application.
+- [ ] Make the story usable in founder-led sales calls and shareable as a public website page.
+
+## Story requirements
+
+- [ ] Scene 1 — establish Bob's business, Ontario location, annual exports and U.S./Europe/Japan revenue exposure.
+- [ ] Scene 2 — explain the real problem: Bob does not need more news; he needs to know which trade changes affect his products, when they apply and how much money is at risk.
+- [ ] Scene 3 — show Bob entering product description / HS code, trade route and annual value, then saving the exposure for monitoring.
+- [ ] Scene 4 — show a **personalized saved-exposure dashboard** with monitored trade value, product/HS exposure, current treatment, estimated dollar exposure, alerts and upcoming dates.
+- [ ] Scene 5 — show one real before/after trade-policy change affecting a saved exposure, with source and effective date. If auto parts does not provide a compelling current sourced example, change the product example rather than fabricate a tariff event.
+- [ ] Scene 6 — move into the **Sources & Methodology** page and visually show how official-source data became Bob's result.
+- [ ] Scene 7 — show credible response intelligence: alternative markets/sourcing, FTA implications, verified programs/deadlines and questions to investigate with professional advisers.
+- [ ] Scene 8 — close the commercial story: **C$99/month buys ongoing monitoring of Bob's specific products, markets and financial exposure.**
+
+## Dashboard implication
+
+- [ ] Organize the paid Business dashboard around **saved trade exposures**, not around a generic analytics homepage and not as a separate dashboard per HS code.
+- [ ] Prioritize: total monitored trade value, estimated exposure, saved products/routes, recent relevant changes, upcoming dates, alerts/action queue, source confidence and practical response intelligence.
+- [ ] Keep dashboard scope disciplined; do not turn this into a broad BI suite before C$2,500 MRR.
+
+## Demo integrity
+
+- [ ] Label the persona/trade split as illustrative where needed.
+- [ ] Any tariff rate, HS applicability, legal instrument, effective date or program deadline presented as fact must be real and sourced from TariffCompass data.
+- [ ] Clearly distinguish estimated/planning exposure from a final customs-duty determination.
+- [ ] Never fabricate a dramatic tariff event for storytelling purposes.
+
+## Reuse after validation
+
+- [ ] Once the web story converts well in founder demos, reuse the same narrative for a concise sales deck.
+- [ ] Only after the product flow and narrative stabilize, record a **60–120 second video** using the proven story.
+- [ ] Preserve the story as a future reusable asset for customer onboarding, advisor demos, public presentations and potential investor/crowdfunding materials.
+
+**Launch bar:** a prospect should finish the walkthrough understanding **“TariffCompass watches my products and markets, tells me what changed, shows what it could cost me, proves where the information came from, and helps me decide what to investigate next — that is why it costs C$99/month.”**
+
+---
+
 # Beta/V1 UX and production readiness
 
 - [ ] Finalize free-vs-paid gating so free proves value and C$99 clearly buys private relevance, financial exposure and monitoring.
@@ -231,6 +279,7 @@ Run this in parallel with final launch work. The detailed acquisition roadmap li
 
 - [ ] Build the first prospect list of Canadian manufacturers, distributors/wholesalers, import-dependent retailers and U.S.-exposed exporters.
 - [ ] Include a deliberate Quebec/French-speaking prospect subset so the V1 French journey is tested by real users.
+- [ ] Use the flagship Bob walkthrough as the default narrative for early demos, adapting the live product/HS example when a prospect's own situation is stronger.
 - [ ] Prepare one strong live demo using a real product/HS code and approximate annual trade value.
 - [ ] Start founder-led demos as soon as the six gates are credible.
 - [ ] Track demo → paid conversion and time-to-payment.
