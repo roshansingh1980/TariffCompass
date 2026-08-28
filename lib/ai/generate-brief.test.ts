@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BRIEF_SYSTEM_PROMPT, buildBriefUserPrompt, type BriefInput } from "@/lib/ai/generate-brief";
-import { findCanadianCounterTariff, getTradeMeasureStatus } from "@/lib/data/canada-counter-tariffs-2026";
+import { CANADA_US_COUNTER_TARIFF_CHANGE_2026, findCanadianCounterTariff, getTradeMeasureStatus } from "@/lib/data/canada-counter-tariffs-2026";
+import { attachIncrementalFinancialImpact } from "@/lib/trade-measure-changes";
 import { computeFinancialImpact } from "@/lib/exposure";
 
 function input(): BriefInput {
@@ -17,6 +18,7 @@ function input(): BriefInput {
       specificity: "hs", rate: 50, basis: "additional_measure", measureType: "counter_tariff",
       measureStatus: "upcoming", confidence: "provisional",
     })!],
+    tradeMeasureChange: attachIncrementalFinancialImpact(CANADA_US_COUNTER_TARIFF_CHANGE_2026, 250000, "CAD", "import-us", "2026-08-28"),
   };
 }
 
@@ -42,5 +44,13 @@ describe("Claude structured provenance boundary", () => {
     expect(prompt).toContain('"incrementalExposureMax": 125000');
     expect(prompt).toContain('"currency": "CAD"');
     expect(prompt).toContain("do not recalculate, combine, or convert");
+  });
+
+  it("passes change intelligence and preserves none-recorded semantics", () => {
+    const prompt = buildBriefUserPrompt(input());
+    expect(prompt).toContain('"kind": "none_recorded"');
+    expect(prompt).toContain('"announcedDate": "2026-08-25"');
+    expect(prompt).toContain('"changeInAdditionalExposureMax": 125000');
+    expect(BRIEF_SYSTEM_PROMPT).toContain("never call it a 0% tariff");
   });
 });

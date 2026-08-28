@@ -64,11 +64,13 @@ explicitly lower-confidence fallback coverage, so Gate 2 is not yet complete glo
 
 ## 4. Before/after change intelligence
 
-- [ ] Where a tariff/trade measure changed, show prior treatment and current treatment.
-- [ ] Show the effective date of the change.
-- [ ] Link the change to the source/legal instrument.
-- [ ] Preserve historical rate/measure context rather than overwriting the current value.
-- [ ] Distinguish announced, effective, delayed, amended and expired measures where material.
+- [x] Where a covered high-priority trade measure changed, show prior treatment and current treatment.
+- [x] Show the effective date of the change for covered high-priority measures.
+- [x] Link covered changes to their verified source; legal instruments remain explicitly unavailable where not verified.
+- [x] Preserve covered historical measure context as append-only structured events rather than overwriting the current value.
+- [x] Distinguish announced, effective, delayed, amended and expired states in the change model.
+
+Structured change history is implemented for covered trade measures; broad historical rate coverage remains limited.
 
 **Launch bar:** TariffCompass can answer “what changed, from what to what, and when?” for the high-priority measures it covers.
 

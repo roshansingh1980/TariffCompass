@@ -4,12 +4,14 @@ import { createClient } from "@/lib/supabase/server";
 import type { MarketDataRow } from "@/lib/data/db-market-data";
 import type { ApplicableTradeMeasure } from "@/lib/data/canada-counter-tariffs-2026";
 import type { FinancialImpact } from "@/lib/exposure";
+import type { TradeMeasureChange } from "@/lib/trade-measure-changes";
 
 export type AnalysisRateSnapshot = {
   comparisonRows: MarketDataRow[];
   currentImpact: FinancialImpact;
   additionalImpact: FinancialImpact | null;
   tradeMeasure: ApplicableTradeMeasure | null;
+  tradeMeasureChange: TradeMeasureChange | null;
 };
 
 export type RecordAnalysisInput = {

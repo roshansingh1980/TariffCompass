@@ -1,6 +1,7 @@
 import type { Attractiveness, CostFriction, TariffConfidence, TariffSpecificity } from "@/lib/data/db-market-data";
 import type { FinancialImpact } from "@/lib/exposure";
 import type { ApplicableTradeMeasure, TradeMeasureStatus } from "@/lib/data/canada-counter-tariffs-2026";
+import type { TradeMeasureChange } from "@/lib/trade-measure-changes";
 
 export type BriefComparisonRow = {
   market: string;
@@ -33,6 +34,7 @@ export type BriefInput = {
   programs: BriefProgram[];
   tradeMeasure: (ApplicableTradeMeasure & { status: TradeMeasureStatus }) | null;
   financialImpacts: FinancialImpact[];
+  tradeMeasureChange: TradeMeasureChange | null;
 };
 
 export const BRIEF_SYSTEM_PROMPT = `You are a senior Canadian trade advisor writing a short Diversification / Funding Readiness Brief.
@@ -57,6 +59,9 @@ verified or unavailable. Preserve provisional, limited, estimated, unknown, and 
 Use only the supplied structured financial-impact output. Never invent a trade value or calculation,
 convert currencies, choose or emphasize a midpoint for a range, add base and additional rates into an
 all-in duty, or present a planning estimate as final duty payable or landed cost.
+Use only the supplied structured change event. Never invent or recalculate a previous or new state,
+event or announcement date, effective date, amendment, delay, expiry, source, or exposure delta.
+When the previous state is none_recorded, preserve “none recorded” wording and never call it a 0% tariff.
 
 If something is uncertain, say so briefly.
 The brief must be useful, practical, and suitable to share with a client or internal team.
@@ -164,6 +169,10 @@ export function buildBriefUserPrompt(input: BriefInput): string {
       }, null, 2)
     : "No verified structured trade measure matched this route and HS code. Do not infer one.";
 
+  const changeText = input.tradeMeasureChange
+    ? JSON.stringify(input.tradeMeasureChange, null, 2)
+    : "No structured change event matched. Do not infer a before/after transition.";
+
   return `Business profile:
 - Scenario: ${input.scenarioLabel ?? "Not specified"}
 - Home country: ${homeCountry}
@@ -185,6 +194,9 @@ ${programsText}
 
 Structured trade measure provenance (use only these facts; do not contradict, upgrade, or complete them):
 ${measureText}
+
+Structured change intelligence (preserve previous/new-state semantics and do not recalculate it):
+${changeText}
 
 Write the brief now.`;
 }

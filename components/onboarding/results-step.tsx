@@ -29,8 +29,11 @@ import {
 } from "@/lib/data/db-market-data";
 import { getSupportPrograms, type SupportProgram } from "@/lib/data/db-support-programs";
 import { ProvenanceDetails } from "@/components/trade-measures/provenance-details";
+import { TradeMeasureChangeCard } from "@/components/trade-measures/change-card";
 import {
   findCanadianCounterTariff,
+  findCanadianCounterTariffChange,
+  calendarDateInTimeZone,
   getTradeMeasureStatus,
 } from "@/lib/data/canada-counter-tariffs-2026";
 import { computeFinancialImpact, formatExposureRange } from "@/lib/exposure";
@@ -38,6 +41,7 @@ import { formatHsCode } from "@/lib/hs-code";
 import { CATEGORIES, SCENARIOS, type Country } from "@/lib/onboarding-data";
 import { savePendingWizardState } from "@/lib/pending-wizard";
 import { recordAnalysis } from "@/lib/supabase/analyses";
+import { attachIncrementalFinancialImpact, getTradeMeasureChangeStatus } from "@/lib/trade-measure-changes";
 import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { deleteProfile, saveProfile } from "@/lib/supabase/saved-profiles";
 import type { SavedProfile } from "@/types/database";
@@ -167,6 +171,14 @@ export function ResultsStep({
         measureStatus: counterTariffStatus, confidence: upcomingCounterTariff.measure.confidence,
       })
     : null;
+  const currentCanadianDate = calendarDateInTimeZone(new Date(), "America/Toronto");
+  const baseChange = upcomingCounterTariff ? findCanadianCounterTariffChange(upcomingCounterTariff) : null;
+  const tradeMeasureChange = baseChange
+    ? attachIncrementalFinancialImpact(baseChange, Number.isFinite(parsedAnnualValue) ? parsedAnnualValue : null, currency, scenario, currentCanadianDate)
+    : null;
+  const tradeMeasureChangeStatus = tradeMeasureChange
+    ? getTradeMeasureChangeStatus(tradeMeasureChange, currentCanadianDate)
+    : null;
   const supportLastChecked = supportPrograms?.reduce(
     (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
     supportPrograms[0]?.lastChecked ?? ""
@@ -198,7 +210,7 @@ export function ResultsStep({
         exposureLow: currentImpact.grossExposureMin,
         exposureMid: null,
         exposureHigh: currentImpact.grossExposureMax,
-        rateSnapshot: { comparisonRows, currentImpact, additionalImpact, tradeMeasure: upcomingCounterTariff },
+        rateSnapshot: { comparisonRows, currentImpact, additionalImpact, tradeMeasure: upcomingCounterTariff, tradeMeasureChange },
       });
     }, 800);
     return () => clearTimeout(timer);
@@ -214,6 +226,7 @@ export function ResultsStep({
     currentImpact,
     additionalImpact,
     upcomingCounterTariff,
+    tradeMeasureChange,
     usRow,
   ]);
 
@@ -341,6 +354,13 @@ export function ResultsStep({
                   Based on {additionalImpact.currency} {Math.round(additionalImpact.annualTradeValue).toLocaleString("en-CA")} × {formatRate(additionalImpact.rateMin)} additional counter-tariff. Incremental gross planning estimate only.
                 </p>
               </div>
+            )}
+            {tradeMeasureChange && tradeMeasureChangeStatus && (
+              <TradeMeasureChangeCard
+                change={tradeMeasureChange}
+                status={tradeMeasureChangeStatus}
+                source={upcomingCounterTariff.sources.find((source) => tradeMeasureChange.sourceIds.includes(source.id)) ?? null}
+              />
             )}
             <p className="mt-3 text-xs text-muted-foreground">
               Source:{" "}
@@ -640,6 +660,7 @@ export function ResultsStep({
             financialImpacts: [currentImpact, additionalImpact].filter(
               (impact): impact is NonNullable<typeof impact> => impact !== null
             ),
+            tradeMeasureChange,
           }}
         />
       )}
