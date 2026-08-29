@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Lock, Pencil, X } from "lucide-react";
+import { ArrowUpRight, Lock, Pencil, Printer, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SubscribeButton } from "@/components/billing/subscribe-button";
@@ -244,6 +244,10 @@ export function ResultsStep({
     <TooltipProvider delay={150}>
     <div className="w-full max-w-5xl">
       <div className="text-center">
+        <div className="hidden text-left print:block">
+          <p className="font-serif text-xl font-medium">TariffCompass</p>
+          <p className="mt-1 text-xs text-muted-foreground">Trade-impact analysis · {new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}</p>
+        </div>
         <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
           Your market comparison
         </h1>
@@ -293,6 +297,10 @@ export function ResultsStep({
             </button>
           )}
         </div>
+        <button type="button" onClick={() => window.print()} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-border/70 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring print:hidden">
+          <Printer className="size-4" aria-hidden="true" />
+          Download / Save as PDF
+        </button>
 
         {comparisonRows && (
           <div className="mx-auto mt-7 max-w-2xl rounded-2xl border border-border/60 bg-foreground/[0.015] px-5 py-4 text-left">

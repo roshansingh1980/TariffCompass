@@ -149,3 +149,39 @@
   pointer-events: none;
   box-shadow: inset 0 0 120px -20px rgba(200, 16, 46, 0.15);
 }
+
+@media print {
+  @page {
+    margin: 16mm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  header,
+  footer,
+  aside,
+  [role="dialog"],
+  .edge-glow,
+  .print-hidden {
+    display: none !important;
+  }
+
+  main,
+  main > *,
+  main section,
+  main article {
+    max-width: none !important;
+    box-shadow: none !important;
+  }
+
+  main section,
+  main article,
+  main table {
+    break-inside: avoid;
+  }
+}

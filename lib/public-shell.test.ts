@@ -29,4 +29,11 @@ describe("public website shell", () => {
     expect(read("components/homepage/cta-section.tsx")).toContain('id="pricing"');
     expect(read("components/site-header.tsx")).toContain('href="/#pricing"');
   });
+
+  it("provides browser-native print/PDF output and print-specific chrome removal", () => {
+    expect(read("components/onboarding/results-step.tsx")).toContain("window.print()");
+    expect(read("components/onboarding/results-step.tsx")).toContain("Download / Save as PDF");
+    expect(read("app/globals.css")).toContain("@media print");
+    expect(read("app/globals.css")).toContain(".print-hidden");
+  });
 });
