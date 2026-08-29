@@ -50,7 +50,7 @@ export function ExposureAlerts({ result, showEmptyState = false }: { result: Exp
   return (
     <section className="mb-10 w-full max-w-3xl rounded-2xl border border-amber-500/25 bg-amber-500/[0.05] p-5">
       <h2 className="text-sm font-semibold tracking-tight">Changes affecting your saved exposures</h2>
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 max-h-[65vh] space-y-3 overflow-y-auto overscroll-contain pr-1">
         {alerts.map((alert) => (
           <article key={alert.id} className="rounded-xl border border-border/60 bg-background p-4">
             <div className="flex items-start justify-between gap-4">

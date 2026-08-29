@@ -10,7 +10,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="border-t border-border/30">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-14 sm:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-10 sm:px-8">
         <TcLockup size="small" orientation="horizontal" />
         <p className="font-serif text-sm text-muted-foreground italic">
           Navigate tariffs. Find your path.
@@ -20,7 +20,10 @@ export async function SiteFooter() {
             &copy; {new Date().getFullYear()} Adithana Capital Ltd. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            <Link href="/#pricing" className="tracking-wide transition-colors duration-200 hover:text-foreground">Pricing</Link>
             <Link href="/hs-lookup" className="tracking-wide transition-colors duration-200 hover:text-foreground">HS Code Lookup</Link>
+            <Link href="/insights" className="tracking-wide transition-colors duration-200 hover:text-foreground">Insights</Link>
+            <Link href="/sources" className="tracking-wide transition-colors duration-200 hover:text-foreground">Sources / Methodology</Link>
             <Link
               href="/about"
               className="tracking-wide transition-colors duration-200 hover:text-foreground"
@@ -57,6 +60,7 @@ export async function SiteFooter() {
             >
               Updates
             </Link>
+            <Link href="/login" className="tracking-wide transition-colors duration-200 hover:text-foreground">Log in</Link>
           </div>
         </div>
         <p className="max-w-2xl text-center text-[11px] leading-relaxed text-muted-foreground">

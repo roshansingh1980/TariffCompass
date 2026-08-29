@@ -12,7 +12,11 @@ export function CtaSection({
   savedProfileCount: number;
 }) {
   return (
-    <div className="flex w-full flex-col items-center gap-4 px-6 pb-36 text-center">
+    <section id="pricing" aria-labelledby="pricing-heading" className="flex w-full scroll-mt-24 flex-col items-center gap-4 px-6 pb-28 text-center">
+      <div>
+        <p id="pricing-heading" className="text-sm font-semibold text-foreground">TariffCompass Business — C$99/month</p>
+        <p className="mt-1 text-xs text-muted-foreground">Company-specific exposure, monitoring, alerts, and response intelligence.</p>
+      </div>
       <Button
         size="lg"
         render={<Link href="/dashboard" />}
@@ -32,6 +36,6 @@ export function CtaSection({
             : `You have ${savedProfileCount} saved profiles — resume where you left off`}
         </Link>
       )}
-    </div>
+    </section>
   );
 }

@@ -54,7 +54,7 @@ export async function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-3 sm:gap-6">
+        <nav aria-label="Public navigation" className="flex items-center gap-3 sm:gap-5">
           <Link href="/hs-lookup" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground sm:inline">HS Lookup</Link>
           <Link
             href="/insights"
@@ -62,17 +62,11 @@ export async function SiteHeader() {
           >
             Insights
           </Link>
+          <Link href="/#pricing" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground md:inline">Pricing</Link>
+          <Link href="/sources" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground lg:inline">Sources</Link>
           {user ? (
             <>
-              <Link
-                href="/support"
-                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground sm:inline"
-              >
-                Support
-              </Link>
-              <span className="hidden text-[13px] text-muted-foreground sm:inline">
-                {user.email}
-              </span>
+              <Link href="/dashboard" className="text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground">Dashboard</Link>
               {isSubscribed && (
                 <form action={createBillingPortalSession}>
                   <button
@@ -97,7 +91,7 @@ export async function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground sm:inline"
+                className="text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground"
               >
                 Log in
               </Link>

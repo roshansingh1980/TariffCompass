@@ -29,7 +29,7 @@ export function MonitoredExposures({ profiles, isLoggedIn }: { profiles: SavedPr
   );
 
   return (
-    <div className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border/60">
+    <div className="max-h-[65vh] divide-y divide-border/60 overflow-y-auto overscroll-contain rounded-xl border border-border/60">
       {profiles.map((profile) => (
         <article key={profile.id} className="grid gap-3 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div className="min-w-0">

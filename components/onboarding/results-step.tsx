@@ -46,6 +46,8 @@ import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { deleteProfile, saveProfile } from "@/lib/supabase/saved-profiles";
 import type { SavedProfile } from "@/types/database";
 import { cn } from "@/lib/utils";
+import { buildPracticalResponseIntelligence } from "@/lib/response-intelligence";
+import { PracticalResponsePanel } from "@/components/onboarding/practical-response-panel";
 
 function formatDate(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-CA", {
@@ -183,6 +185,14 @@ export function ResultsStep({
     (latest, program) => (program.lastChecked > latest ? program.lastChecked : latest),
     supportPrograms[0]?.lastChecked ?? ""
   );
+  const practicalResponse = buildPracticalResponseIntelligence({
+    hsCode: hsCode.trim() || null,
+    productDescription: productName || null,
+    scenario,
+    annualIncrementalExposure: additionalImpact?.incrementalExposureMax ?? null,
+    currency: currency || null,
+    comparisonRows: comparisonRows ?? [],
+  });
 
   useEffect(() => {
     // Anonymous visitors write nothing to the database — their answers stay
@@ -234,7 +244,7 @@ export function ResultsStep({
     <TooltipProvider delay={150}>
     <div className="w-full max-w-5xl">
       <div className="text-center">
-        <h1 className="text-5xl font-semibold tracking-tight text-foreground sm:text-6xl">
+        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
           Your market comparison
         </h1>
         <p className="mt-5 text-lg text-muted-foreground sm:text-xl">
@@ -404,7 +414,7 @@ export function ResultsStep({
       {comparisonRows && (
         <>
           {/* Desktop table */}
-          <div className="mt-20 hidden overflow-hidden rounded-3xl border border-border/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:block">
+          <div className="mt-12 hidden overflow-hidden rounded-2xl border border-border/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:block">
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-border/60 bg-foreground/[0.015]">
@@ -434,30 +444,30 @@ export function ResultsStep({
                     key={row.market.key}
                     className="border-b border-border/40 transition-colors last:border-0 hover:bg-foreground/[0.012]"
                   >
-                    <td className="px-7 py-6 font-medium text-foreground">{row.market.name}</td>
-                    <td className="px-7 py-6 text-foreground">
+                    <td className="px-7 py-4 font-medium text-foreground">{row.market.name}</td>
+                    <td className="px-7 py-4 text-foreground">
                       <TariffValue row={row} />
                       <DataStatusLine row={row} />
                     </td>
-                    <td className="px-7 py-6">
+                    <td className="px-7 py-4">
                       <span className="font-semibold text-foreground">
                         {row.market.easeOfBusiness.toFixed(1)}
                       </span>
                       <span className="text-muted-foreground"> / 10</span>
                     </td>
-                    <td className="px-7 py-6">
+                    <td className="px-7 py-4">
                       <FrictionMeter
                         level={row.costFriction}
                         onClick={() => setDetailsRow({ row, focus: "friction" })}
                       />
                     </td>
-                    <td className="px-7 py-6">
+                    <td className="px-7 py-4">
                       <AttractivenessBadge
                         level={row.attractiveness}
                         onClick={() => setDetailsRow({ row, focus: "risk" })}
                       />
                     </td>
-                    <td className="px-7 py-6">
+                    <td className="px-7 py-4">
                       <RiskBadge
                         level={getRiskStatus(row)}
                         onClick={() => setDetailsRow({ row, focus: "risk" })}
@@ -470,7 +480,7 @@ export function ResultsStep({
           </div>
 
           {/* Mobile cards */}
-          <div className="mt-20 flex flex-col gap-4 sm:hidden">
+          <div className="mt-10 flex flex-col gap-3 sm:hidden">
             {comparisonRows.map((row) => (
               <div
                 key={row.market.key}
@@ -524,6 +534,8 @@ export function ResultsStep({
         </p>
       )}
 
+      {comparisonRows && <PracticalResponsePanel intelligence={practicalResponse} />}
+
       <p className="mt-3 text-center text-xs text-muted-foreground">
         Disclaimer: TariffCompass provides general information and estimates only. It is not
         legal, tax, customs, or financial advice. Tariff rates, trade rules, logistics costs, and
@@ -542,7 +554,7 @@ export function ResultsStep({
       )}
 
       {/* Government Support Options */}
-      <div className="mt-28">
+      <div className="mt-16">
         <h2 className="text-3xl font-semibold tracking-tight text-foreground">
           Government Support Options
         </h2>
@@ -568,11 +580,11 @@ export function ResultsStep({
           <p className="mt-10 text-sm text-muted-foreground">Loading government programs…</p>
         )}
 
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {supportPrograms?.map((program) => (
             <div
               key={program.name}
-              className="flex h-full flex-col gap-3 rounded-3xl border border-border/60 p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
+              className="flex h-full flex-col gap-3 rounded-2xl border border-border/60 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.10)]"
             >
               <span className="font-medium tracking-tight text-foreground">{program.name}</span>
               {isSubscribed ? (

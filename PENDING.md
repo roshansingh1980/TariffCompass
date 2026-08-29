@@ -106,6 +106,8 @@ Daily scheduled evaluation and transactional email delivery are implemented and 
 
 **Launch bar:** after seeing the exposure, the user has a credible answer to “what should I investigate next?”
 
+**Narrow launch slice implemented:** the covered HS 851713 U.S.-origin smartphone import scenario now presents sourced markets worth investigating, a CUSMA origin review that does not assert eligibility, one officially sourced BDC support direction with eligibility/deadline explicitly undetermined, and deterministic management/professional-adviser questions. Unsupported routes return limited coverage rather than fabricated recommendations. Gate 6 remains open for broader reliable product/route coverage and launch validation.
+
 ---
 
 # Product/data dependencies required to close the six gates
