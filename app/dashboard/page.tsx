@@ -9,7 +9,7 @@ import { parseHsLookupPrefill } from "@/lib/hs-lookup";
  * account. isLoggedIn gates only the two things that do (AI Brief, saved
  * profiles); listSavedProfiles() already returns [] for no user.
  */
-export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ hs?: string; product?: string }> }) {
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ hs?: string; product?: string; official?: string; source?: string }> }) {
   const supabase = await createClient();
   const {
     data: { user },

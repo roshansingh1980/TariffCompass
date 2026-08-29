@@ -114,13 +114,43 @@ describe("HS input and official description search", () => {
     const fetcher = vi.fn<typeof fetch>().mockRejectedValue(new Error("offline"));
     await expect(requestHsSuggestionResult("smartphones", fetcher)).resolves.toEqual({ status: "unavailable", suggestions: [] });
     expect(isValidHsCode("851713")).toBe(true);
-    expect(buildHsAnalysisHref("8517.13", "Smartphones")).toBe("/dashboard?hs=851713&product=Smartphones");
+    const href = new URL(buildHsAnalysisHref("8517.13", "Smartphones", "Smartphones for cellular networks"), "https://tariffcompass.ca");
+    expect(href.searchParams.get("hs")).toBe("851713");
   });
 
-  it("preserves HS6 and product description through the dashboard handoff", () => {
-    const href = new URL(buildHsAnalysisHref("870830", "brake pads"), "https://tariffcompass.ca");
-    expect(parseHsLookupPrefill({ hs: href.searchParams.get("hs") ?? undefined, product: href.searchParams.get("product") ?? undefined })).toEqual({ hsCode: "870830", productDescription: "brake pads" });
-    expect(parseHsLookupPrefill({ hs: "87083", product: "brake pads" })).toBeNull();
+  it("builds each result card handoff with its own exact HS6", () => {
+    const brakePads = new URL(buildHsAnalysisHref("681381", "brake pads", "Brake linings and pads"), "https://tariffcompass.ca");
+    const waste = new URL(buildHsAnalysisHref("382550", "waste", "Wastes from metal pickling liquors"), "https://tariffcompass.ca");
+
+    expect(brakePads.searchParams.get("hs")).toBe("681381");
+    expect(waste.searchParams.get("hs")).toBe("382550");
+    expect(brakePads.searchParams.get("hs")).not.toBe(waste.searchParams.get("hs"));
+  });
+
+  it("preserves selected HS6, official description, and original query through the handoff", () => {
+    const href = new URL(buildHsAnalysisHref("681381", "brake pads", "Brake linings and pads"), "https://tariffcompass.ca");
+    const params = Object.fromEntries(href.searchParams.entries());
+
+    expect(parseHsLookupPrefill(params)).toEqual({
+      hsCode: "681381",
+      productDescription: "brake pads",
+      officialDescription: "Brake linings and pads",
+      source: "hs-lookup",
+    });
+  });
+
+  it("rejects malformed or non-lookup handoffs and bounds text params", () => {
+    expect(parseHsLookupPrefill({ hs: "68138", product: "brake pads", source: "hs-lookup" })).toBeNull();
+    expect(parseHsLookupPrefill({ hs: "681381", product: "brake pads" })).toBeNull();
+
+    const parsed = parseHsLookupPrefill({
+      hs: "681381",
+      product: "p".repeat(500),
+      official: "o".repeat(500),
+      source: "hs-lookup",
+    });
+    expect(parsed?.productDescription).toHaveLength(120);
+    expect(parsed?.officialDescription).toHaveLength(240);
   });
 
   it("keeps classification and national-code caveats explicit", () => {
@@ -136,5 +166,16 @@ describe("HS input and official description search", () => {
     expect(productStep).toContain("requestHsSuggestionResult");
     expect(publicLookup).toContain("requestHsSuggestionResult");
     expect(publicLookup).not.toContain("Anthropic");
+  });
+
+  it("keeps a lookup selection stable until the user edits or changes it", () => {
+    const productStep = readFileSync("components/onboarding/product-step.tsx", "utf8");
+    const wizard = readFileSync("components/onboarding/dashboard-wizard.tsx", "utf8");
+
+    expect(productStep).toContain("if (lookupSelection)");
+    expect(productStep).toContain("Selected from HS Code Lookup");
+    expect(productStep).toContain("onClick={onChangeLookupHs}");
+    expect(wizard).toContain("value !== lookupSelection.productDescription");
+    expect(wizard).toContain("onChangeLookupHs={() => setLookupSelection(null)}");
   });
 });

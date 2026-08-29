@@ -7,23 +7,28 @@ import { formatHsCode, isValidHsCode } from "@/lib/hs-code";
 import { requestHsSuggestionResult, type HsSuggestion } from "@/lib/hs-search";
 import { CATEGORIES } from "@/lib/onboarding-data";
 import { cn } from "@/lib/utils";
+import type { HsLookupPrefill } from "@/lib/hs-lookup";
 
 export function ProductStep({
   category,
   productName,
   hsCode,
+  lookupSelection,
   onCategoryChange,
   onProductNameChange,
   onHsCodeChange,
+  onChangeLookupHs,
   onBack,
   onContinue,
 }: {
   category: string | null;
   productName: string;
   hsCode: string;
+  lookupSelection: HsLookupPrefill | null;
   onCategoryChange: (value: string) => void;
   onProductNameChange: (value: string) => void;
   onHsCodeChange: (value: string) => void;
+  onChangeLookupHs: () => void;
   onBack: () => void;
   onContinue: () => void;
 }) {
@@ -33,6 +38,12 @@ export function ProductStep({
   const hsCodeInvalid = hsCode.length > 0 && !isValidHsCode(hsCode);
 
   useEffect(() => {
+    if (lookupSelection) {
+      setSuggestions([]);
+      setSearchAttempted(false);
+      setIsSearching(false);
+      return;
+    }
     if (productName.trim().length < 3) {
       setSuggestions([]);
       setSearchAttempted(false);
@@ -55,7 +66,7 @@ export function ProductStep({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [productName]);
+  }, [productName, lookupSelection]);
 
   return (
     <>
@@ -130,18 +141,30 @@ export function ProductStep({
           <label htmlFor="hs-code" className="text-[13px] font-medium tracking-wide text-foreground">
             HS code (optional)
           </label>
-          <Input
-            id="hs-code"
-            value={hsCode}
-            onChange={(event) => onHsCodeChange(event.target.value.replace(/[^\d.\s-]/g, ""))}
-            placeholder="e.g. 870830"
-            inputMode="numeric"
-            aria-invalid={hsCodeInvalid}
-            className={cn(
-              "mt-2.5 h-11 rounded-lg border-border/50 px-3.5 text-[15px] shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
-              hsCodeInvalid && "border-destructive"
-            )}
-          />
+          {lookupSelection ? (
+            <div className="mt-2.5 rounded-xl border border-border/60 bg-foreground/[0.02] p-4">
+              <p className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">Selected from HS Code Lookup</p>
+              <p className="mt-2 text-lg font-semibold text-foreground">HS {formatHsCode(lookupSelection.hsCode)}</p>
+              <p className="mt-1 text-sm leading-relaxed text-foreground">{lookupSelection.officialDescription || "Official description unavailable"}</p>
+              {lookupSelection.productDescription && (
+                <p className="mt-2 text-xs text-muted-foreground">Product searched: {lookupSelection.productDescription}</p>
+              )}
+              <button type="button" onClick={onChangeLookupHs} className="mt-3 text-xs font-medium text-foreground underline underline-offset-4 hover:text-foreground/70">Change HS code</button>
+            </div>
+          ) : (
+            <Input
+              id="hs-code"
+              value={hsCode}
+              onChange={(event) => onHsCodeChange(event.target.value.replace(/[^\d.\s-]/g, ""))}
+              placeholder="e.g. 870830"
+              inputMode="numeric"
+              aria-invalid={hsCodeInvalid}
+              className={cn(
+                "mt-2.5 h-11 rounded-lg border-border/50 px-3.5 text-[15px] shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
+                hsCodeInvalid && "border-destructive"
+              )}
+            />
+          )}
           <p className={cn("mt-2 text-xs leading-relaxed", hsCodeInvalid ? "text-destructive" : "text-muted-foreground")}>
             {hsCodeInvalid
               ? "Enter a 6-digit HS code, or leave it blank."

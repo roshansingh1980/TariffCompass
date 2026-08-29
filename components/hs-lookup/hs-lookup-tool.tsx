@@ -16,7 +16,7 @@ function ResultCard({ suggestion, productDescription }: { suggestion: HsSuggesti
       {suggestion.displayCode !== suggestion.hsCode && <p className="mt-2 text-xs text-muted-foreground">U.S. display code: {suggestion.displayCode}</p>}
       <p className="mt-3 text-xs font-medium">Source: {suggestion.sourceName}</p>
       <p className="mt-1 text-xs text-muted-foreground">{HS_CLASSIFICATION_CAVEAT}</p>
-      <Button render={<Link href={buildHsAnalysisHref(suggestion.hsCode, productDescription || suggestion.description)} />} className="mt-4 rounded-full px-5">
+      <Button render={<Link href={buildHsAnalysisHref(suggestion.hsCode, productDescription, suggestion.description)} />} className="mt-4 rounded-full px-5">
         Analyze this HS code
       </Button>
     </article>
@@ -88,7 +88,7 @@ export function HsLookupTool() {
         <div className="mt-4 max-w-md">
           <Input value={manualHs} onChange={(event) => setManualHs(event.target.value)} placeholder="e.g. 851713" inputMode="numeric" aria-invalid={manualInvalid} className="h-12 rounded-xl px-4" />
           {manualInvalid && <p className="mt-2 text-xs text-destructive">Enter a valid six-digit HS code.</p>}
-          {manualValid && <div className="mt-4 rounded-2xl border border-border/60 p-5"><p className="text-xl font-semibold">HS {formatHsCode(manualHs)}</p><p className="mt-2 text-sm text-muted-foreground">{manualDescription ?? "Official description unavailable. You can still continue with this valid HS6 code."}</p><p className="mt-2 text-xs text-muted-foreground">{HS_CLASSIFICATION_CAVEAT}</p><Button render={<Link href={buildHsAnalysisHref(manualHs, manualDescription ?? `HS ${normalizeHsCode(manualHs)}`)} />} className="mt-4 rounded-full px-5">Analyze this HS code</Button></div>}
+          {manualValid && <div className="mt-4 rounded-2xl border border-border/60 p-5"><p className="text-xl font-semibold">HS {formatHsCode(manualHs)}</p><p className="mt-2 text-sm text-muted-foreground">{manualDescription ?? "Official description unavailable. You can still continue with this valid HS6 code."}</p><p className="mt-2 text-xs text-muted-foreground">{HS_CLASSIFICATION_CAVEAT}</p><Button render={<Link href={buildHsAnalysisHref(manualHs, "", manualDescription ?? "Official description unavailable")} />} className="mt-4 rounded-full px-5">Analyze this HS code</Button></div>}
         </div>
       </section>
 

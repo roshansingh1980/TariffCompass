@@ -50,6 +50,7 @@ export function DashboardWizard({
   const [annualValue, setAnnualValue] = useState("");
   const [currency, setCurrency] = useState<Currency>("CAD");
   const [hsCode, setHsCode] = useState(lookupPrefill?.hsCode ?? "");
+  const [lookupSelection, setLookupSelection] = useState<HsLookupPrefill | null>(lookupPrefill);
   const [savedProfiles, setSavedProfiles] = useState<SavedProfile[]>(initialSavedProfiles);
   const [exposureAlerts, setExposureAlerts] = useState(initialExposureAlerts);
   /** True while the user is editing a single answer from a Results summary chip. */
@@ -69,6 +70,7 @@ export function DashboardWizard({
     setAnnualValue(profile.annual_value != null ? String(profile.annual_value) : "");
     setCurrency((profile.currency as Currency) ?? "CAD");
     setHsCode(profile.hs_code ?? "");
+    setLookupSelection(null);
     setStep("results");
   }
 
@@ -172,8 +174,16 @@ export function DashboardWizard({
           productName={productName}
           hsCode={hsCode}
           onCategoryChange={setCategory}
-          onProductNameChange={setProductName}
-          onHsCodeChange={setHsCode}
+          lookupSelection={lookupSelection}
+          onProductNameChange={(value) => {
+            setProductName(value);
+            if (lookupSelection && value !== lookupSelection.productDescription) setLookupSelection(null);
+          }}
+          onHsCodeChange={(value) => {
+            setHsCode(value);
+            if (lookupSelection && !value) setLookupSelection(null);
+          }}
+          onChangeLookupHs={() => setLookupSelection(null)}
           onBack={() => setStep("location")}
           onContinue={() => goNext(category === OTHER_CATEGORY ? "results" : "exposure")}
         />
