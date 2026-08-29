@@ -12,6 +12,8 @@ import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { loadPendingWizardState, clearPendingWizardState } from "@/lib/pending-wizard";
 import { OTHER_CATEGORY, type Country } from "@/lib/onboarding-data";
 import type { SavedProfile } from "@/types/database";
+import { ExposureAlerts } from "@/components/dashboard/exposure-alerts";
+import { evaluateAndListExposureAlerts, type ExposureAlertsResult } from "@/lib/supabase/exposure-alerts";
 
 /**
  * Home country is intentionally hardcoded, not user-selectable — see
@@ -29,10 +31,12 @@ export function DashboardWizard({
   isLoggedIn,
   isSubscribed,
   savedProfiles: initialSavedProfiles,
+  initialExposureAlerts,
 }: {
   isLoggedIn: boolean;
   isSubscribed: boolean;
   savedProfiles: SavedProfile[];
+  initialExposureAlerts: ExposureAlertsResult;
 }) {
   const [step, setStep] = useState<Step>("scenario");
   const [scenario, setScenario] = useState<string | null>(null);
@@ -44,11 +48,13 @@ export function DashboardWizard({
   const [currency, setCurrency] = useState<Currency>("CAD");
   const [hsCode, setHsCode] = useState("");
   const [savedProfiles, setSavedProfiles] = useState<SavedProfile[]>(initialSavedProfiles);
+  const [exposureAlerts, setExposureAlerts] = useState(initialExposureAlerts);
   /** True while the user is editing a single answer from a Results summary chip. */
   const [returnToResults, setReturnToResults] = useState(false);
 
   async function refreshSavedProfiles() {
     setSavedProfiles(await listSavedProfiles());
+    if (isSubscribed) setExposureAlerts(await evaluateAndListExposureAlerts());
   }
 
   function loadSavedProfile(profile: SavedProfile) {
@@ -56,6 +62,7 @@ export function DashboardWizard({
     setProvince(profile.province);
     setUsState(profile.us_state);
     setCategory(profile.category);
+    setProductName(profile.product_description ?? profile.name);
     setAnnualValue(profile.annual_value != null ? String(profile.annual_value) : "");
     setCurrency((profile.currency as Currency) ?? "CAD");
     setHsCode(profile.hs_code ?? "");
@@ -117,6 +124,7 @@ export function DashboardWizard({
 
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-10 sm:py-14">
+      {isLoggedIn && isSubscribed && <ExposureAlerts result={exposureAlerts} />}
       {step === "scenario" && (
         <>
           {savedProfiles.length > 0 && (

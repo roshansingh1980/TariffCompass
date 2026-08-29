@@ -1,6 +1,7 @@
 import { DashboardWizard } from "@/components/onboarding/dashboard-wizard";
 import { createClient } from "@/lib/supabase/server";
 import { listSavedProfiles } from "@/lib/supabase/saved-profiles";
+import { evaluateAndListExposureAlerts } from "@/lib/supabase/exposure-alerts";
 
 /**
  * Open to anonymous visitors — the wizard and Results table don't require an
@@ -24,12 +25,14 @@ export default async function DashboardPage() {
   }
 
   const savedProfiles = await listSavedProfiles();
+  const exposureAlerts = await evaluateAndListExposureAlerts();
 
   return (
     <DashboardWizard
       isLoggedIn={Boolean(user)}
       isSubscribed={isSubscribed}
       savedProfiles={savedProfiles}
+      initialExposureAlerts={exposureAlerts}
     />
   );
 }

@@ -92,7 +92,7 @@ export function ResultsStep({
   isLoggedIn: boolean;
   isSubscribed: boolean;
   savedProfiles: SavedProfile[];
-  onSavedProfilesChange: () => void;
+  onSavedProfilesChange: () => void | Promise<void>;
   onBack: () => void;
   onEditStep: (step: "scenario" | "location" | "product" | "exposure") => void;
   onScenarioChange: (value: string) => void;
@@ -371,6 +371,7 @@ export function ResultsStep({
 
         <SavedProfilesPanel
           isLoggedIn={isLoggedIn}
+          isSubscribed={isSubscribed}
           savedProfiles={savedProfiles}
           onSavedProfilesChange={onSavedProfilesChange}
           currentSelections={{
@@ -683,13 +684,15 @@ export function ResultsStep({
 
 function SavedProfilesPanel({
   isLoggedIn,
+  isSubscribed,
   savedProfiles,
   onSavedProfilesChange,
   currentSelections,
 }: {
   isLoggedIn: boolean;
+  isSubscribed: boolean;
   savedProfiles: SavedProfile[];
-  onSavedProfilesChange: () => void;
+  onSavedProfilesChange: () => void | Promise<void>;
   currentSelections: {
     scenario: string | null;
     country: Country;
@@ -706,6 +709,7 @@ function SavedProfilesPanel({
   const [name, setName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmation, setConfirmation] = useState<string | null>(null);
 
   if (!isLoggedIn) {
     return (
@@ -733,6 +737,7 @@ function SavedProfilesPanel({
 
   async function handleSave() {
     setError(null);
+    setConfirmation(null);
     setIsSaving(true);
     const parsedAnnualValue = Number(currentSelections.annualValue);
     const result = await saveProfile({
@@ -745,6 +750,7 @@ function SavedProfilesPanel({
       annualValue: Number.isFinite(parsedAnnualValue) && parsedAnnualValue > 0 ? parsedAnnualValue : null,
       currency: currentSelections.currency || null,
       hsCode: currentSelections.hsCode.trim() || null,
+      productDescription: currentSelections.productName,
     });
     setIsSaving(false);
     if ("error" in result) {
@@ -753,7 +759,10 @@ function SavedProfilesPanel({
     }
     setName("");
     setIsNaming(false);
-    onSavedProfilesChange();
+    setConfirmation(result.monitoringActive && isSubscribed
+      ? "Saved for monitoring. TariffCompass will check this exposure against structured trade-policy changes when you open or refresh the dashboard."
+      : "Profile saved. Monitoring alerts are available with an active Business subscription after monitoring storage is enabled.");
+    await onSavedProfilesChange();
   }
 
   async function handleDelete(id: string) {
@@ -821,10 +830,11 @@ function SavedProfilesPanel({
           onClick={() => setIsNaming(true)}
           className="text-xs font-medium tracking-wide text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          Save this profile
+          {isSubscribed ? "Save for monitoring" : "Save this profile"}
         </button>
       )}
       {error && <p className="text-xs text-destructive">{error}</p>}
+      {confirmation && <p className="max-w-md text-center text-xs text-muted-foreground">{confirmation}</p>}
     </div>
   );
 }

@@ -76,13 +76,15 @@ Structured change history is implemented for covered trade measures; broad histo
 
 ## 5. Saved-product monitoring + useful alerting
 
-- [ ] Paying users can save products/trade exposures for monitoring.
+- [x] Paying users can save products/trade exposures with structured monitoring fields.
 - [ ] Scheduled change detection compares saved exposures against tariff/trade-policy updates.
 - [ ] Create reliable change history (`rate_changes` or final equivalent) with before/after values and source.
-- [ ] Alerts identify what changed, which saved product is affected, effective date, estimated financial impact and source.
+- [x] In-app alerts for covered structured events identify what changed, the affected saved product, effective date, estimated financial impact and source.
 - [ ] Email and/or in-app alerting must be useful enough to justify recurring subscription value.
 
 **Launch bar:** TariffCompass watches a customer’s saved exposure and tells them when something material changes; it is not merely a one-time calculator.
+
+In-app alert matching is implemented for saved exposures against structured change events. Scheduled external monitoring and email delivery remain open.
 
 ## 6. Practical response intelligence
 

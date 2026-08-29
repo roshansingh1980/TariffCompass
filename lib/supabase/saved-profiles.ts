@@ -13,9 +13,10 @@ export type SaveProfileInput = {
   annualValue: number | null;
   currency: string | null;
   hsCode: string | null;
+  productDescription: string;
 };
 
-export type SaveProfileResult = { error: string } | { success: true; id: string };
+export type SaveProfileResult = { error: string } | { success: true; id: string; monitoringActive: boolean };
 export type DeleteProfileResult = { error: string } | { success: true };
 
 /** Every caller is already behind the auth-gated /dashboard, so this only ever runs for a real signed-in user. */
@@ -53,28 +54,44 @@ export async function saveProfile(input: SaveProfileInput): Promise<SaveProfileR
     return { error: "Give this profile a name before saving." };
   }
 
-  const { data, error } = await supabase
+  const row = {
+    user_id: user.id,
+    name,
+    scenario: input.scenario,
+    country: input.country,
+    province: input.province,
+    us_state: input.usState,
+    category: input.category,
+    annual_value: input.annualValue,
+    currency: input.currency,
+    hs_code: input.hsCode,
+    product_description: input.productDescription.trim() || null,
+    monitoring_active: true,
+  };
+  let monitoringActive = true;
+  let { data, error } = await supabase
     .from("saved_profiles")
-    .insert({
-      user_id: user.id,
-      name,
-      scenario: input.scenario,
-      country: input.country,
-      province: input.province,
-      us_state: input.usState,
-      category: input.category,
-      annual_value: input.annualValue,
-      currency: input.currency,
-      hs_code: input.hsCode,
-    })
+    .insert(row)
     .select("id")
     .single();
+
+  // Compatibility for production before the monitoring migration is manually applied.
+  if (error?.code === "PGRST204" || error?.code === "42703") {
+    monitoringActive = false;
+    const fallback = await supabase.from("saved_profiles").insert({
+      user_id: user.id, name, scenario: input.scenario, country: input.country,
+      province: input.province, us_state: input.usState, category: input.category,
+      annual_value: input.annualValue, currency: input.currency, hs_code: input.hsCode,
+    }).select("id").single();
+    data = fallback.data;
+    error = fallback.error;
+  }
 
   if (error || !data) {
     console.error("Failed to save profile:", error);
     return { error: "Something went wrong saving this profile. Please try again." };
   }
-  return { success: true, id: data.id };
+  return { success: true, id: data.id, monitoringActive };
 }
 
 export async function deleteProfile(id: string): Promise<DeleteProfileResult> {
