@@ -20,6 +20,7 @@ export async function SiteFooter() {
             &copy; {new Date().getFullYear()} Adithana Capital Ltd. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            <Link href="/hs-lookup" className="tracking-wide transition-colors duration-200 hover:text-foreground">HS Code Lookup</Link>
             <Link
               href="/about"
               className="tracking-wide transition-colors duration-200 hover:text-foreground"

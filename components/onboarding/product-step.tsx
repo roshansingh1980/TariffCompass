@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatHsCode, isValidHsCode } from "@/lib/hs-code";
-import { requestHsSuggestions, type HsSuggestion } from "@/lib/hs-search";
+import { requestHsSuggestionResult, type HsSuggestion } from "@/lib/hs-search";
 import { CATEGORIES } from "@/lib/onboarding-data";
 import { cn } from "@/lib/utils";
 
@@ -43,9 +43,9 @@ export function ProductStep({
     let cancelled = false;
     setIsSearching(true);
     const timer = setTimeout(() => {
-      requestHsSuggestions(productName).then((matches) => {
+      requestHsSuggestionResult(productName).then((result) => {
         if (cancelled) return;
-        setSuggestions(matches);
+        setSuggestions(result.suggestions);
         setSearchAttempted(true);
         setIsSearching(false);
       });

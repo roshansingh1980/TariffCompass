@@ -15,6 +15,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/hs-lookup`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     ...INSIGHTS.map((article) => ({
       url: `${SITE_URL}/insights/${article.slug}`,
       changeFrequency: "monthly" as const,

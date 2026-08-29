@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 import {
   isTariffRowCurrent,
   resolveScenarioDirection,
@@ -6,7 +7,8 @@ import {
   type DbTariffRow,
 } from "@/lib/data/db-market-data";
 import { isValidHsCode, normalizeHsCode } from "@/lib/hs-code";
-import { parseUsitcSearchResponse, requestHsSuggestions } from "@/lib/hs-search";
+import { parseUsitcSearchResponse, requestHsSuggestionResult, requestHsSuggestions } from "@/lib/hs-search";
+import { buildHsAnalysisHref, HS6_NATIONAL_CODE_CAVEAT, HS_CLASSIFICATION_CAVEAT, parseHsLookupPrefill } from "@/lib/hs-lookup";
 
 function tariffRow(overrides: Partial<DbTariffRow> = {}): DbTariffRow {
   return {
@@ -97,7 +99,7 @@ describe("HS input and official description search", () => {
         hsCode: "870830",
         displayCode: "8708.30.10.10",
         description: "Mounted brake pads and linings",
-        sourceName: "USITC Harmonized Tariff Schedule",
+        sourceName: "U.S. International Trade Commission HTS",
       },
     ]);
   });
@@ -106,5 +108,33 @@ describe("HS input and official description search", () => {
     const fetcher = vi.fn<typeof fetch>().mockRejectedValue(new Error("offline"));
 
     await expect(requestHsSuggestions("brake pads", fetcher)).resolves.toEqual([]);
+  });
+
+  it("reports upstream failure separately while valid manual HS remains usable", async () => {
+    const fetcher = vi.fn<typeof fetch>().mockRejectedValue(new Error("offline"));
+    await expect(requestHsSuggestionResult("smartphones", fetcher)).resolves.toEqual({ status: "unavailable", suggestions: [] });
+    expect(isValidHsCode("851713")).toBe(true);
+    expect(buildHsAnalysisHref("8517.13", "Smartphones")).toBe("/dashboard?hs=851713&product=Smartphones");
+  });
+
+  it("preserves HS6 and product description through the dashboard handoff", () => {
+    const href = new URL(buildHsAnalysisHref("870830", "brake pads"), "https://tariffcompass.ca");
+    expect(parseHsLookupPrefill({ hs: href.searchParams.get("hs") ?? undefined, product: href.searchParams.get("product") ?? undefined })).toEqual({ hsCode: "870830", productDescription: "brake pads" });
+    expect(parseHsLookupPrefill({ hs: "87083", product: "brake pads" })).toBeNull();
+  });
+
+  it("keeps classification and national-code caveats explicit", () => {
+    expect(HS_CLASSIFICATION_CAVEAT).toContain("Possible match");
+    expect(HS_CLASSIFICATION_CAVEAT).toContain("confirm classification");
+    expect(HS6_NATIONAL_CODE_CAVEAT).toContain("internationally harmonized");
+    expect(HS6_NATIONAL_CODE_CAVEAT).toContain("may differ beyond six digits");
+  });
+
+  it("shares the canonical lookup client between ProductStep and the standalone tool", () => {
+    const productStep = readFileSync("components/onboarding/product-step.tsx", "utf8");
+    const publicLookup = readFileSync("components/hs-lookup/hs-lookup-tool.tsx", "utf8");
+    expect(productStep).toContain("requestHsSuggestionResult");
+    expect(publicLookup).toContain("requestHsSuggestionResult");
+    expect(publicLookup).not.toContain("Anthropic");
   });
 });

@@ -14,6 +14,7 @@ import { OTHER_CATEGORY, type Country } from "@/lib/onboarding-data";
 import type { SavedProfile } from "@/types/database";
 import { ExposureAlerts } from "@/components/dashboard/exposure-alerts";
 import { evaluateAndListExposureAlerts, type ExposureAlertsResult } from "@/lib/supabase/exposure-alerts";
+import type { HsLookupPrefill } from "@/lib/hs-lookup";
 
 /**
  * Home country is intentionally hardcoded, not user-selectable — see
@@ -32,21 +33,23 @@ export function DashboardWizard({
   isSubscribed,
   savedProfiles: initialSavedProfiles,
   initialExposureAlerts,
+  lookupPrefill,
 }: {
   isLoggedIn: boolean;
   isSubscribed: boolean;
   savedProfiles: SavedProfile[];
   initialExposureAlerts: ExposureAlertsResult;
+  lookupPrefill: HsLookupPrefill | null;
 }) {
   const [step, setStep] = useState<Step>("scenario");
   const [scenario, setScenario] = useState<string | null>(null);
   const [province, setProvince] = useState<string | null>(null);
   const [usState, setUsState] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
-  const [productName, setProductName] = useState("");
+  const [productName, setProductName] = useState(lookupPrefill?.productDescription ?? "");
   const [annualValue, setAnnualValue] = useState("");
   const [currency, setCurrency] = useState<Currency>("CAD");
-  const [hsCode, setHsCode] = useState("");
+  const [hsCode, setHsCode] = useState(lookupPrefill?.hsCode ?? "");
   const [savedProfiles, setSavedProfiles] = useState<SavedProfile[]>(initialSavedProfiles);
   const [exposureAlerts, setExposureAlerts] = useState(initialExposureAlerts);
   /** True while the user is editing a single answer from a Results summary chip. */

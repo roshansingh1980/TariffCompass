@@ -55,6 +55,7 @@ export async function SiteHeader() {
         </Link>
 
         <nav className="flex items-center gap-3 sm:gap-6">
+          <Link href="/hs-lookup" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground sm:inline">HS Lookup</Link>
           <Link
             href="/insights"
             className="text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground"

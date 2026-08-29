@@ -4,8 +4,10 @@ export type HsSuggestion = {
   hsCode: string;
   displayCode: string;
   description: string;
-  sourceName: "USITC Harmonized Tariff Schedule";
+  sourceName: "U.S. International Trade Commission HTS";
 };
+
+export type HsSuggestionResult = { status: "success" | "unavailable"; suggestions: HsSuggestion[] };
 
 type UsitcSearchRow = {
   htsno?: unknown;
@@ -35,7 +37,7 @@ export function parseUsitcSearchResponse(value: unknown, query = "", limit = 5):
       hsCode,
       displayCode: candidate.htsno,
       description,
-      sourceName: "USITC Harmonized Tariff Schedule",
+      sourceName: "U.S. International Trade Commission HTS",
       score,
     });
   }
@@ -55,15 +57,24 @@ export async function requestHsSuggestions(
   query: string,
   fetcher: typeof fetch = fetch
 ): Promise<HsSuggestion[]> {
-  const trimmed = query.trim();
-  if (trimmed.length < 3) return [];
+  return (await requestHsSuggestionResult(query, fetcher)).suggestions;
+}
 
+export async function requestHsSuggestionResult(
+  query: string,
+  fetcher: typeof fetch = fetch
+): Promise<HsSuggestionResult> {
+  const trimmed = query.trim();
+  if (trimmed.length < 3) return { status: "success", suggestions: [] };
   try {
     const response = await fetcher(`/api/hs-search?q=${encodeURIComponent(trimmed)}`);
-    if (!response.ok) return [];
+    if (!response.ok) return { status: "unavailable", suggestions: [] };
     const body = (await response.json()) as { suggestions?: unknown };
-    return Array.isArray(body.suggestions) ? (body.suggestions as HsSuggestion[]) : [];
+    return {
+      status: "success",
+      suggestions: Array.isArray(body.suggestions) ? (body.suggestions as HsSuggestion[]) : [],
+    };
   } catch {
-    return [];
+    return { status: "unavailable", suggestions: [] };
   }
 }
