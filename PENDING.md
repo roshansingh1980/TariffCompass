@@ -322,6 +322,26 @@ The Advisor story must make the C$249–250/month value proposition understandab
 
 ---
 
+# Authenticated application shell — Beta/V1
+
+This is a Beta/V1 launch-shell task, not a new C$99 launch gate. Build it **after Gate 5B scheduled monitoring and email alerts are complete** and before broad Beta UAT / launch polish; do not let shell work delay the recurring-value monitoring loop.
+
+## Navigation decision
+
+- Keep the existing top header/navigation for public, marketing/content-oriented surfaces: homepage, HS Code Lookup, Insights, Sources/Methodology, and pricing/auth pages as applicable.
+- Move authenticated product navigation into a persistent, collapsible desktop left sidebar; use a drawer/hamburger pattern on mobile and only a minimal contextual top bar where useful.
+- Primary navigation: **Dashboard, Monitored Exposures, Alerts, HS Code Lookup, Analysis History**.
+- Utility/footer navigation: **Account, Help / Support, Log out**.
+- Avoid duplicating the same navigation in both header and sidebar.
+
+## Shell constraints
+
+- Make the authenticated product feel like a workspace while preserving the current white/minimal visual language.
+- Keep the shell minimal; do not introduce broad settings or administration complexity.
+- Leave room for later Advisor items such as **Clients** and **Client Exposure Radar** without another major shell redesign, but build no Advisor-specific functionality in this task.
+
+---
+
 # Beta/V1 UX and production readiness
 
 - [ ] Finalize free-vs-paid gating so free proves value and C$99 clearly buys private relevance, financial exposure and monitoring.
