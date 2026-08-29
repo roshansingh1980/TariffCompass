@@ -1,0 +1,47 @@
+import Link from "next/link";
+import { formatHsCode, isValidHsCode } from "@/lib/hs-code";
+import type { SavedProfile } from "@/types/database";
+
+function scenarioLabel(value: string | null): string {
+  if (value === "import-us") return "Import from the United States";
+  if (value === "export-us") return "Export to the United States";
+  return value ?? "Route not specified";
+}
+
+function tradeValue(profile: SavedProfile): string {
+  if (profile.annual_value == null || !profile.currency) return "Trade value not specified";
+  return `${profile.currency} ${new Intl.NumberFormat("en-CA", { maximumFractionDigits: 0 }).format(profile.annual_value)}`;
+}
+
+export function MonitoredExposures({ profiles, isLoggedIn }: { profiles: SavedProfile[]; isLoggedIn: boolean }) {
+  if (!isLoggedIn) return (
+    <div className="rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
+      <p>Log in to view and manage saved exposures.</p>
+      <Link href="/login" className="mt-4 inline-block font-medium text-foreground underline underline-offset-4">Log in</Link>
+    </div>
+  );
+
+  if (profiles.length === 0) return (
+    <div className="rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
+      <p>No monitored exposures yet.</p>
+      <Link href="/dashboard" className="mt-4 inline-block font-medium text-foreground underline underline-offset-4">Create an analysis and save an exposure</Link>
+    </div>
+  );
+
+  return (
+    <div className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border/60">
+      {profiles.map((profile) => (
+        <article key={profile.id} className="grid gap-3 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="truncate text-sm font-semibold">{profile.product_description || profile.name}</h2>
+              <span className="rounded-full border border-border/70 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">{profile.monitoring_active ? "Monitoring active" : "Inactive"}</span>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">{isValidHsCode(profile.hs_code ?? "") ? `HS ${formatHsCode(profile.hs_code ?? "")}` : "HS code unavailable"} · {scenarioLabel(profile.scenario)}</p>
+          </div>
+          <p className="text-sm font-medium sm:text-right">{tradeValue(profile)}</p>
+        </article>
+      ))}
+    </div>
+  );
+}

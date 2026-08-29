@@ -340,6 +340,15 @@ This is a Beta/V1 launch-shell task, not a new C$99 launch gate. Build it **afte
 - Keep the shell minimal; do not introduce broad settings or administration complexity.
 - Leave room for later Advisor items such as **Clients** and **Client Exposure Radar** without another major shell redesign, but build no Advisor-specific functionality in this task.
 
+## Implementation status
+
+- [x] Public pages retain the existing marketing header while `/dashboard` uses the workspace shell.
+- [x] Desktop navigation is persistent, collapsible and locally persisted; mobile uses an accessible drawer.
+- [x] Dashboard, Monitored Exposures, Alerts and the public HS Code Lookup are connected without duplicating saved-profile, alert or lookup logic.
+- [x] Account context, billing where applicable, Help / Support and the existing logout action are available in the utility area.
+- [ ] Analysis History remains omitted until a real history surface exists; no placeholder page is required for launch-shell completion.
+- [x] The navigation structure can add Clients and Client Exposure Radar later without implementing Advisor functionality now.
+
 ---
 
 # Beta/V1 UX and production readiness

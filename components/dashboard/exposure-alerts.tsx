@@ -10,10 +10,19 @@ function formatDate(value: string | null): string {
   return new Date(`${value}T00:00:00Z`).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 }
 
-export function ExposureAlerts({ result }: { result: ExposureAlertsResult }) {
+export function ExposureAlerts({ result, showEmptyState = false }: { result: ExposureAlertsResult; showEmptyState?: boolean }) {
   const [alerts, setAlerts] = useState(result.alerts);
   if (!result.available) {
-    if (result.reason !== "migration_required" && result.reason !== "query_failed") return null;
+    if (result.reason !== "migration_required" && result.reason !== "query_failed") {
+      if (!showEmptyState) return null;
+      return (
+        <section className="w-full max-w-3xl rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
+          {result.reason === "not_authenticated"
+            ? "Log in to view alerts for your monitored exposures."
+            : "An active Business subscription is required for monitored-exposure alerts."}
+        </section>
+      );
+    }
     return (
       <section className="mb-10 w-full max-w-3xl rounded-2xl border border-border/60 bg-foreground/[0.015] p-5">
         <h2 className="text-sm font-semibold">Changes affecting your saved exposures</h2>
@@ -25,7 +34,10 @@ export function ExposureAlerts({ result }: { result: ExposureAlertsResult }) {
       </section>
     );
   }
-  if (alerts.length === 0) return null;
+  if (alerts.length === 0) {
+    if (!showEmptyState) return null;
+    return <section className="w-full max-w-3xl rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">No current alerts for your monitored exposures.</section>;
+  }
 
   async function markRead(id: string) {
     if (await markExposureAlertRead(id)) setAlerts((current) => current.map((alert) => alert.id === id ? markAlertReadState(alert, new Date().toISOString()) : alert));
