@@ -3,7 +3,8 @@
  * 002_add_trade_profile_columns.sql, 003_add_subscription_fields.sql,
  * 004_add_saved_profiles.sql, 005_add_exposure_fields_to_saved_profiles.sql,
  * 20260828052639_add_subscription_tier_and_founding_pricing.sql, and
- * 20260829000149_add_saved_exposure_alerts.sql.
+ * 20260829000149_add_saved_exposure_alerts.sql, and
+ * 20260829042834_add_exposure_alert_email_delivery.sql.
  * Keep these in sync with the migrations if the schema changes.
  */
 
@@ -144,3 +145,16 @@ export type SavedProfileInsert = {
 };
 
 export type SavedProfileUpdate = Partial<SavedProfileInsert>;
+
+export interface TradeExposureAlertDelivery {
+  id: string;
+  alert_id: string;
+  user_id: string;
+  status: "pending" | "sending" | "sent" | "failed" | "skipped";
+  attempt_count: number;
+  attempted_at: string | null;
+  emailed_at: string | null;
+  error: string | null;
+  created_at: string;
+  updated_at: string;
+}

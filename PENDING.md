@@ -77,14 +77,14 @@ Structured change history is implemented for covered trade measures; broad histo
 ## 5. Saved-product monitoring + useful alerting
 
 - [x] Paying users can save products/trade exposures with structured monitoring fields.
-- [ ] Scheduled change detection compares saved exposures against tariff/trade-policy updates.
-- [ ] Create reliable change history (`rate_changes` or final equivalent) with before/after values and source.
+- [ ] Daily scheduled change detection is implemented for active subscribed saved exposures against covered structured tariff/trade-policy updates; production activation awaits the delivery-state migration and Worker deployment.
+- [x] Covered structured change events provide reliable append-only before/after history with source; broader official-source ingestion remains curated/manual.
 - [x] In-app alerts for covered structured events identify what changed, the affected saved product, effective date, estimated financial impact and source.
-- [ ] Email and/or in-app alerting must be useful enough to justify recurring subscription value.
+- [ ] Material covered events have deduplicated transactional email delivery implemented; production activation and the first live delivery test remain outstanding.
 
 **Launch bar:** TariffCompass watches a customer’s saved exposure and tells them when something material changes; it is not merely a one-time calculator.
 
-In-app alert matching is implemented for saved exposures against structured change events. Scheduled external monitoring and email delivery remain open.
+Daily scheduled evaluation and transactional email delivery are implemented and validated in the repository for saved exposures against structured trade-measure changes. The delivery-state migration and Worker/Cron deployment are still required before monitoring is active in production. External official-source ingestion remains curated/manual.
 
 ## 6. Practical response intelligence
 
