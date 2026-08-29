@@ -209,5 +209,6 @@ describe("scheduled saved-exposure monitoring", () => {
     expect(sql).toContain("revoke all on public.trade_exposure_alert_deliveries from anon, authenticated");
     expect(config).toContain('"name": "EMAIL"');
     expect(config).toContain('"crons": ["0 13 * * *"]');
+    expect(config).toContain('"NEXT_PUBLIC_SUPABASE_URL"');
   });
 });
