@@ -21,6 +21,16 @@ Before adding anything to this file, ask:
 
 If not, put it in `FUTURE.md`.
 
+## Product boundary — navigation, not customs compliance
+
+TariffCompass is a **navigation platform for importers and exporters affected by tariffs and trade-policy changes**. It helps a business understand **what changed, whether it affects its products and markets, what the financial exposure may be, and what practical response paths should be investigated next**.
+
+- TariffCompass is not a customs broker, filing platform, customs-compliance operating system or replacement for professional customs/legal/tax advice.
+- Product scope should prioritize **monitoring → relevance → financial impact → response navigation** across imports and exports.
+- Do not drift into customs declarations, CARM/CBSA filing, certificate management, broker workflow, full landed-cost accounting, detailed rules-of-origin adjudication, RVC engines, or regulatory audit-record systems merely because competitors offer them.
+- CUSMA/FTA intelligence belongs in TariffCompass only to the extent needed to help users navigate tariff exposure and identify what to verify or investigate with the appropriate professional.
+- Competitive benchmarking should improve **clarity, trust, usability, conversion and product packaging** without changing this strategic boundary.
+
 ---
 
 # Six C$99 launch gates
@@ -77,14 +87,14 @@ Structured change history is implemented for covered trade measures; broad histo
 ## 5. Saved-product monitoring + useful alerting
 
 - [x] Paying users can save products/trade exposures with structured monitoring fields.
-- [ ] Daily scheduled change detection is implemented for active subscribed saved exposures against covered structured tariff/trade-policy updates; production activation awaits the delivery-state migration and Worker deployment.
+- [ ] Daily scheduled change detection is implemented for active subscribed saved exposures against covered structured tariff/trade-policy updates; production deployment and live acceptance testing remain outstanding.
 - [x] Covered structured change events provide reliable append-only before/after history with source; broader official-source ingestion remains curated/manual.
 - [x] In-app alerts for covered structured events identify what changed, the affected saved product, effective date, estimated financial impact and source.
-- [ ] Material covered events have deduplicated transactional email delivery implemented; production activation and the first live delivery test remain outstanding.
+- [ ] Material covered events have deduplicated transactional email delivery implemented; production deployment and the first live delivery test remain outstanding.
 
 **Launch bar:** TariffCompass watches a customer’s saved exposure and tells them when something material changes; it is not merely a one-time calculator.
 
-Daily scheduled evaluation and transactional email delivery are implemented and validated in the repository for saved exposures against structured trade-measure changes. The delivery-state migration and Worker/Cron deployment are still required before monitoring is active in production. External official-source ingestion remains curated/manual.
+Daily scheduled evaluation and transactional email delivery are implemented and validated in the repository for saved exposures against structured trade-measure changes. Required production Supabase migrations are applied; Worker/Cron deployment and live acceptance testing remain. External official-source ingestion remains curated/manual.
 
 ## 6. Practical response intelligence
 
@@ -122,11 +132,11 @@ Completed:
 
 - [x] Repository pricing/copy aligned to **Business C$99/month**.
 - [x] Subscription tier/founding-pricing fields added to the account model.
+- [x] Apply `supabase/migrations/20260828052639_add_subscription_tier_and_founding_pricing.sql` in production.
 
 Still required:
 
 - [ ] Ensure Stripe checkout, billing portal, cancellation and inline checkout error UI are reliable.
-- [ ] Apply `supabase/migrations/20260828052639_add_subscription_tier_and_founding_pricing.sql` in production.
 - [ ] Create/select the live recurring **TariffCompass Business C$99/month CAD** Stripe Price.
 - [ ] Update production Worker environment variable **`STRIPE_PRICE_ID`** to the live C$99 Price ID.
 - [ ] Configure and test the first-10 Business founding offer: **50% off for 12 months, then C$99/month**.
@@ -139,6 +149,62 @@ Still required:
 - [ ] Configure the first-3 Advisor founding offer: **50% off for 12 months, then standard pricing**.
 - [ ] Verify the founding Advisor cohort cannot accidentally exceed 3 customers.
 - [ ] Do not let Advisor billing implementation delay the Business C$99 launch.
+
+---
+
+# Public conversion, pricing and product packaging — Beta/V1
+
+Competitor review confirms that TariffCompass's breadth must be packaged more simply, not narrowed. The public website should communicate a broader **tariff-navigation** product with the visual clarity of a focused SaaS product.
+
+## Homepage / public visual pass
+
+- [ ] Complete a focused public-site conversion and visual-hierarchy pass after the six product gates are credible and before broad paid launch.
+- [ ] Lead with the customer problem and outcome rather than a feature inventory: **what changed, does it affect me, what could it cost, what should I investigate next?**
+- [ ] Test a concise three-part framing such as **Monitor → Quantify → Respond** across homepage and demo surfaces.
+- [ ] Use stronger whitespace, typography hierarchy, concise sections, obvious primary actions and restrained product screenshots/data examples.
+- [ ] Make imports **and** exports explicit so TariffCompass is not mistaken for an import-compliance product.
+- [ ] Show one real sourced example with product/HS, route, change, effective date and estimated dollar impact rather than generic claims.
+- [ ] Add truthful proof metrics only where derived from real product/data, such as monitored official-source families, covered applicability records, update cadence or verified change records; never use vanity or inferred numbers.
+
+## Pricing presentation
+
+- [ ] Build a clear three-column pricing architecture: **Free / Business C$99 / Advisor C$249–250**.
+- [ ] Make segmentation outcome-based: Free proves public intelligence; Business buys private company relevance, financial impact and ongoing monitoring; Advisor buys multi-client prioritization and client-ready intelligence.
+- [ ] Present the first-10 Business and first-3 Advisor founding offers inside the applicable paid tier rather than as separate permanent plans.
+- [ ] Include a concise comparison matrix covering saved exposures, monitoring/alerts, financial exposure, Advisor portfolio features and appropriate usage limits without overloading the page.
+- [ ] Consider annual billing only when Stripe/billing is stable; do not add discount complexity merely to imitate competitors.
+- [ ] Keep C$99 as the Business launch price unless real customer evidence supports a change; competitor pricing indicates pricing headroom, not a reason to increase price before validation.
+
+## Free-tool conversion funnel
+
+- [ ] Keep public HS Code Lookup as a top-of-funnel acquisition tool and connect it visibly to the paid analysis/monitoring workflow.
+- [ ] Add one lightweight **“Is my product affected?”** public tool when structured coverage is sufficiently reliable: HS/product + import/export + country → relevant known tariff/trade-policy measures.
+- [ ] Where a relevant measure exists, offer a deterministic next step to enter annual trade value and see estimated financial exposure.
+- [ ] Use the sequence **public answer → dollar relevance → save/monitor → C$99 Business**; do not gate basic public facts merely to manufacture conversion.
+- [ ] Do not build a full landed-cost engine, customs filing workflow, certificate-management system, RVC engine, broker workflow or regulatory audit suite for Beta/V1.
+
+**Launch bar:** a first-time prospect can understand the difference between Free, Business and Advisor, experience useful public value without signup, and see why ongoing private monitoring/navigation is worth C$99/month.
+
+---
+
+# Help Center / product documentation — Beta/V1
+
+Build a lightweight Help Center that supports customers, demonstrates product depth to prospects and creates indexable product education. It should explain how to navigate tariff exposure using TariffCompass, not teach users to perform customs compliance themselves.
+
+- [ ] Create a public `/help` index with approximately **6–8 high-value launch articles**.
+- [ ] Use a consistent structure where appropriate: what it does → how to use it → how TariffCompass interprets/calculates it → example → limitations/verification → related feature/plan.
+- [ ] Document **Getting started with TariffCompass**.
+- [ ] Document **Finding and confirming an HS code**, including the distinction between internationally harmonized HS6 and country-specific national tariff classifications.
+- [ ] Document **Understanding tariff/trade-policy exposure and estimated dollar impact**.
+- [ ] Document **Understanding sources, effective dates and confidence**.
+- [ ] Document **Saving and monitoring trade exposures**.
+- [ ] Document **Understanding TariffCompass alerts**, including before/after state, effective date and materiality.
+- [ ] Document **How financial impact is calculated**, including ranges, currencies and the planning-estimate boundary.
+- [ ] Document **Billing, founding pricing and cancellation** once live billing behavior is final.
+- [ ] Link Help articles contextually from relevant product surfaces where useful rather than relying only on a standalone Help index.
+- [ ] Keep launch documentation accurate to the real product; no screenshots, paths, limits or capabilities that are not actually live.
+
+**Launch bar:** a new Business customer can self-serve the core analysis/monitoring workflow and understand what TariffCompass can tell them, what it cannot determine, and when professional verification is appropriate.
 
 ---
 
@@ -176,14 +242,21 @@ Complete only the review needed to safely launch the Business product and suppor
 
 ## Product liability / decision-support boundary
 
-- [ ] Review liability if a user relies on a displayed tariff/rate and loses money.
+- [ ] Review liability if a user relies on a displayed tariff/rate or trade-policy applicability and loses money.
+- [ ] State clearly that TariffCompass is a tariff/trade-policy navigation and decision-support platform, not a customs broker, customs filing service, legal adviser, tax adviser or agent before CBSA/CBP/CARM or another authority.
 - [ ] Confirm whether source citations, confidence labels and “planning estimate” language are adequate.
 - [ ] Review whether AI-generated response suggestions cross into regulated customs, legal, tax or financial advice.
 - [ ] Confirm appropriate customs-broker/lawyer/accountant verification language.
 - [ ] Confirm the Advisor product can provide sourced intelligence to accountants without implying the accountant or TariffCompass is providing customs/legal advice beyond their professional scope.
+- [ ] Avoid accepting contractual obligations for regulatory record retention, customs audit readiness or filing accuracy that are not part of the TariffCompass product.
 
 ## Terms/privacy/subscription
 
+- [ ] Replace any placeholder Terms/Privacy/Notices with launch-ready documents reflecting the actual operating entity, product scope, stack and billing model; obtain counsel review where appropriate.
+- [ ] Terms should address informational/decision-support use, user verification responsibility, no guarantee of completeness/timeliness, limitation of liability, acceptable use, subscriptions/cancellation and AI limitations without copying competitor language.
+- [ ] Privacy should accurately disclose the actual production processors and purposes, including **Supabase, Cloudflare, Stripe and Anthropic** where used.
+- [ ] Distinguish transactional service alerts from marketing communications and confirm the intended CASL treatment with counsel.
+- [ ] Do not claim that all customer data is stored or processed in Canada unless the complete production processing chain supports that statement; distinguish primary application-data residency from third-party processing where necessary.
 - [ ] Review Terms, Privacy and Notices for launch in both English and the French core launch experience where required.
 - [ ] Review auto-renewal, cancellation and refund requirements.
 - [ ] Review PIPEDA obligations for stored Business profiles and Advisor client-profile data.
@@ -210,6 +283,7 @@ Build a lightweight but high-signal public page that demonstrates **where Tariff
 - [ ] For each source family, record: jurisdiction, authority tier, what TariffCompass extracts from it, monitoring method, monitoring frequency, last checked/retrieved time, and where the resulting information appears in the product.
 - [ ] Adopt an honest cadence label such as **intraday / daily / weekly / event-driven manual review** rather than implying real-time monitoring where it does not exist.
 - [ ] Highlight the most critical source families visually rather than presenting every URL with equal importance.
+- [ ] Expose truthful dataset/review/version cues where useful so prospects can see that TariffCompass intelligence is maintained and source-backed rather than static or purely AI-generated.
 
 ## Visual provenance flow
 
@@ -356,8 +430,9 @@ This is a Beta/V1 launch-shell task, not a new C$99 launch gate. Build it **afte
 - [ ] Finalize free-vs-paid gating so free proves value and C$99 clearly buys private relevance, financial exposure and monitoring.
 - [ ] Finalize the Business saved-profile / HS-code limit.
 - [ ] Confirm homepage/product copy reflects Canadian businesses that import, export, or do both.
+- [ ] Confirm all primary public/product copy describes TariffCompass as tariff/trade-policy navigation and decision support, not customs compliance.
 - [ ] Confirm the EN/FR switch and core bilingual journey work on desktop and mobile.
-- [ ] Confirm `/insights`, `/updates`, and `/sources` are credible and not stale; no large publishing build is required.
+- [ ] Confirm `/insights`, `/updates`, `/sources`, `/help` and pricing are credible and not stale; no large publishing build is required.
 - [ ] Run end-to-end QA across anonymous analysis → signup/login → paid checkout → saved profile → monitoring/alert → billing portal/cancellation in English and the French core journey.
 - [ ] Run TypeScript, lint, tests and production build.
 - [ ] Smoke-test production after deployment.
@@ -394,6 +469,7 @@ Initial operating objective after launch: **drive to C$2,500 MRR as quickly as p
 - Public tariff history can be free; company/client-specific relevance, financial impact and monitoring are the paid value.
 - **Official sources drive tariff determinations; media is supplemental discovery/context only.**
 - AI explains structured intelligence; it does not create tariff facts.
+- **TariffCompass is a navigation platform for tariff-affected importers/exporters, not a customs-compliance platform.**
 - Canada remains the fixed home country for Beta/V1.
 - V1 includes French-ready architecture and the complete core Business buying/analysis/monitoring journey in French; full content parity is future work.
 - Advisor V1 is limited to what is necessary to prove the first 3 paying Advisor customers: multi-client workspace, Client Exposure Radar, client drill-down, alerts/provenance and client-ready output.
