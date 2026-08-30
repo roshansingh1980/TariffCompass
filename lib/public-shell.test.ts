@@ -32,7 +32,7 @@ describe("public website shell", () => {
 
   it("provides browser-native print/PDF output and print-specific chrome removal", () => {
     expect(read("components/onboarding/results-step.tsx")).toContain("window.print()");
-    expect(read("components/onboarding/results-step.tsx")).toContain("Download / Save as PDF");
+    expect(read("components/onboarding/results-step.tsx")).toContain("Print / Download");
     expect(read("app/globals.css")).toContain("@media print");
     expect(read("app/globals.css")).toContain(".print-hidden");
   });
