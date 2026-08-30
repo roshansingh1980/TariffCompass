@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { HsLookupTool } from "@/components/hs-lookup/hs-lookup-tool";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getDashboardShellAuth } from "@/lib/dashboard/shell-auth";
 
 export const metadata: Metadata = {
   title: "HS Code Lookup Canada | TariffCompass",
@@ -7,6 +9,18 @@ export const metadata: Metadata = {
   alternates: { canonical: "/hs-lookup" },
 };
 
-export default function HsLookupPage() {
-  return <HsLookupTool />;
+export default async function HsLookupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
+  const { view } = await searchParams;
+  if (view !== "app") return <HsLookupTool />;
+
+  const shellAuth = await getDashboardShellAuth();
+  return (
+    <DashboardShell {...shellAuth}>
+      <HsLookupTool />
+    </DashboardShell>
+  );
 }

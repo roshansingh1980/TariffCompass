@@ -12,7 +12,7 @@ import { saveOnboardingSelections } from "@/lib/supabase/save";
 import { loadPendingWizardState, clearPendingWizardState } from "@/lib/pending-wizard";
 import { OTHER_CATEGORY, type Country } from "@/lib/onboarding-data";
 import type { SavedProfile } from "@/types/database";
-import { ExposureAlerts } from "@/components/dashboard/exposure-alerts";
+import { AlertStrip } from "@/components/dashboard/alert-strip";
 import { evaluateAndListExposureAlerts, type ExposureAlertsResult } from "@/lib/supabase/exposure-alerts";
 import type { HsLookupPrefill } from "@/lib/hs-lookup";
 
@@ -129,7 +129,11 @@ export function DashboardWizard({
 
   return (
     <div className="flex flex-1 flex-col items-center px-6 py-10 sm:py-14">
-      {isLoggedIn && isSubscribed && <ExposureAlerts result={exposureAlerts} />}
+      {isLoggedIn && isSubscribed && (
+        <div className="mb-8 w-full max-w-3xl">
+          <AlertStrip result={exposureAlerts} />
+        </div>
+      )}
       {step === "scenario" && (
         <>
           {savedProfiles.length > 0 && (

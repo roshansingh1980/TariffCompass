@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { INSIGHTS } from "@/lib/insights-data";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getDashboardShellAuth } from "@/lib/dashboard/shell-auth";
 
 export const metadata: Metadata = {
   title: "Insights | TariffCompass",
@@ -9,7 +11,20 @@ export const metadata: Metadata = {
   alternates: { canonical: "/insights" },
 };
 
-export default function InsightsPage() {
+export default async function InsightsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
+  const { view } = await searchParams;
+  const content = <InsightsContent />;
+  if (view !== "app") return content;
+
+  const shellAuth = await getDashboardShellAuth();
+  return <DashboardShell {...shellAuth}>{content}</DashboardShell>;
+}
+
+function InsightsContent() {
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-20 sm:px-8 sm:py-28">
       <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">

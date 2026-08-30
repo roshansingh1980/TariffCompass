@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackLink } from "@/components/back-link";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getDashboardShellAuth } from "@/lib/dashboard/shell-auth";
 
 export const metadata: Metadata = {
   title: "Support | TariffCompass",
@@ -9,7 +11,20 @@ export const metadata: Metadata = {
   alternates: { canonical: "/support" },
 };
 
-export default function SupportPage() {
+export default async function SupportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
+  const { view } = await searchParams;
+  const content = <SupportContent />;
+  if (view !== "app") return content;
+
+  const shellAuth = await getDashboardShellAuth();
+  return <DashboardShell {...shellAuth}>{content}</DashboardShell>;
+}
+
+function SupportContent() {
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-6 py-20 sm:px-8 sm:py-28">
       <BackLink fallbackHref="/" />

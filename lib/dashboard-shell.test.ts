@@ -13,7 +13,7 @@ describe("authenticated application shell", () => {
     const shell = read("components/dashboard/dashboard-shell.tsx");
     expect(shell).toContain('aria-current={active ? "page" : undefined}');
     expect(shell).toContain('label: "Dashboard", href: "/dashboard"');
-    expect(shell).toContain("item.exact ? pathname === item.href");
+    expect(shell).toContain("item.exact ? pathname === href");
   });
 
   it("supports a locally persisted collapsible desktop sidebar", () => {
@@ -34,7 +34,7 @@ describe("authenticated application shell", () => {
 
   it("links to the existing public lookup and uses the existing logout action", () => {
     const shell = read("components/dashboard/dashboard-shell.tsx");
-    expect(shell).toContain('label: "HS Code Lookup", href: "/hs-lookup"');
+    expect(shell).toContain('label: "HS Code Lookup", href: "/hs-lookup?view=app"');
     expect(shell).toContain("<form action={signOut}>");
   });
 
