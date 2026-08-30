@@ -1,6 +1,42 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { TcLockup } from "@/components/brand/tc-lockup";
+import { createClient } from "@/lib/supabase/server";
+import { PublicContainer } from "@/components/public/public-container";
+
+const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] = [
+  {
+    heading: "Product",
+    links: [
+      { label: "HS Lookup", href: "/hs-lookup" },
+      { label: "Pricing", href: "/#pricing" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/support" },
+    ],
+  },
+  {
+    heading: "Resources",
+    links: [
+      { label: "Insights", href: "/insights" },
+      { label: "Sources", href: "/sources" },
+      { label: "Updates", href: "/updates" },
+      { label: "Help", href: "/support" },
+    ],
+  },
+  {
+    heading: "Legal",
+    links: [
+      { label: "Terms", href: "/terms" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Notices", href: "/notices" },
+    ],
+  },
+];
 
 export async function SiteFooter() {
   const headersList = await headers();
@@ -8,70 +44,70 @@ export async function SiteFooter() {
   const isAppView = headersList.get("x-app-view") === "1";
   if (pathname.startsWith("/dashboard") || isAppView) return null;
 
+  let isLoggedIn = false;
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    isLoggedIn = Boolean(user);
+  } catch (error) {
+    console.error("SiteFooter failed to load auth state:", error);
+  }
+
   return (
     <footer className="border-t border-border/30">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 py-10 sm:px-8">
-        <TcLockup size="small" orientation="horizontal" />
-        <p className="font-serif text-sm text-muted-foreground italic">
-          Navigate tariffs. Find your path.
-        </p>
-        <div className="flex flex-col items-center gap-3 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-left">
+      <PublicContainer className="py-12 sm:py-14">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="col-span-2 sm:col-span-3 lg:col-span-1">
+            <TcLockup size="small" orientation="horizontal" />
+            <p className="mt-3 max-w-[16rem] text-sm text-muted-foreground">Monitor. Quantify. Respond.</p>
+          </div>
+          {COLUMNS.map((column) => (
+            <div key={column.heading}>
+              <p className="text-[11px] font-semibold tracking-[0.1em] text-muted-foreground uppercase">
+                {column.heading}
+              </p>
+              <ul className="mt-3 flex flex-col gap-2">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.1em] text-muted-foreground uppercase">Account</p>
+            <ul className="mt-3 flex flex-col gap-2">
+              <li>
+                <Link
+                  href={isLoggedIn ? "/dashboard" : "/login"}
+                  className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                >
+                  {isLoggedIn ? "Dashboard" : "Log in"}
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-3 border-t border-border/50 pt-6 text-center text-xs text-muted-foreground sm:flex-row sm:items-start sm:justify-between sm:text-left">
           <p className="tracking-wide">
             &copy; {new Date().getFullYear()} Adithana Capital Ltd. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-            <Link href="/#pricing" className="tracking-wide transition-colors duration-200 hover:text-foreground">Pricing</Link>
-            <Link href="/hs-lookup" className="tracking-wide transition-colors duration-200 hover:text-foreground">HS Code Lookup</Link>
-            <Link href="/insights" className="tracking-wide transition-colors duration-200 hover:text-foreground">Insights</Link>
-            <Link href="/sources" className="tracking-wide transition-colors duration-200 hover:text-foreground">Sources / Methodology</Link>
-            <Link
-              href="/about"
-              className="tracking-wide transition-colors duration-200 hover:text-foreground"
-            >
-              About
-            </Link>
-            <Link
-              href="/support"
-              className="tracking-wide transition-colors duration-200 hover:text-foreground"
-            >
-              Support
-            </Link>
-            <Link
-              href="/privacy"
-              className="tracking-wide transition-colors duration-200 hover:text-foreground"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/terms"
-              className="tracking-wide transition-colors duration-200 hover:text-foreground"
-            >
-              Terms
-            </Link>
-            <Link
-              href="/notices"
-              className="tracking-wide transition-colors duration-200 hover:text-foreground"
-            >
-              Notices
-            </Link>
-            <Link
-              href="/updates"
-              className="tracking-wide transition-colors duration-200 hover:text-foreground"
-            >
-              Updates
-            </Link>
-            <Link href="/login" className="tracking-wide transition-colors duration-200 hover:text-foreground">Log in</Link>
-          </div>
+          <p className="max-w-xl leading-relaxed">
+            TariffCompass is an independent software tool. It is not affiliated with the Government
+            of Canada, CBSA, EDC, BDC, or any U.S. government agency. Information is provided for
+            general guidance only.
+          </p>
         </div>
-        <p className="max-w-2xl text-center text-[11px] leading-relaxed text-muted-foreground">
-          TariffCompass is an independent software tool. It is not affiliated with the Government
-          of Canada, CBSA, EDC, BDC, or any U.S. government agency. Information is provided for
-          general guidance only.
-        </p>
-        <p className="text-[11px] tracking-wide text-muted-foreground">
-          A Canadian tool for a Canadian problem.
-        </p>
-      </div>
+      </PublicContainer>
     </footer>
   );
 }

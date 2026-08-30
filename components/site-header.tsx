@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/supabase/actions";
 import { createBillingPortalSession } from "@/lib/stripe/actions";
 import { TcMark } from "@/components/brand/tc-mark";
+import { PublicContainer } from "@/components/public/public-container";
 
 export async function SiteHeader() {
   // /dashboard has its own sidebar chrome (see app/dashboard/layout.tsx),
@@ -42,7 +43,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/30 bg-background/75 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-20 sm:px-8">
+      <PublicContainer className="flex h-16 items-center justify-between px-4 sm:h-20 sm:px-8">
         <Link
           href="/"
           aria-label="TariffCompass home"
@@ -55,6 +56,7 @@ export async function SiteHeader() {
         </Link>
 
         <nav aria-label="Public navigation" className="flex items-center gap-3 sm:gap-5">
+          <Link href="/#pricing" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground md:inline">Pricing</Link>
           <Link href="/hs-lookup" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground sm:inline">HS Lookup</Link>
           <Link
             href="/insights"
@@ -62,8 +64,8 @@ export async function SiteHeader() {
           >
             Insights
           </Link>
-          <Link href="/#pricing" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground md:inline">Pricing</Link>
           <Link href="/sources" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground lg:inline">Sources</Link>
+          <Link href="/support" className="hidden text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground lg:inline">Help</Link>
           {user ? (
             <>
               <Link href="/dashboard" className="text-[13px] font-medium tracking-wide text-muted-foreground transition-colors duration-200 hover:text-foreground">Dashboard</Link>
@@ -99,12 +101,12 @@ export async function SiteHeader() {
                 href="/signup"
                 className="rounded-full bg-foreground px-3.5 py-2 text-[13px] font-medium tracking-wide text-background transition-colors duration-200 hover:bg-foreground/90 sm:px-4"
               >
-                Sign up
+                Start free
               </Link>
             </>
           )}
         </nav>
-      </div>
+      </PublicContainer>
     </header>
   );
 }
