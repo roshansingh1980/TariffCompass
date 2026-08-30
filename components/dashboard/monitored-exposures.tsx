@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { PackageSearch } from "lucide-react";
 import { formatHsCode, isValidHsCode } from "@/lib/hs-code";
+import { EmptyState } from "@/components/dashboard/empty-state";
 import type { SavedProfile } from "@/types/database";
 
 function scenarioLabel(value: string | null): string {
@@ -15,17 +16,23 @@ function tradeValue(profile: SavedProfile): string {
 
 export function MonitoredExposures({ profiles, isLoggedIn }: { profiles: SavedProfile[]; isLoggedIn: boolean }) {
   if (!isLoggedIn) return (
-    <div className="rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
-      <p>Log in to view and manage saved exposures.</p>
-      <Link href="/login" className="mt-4 inline-block font-medium text-foreground underline underline-offset-4">Log in</Link>
-    </div>
+    <EmptyState
+      icon={PackageSearch}
+      heading="Log in to view your exposures"
+      description="Saved products and trade routes appear here once you're signed in."
+      ctaLabel="Log in"
+      ctaHref="/login"
+    />
   );
 
   if (profiles.length === 0) return (
-    <div className="rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
-      <p>No monitored exposures yet.</p>
-      <Link href="/dashboard" className="mt-4 inline-block font-medium text-foreground underline underline-offset-4">Create an analysis and save an exposure</Link>
-    </div>
+    <EmptyState
+      icon={PackageSearch}
+      heading="No monitored exposures yet"
+      description="Save a product or trade route from an analysis to start monitoring it here."
+      ctaLabel="Create an analysis"
+      ctaHref="/dashboard"
+    />
   );
 
   return (

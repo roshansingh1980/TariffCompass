@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { Bell } from "lucide-react";
 import { dismissExposureAlert, markExposureAlertRead, type ExposureAlertsResult } from "@/lib/supabase/exposure-alerts";
 import { formatExposureRange } from "@/lib/exposure";
 import { markAlertReadState, removeDismissedAlert } from "@/lib/exposure-monitoring";
+import { EmptyState } from "@/components/dashboard/empty-state";
 
 function formatDate(value: string | null): string {
   if (!value) return "Unavailable";
@@ -16,11 +18,17 @@ export function ExposureAlerts({ result, showEmptyState = false }: { result: Exp
     if (result.reason !== "migration_required" && result.reason !== "query_failed") {
       if (!showEmptyState) return null;
       return (
-        <section className="w-full max-w-3xl rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
-          {result.reason === "not_authenticated"
-            ? "Log in to view alerts for your monitored exposures."
-            : "An active Business subscription is required for monitored-exposure alerts."}
-        </section>
+        <EmptyState
+          icon={Bell}
+          heading={result.reason === "not_authenticated" ? "Log in to view alerts" : "Upgrade to unlock alerts"}
+          description={
+            result.reason === "not_authenticated"
+              ? "Alerts for your monitored exposures appear here once you're signed in."
+              : "An active Business subscription is required for monitored-exposure alerts."
+          }
+          ctaLabel={result.reason === "not_authenticated" ? "Log in" : "See plans"}
+          ctaHref={result.reason === "not_authenticated" ? "/login" : "/#pricing"}
+        />
       );
     }
     return (
@@ -36,7 +44,15 @@ export function ExposureAlerts({ result, showEmptyState = false }: { result: Exp
   }
   if (alerts.length === 0) {
     if (!showEmptyState) return null;
-    return <section className="w-full max-w-3xl rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">No current alerts for your monitored exposures.</section>;
+    return (
+      <EmptyState
+        icon={Bell}
+        heading="No current alerts"
+        description="You'll see an alert here as soon as a covered change affects one of your monitored exposures."
+        ctaLabel="View monitored exposures"
+        ctaHref="/dashboard/exposures"
+      />
+    );
   }
 
   async function markRead(id: string) {
